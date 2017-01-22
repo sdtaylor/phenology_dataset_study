@@ -45,13 +45,11 @@ observations = observations %>%
   left_join(species_codes, by='tree.id') %>%
   select(-tree.id)
 
-#Temperature data starts in Oct-1991
-observations = observations %>%
-  filter(year>=1992)
 ######################################################################################
 #Calculate growing and chilling degree days
 
-get_degree_days = function(year_to_get, doy_to_get, deg_day_threshold=5){
+
+get_degree_days = function(year_to_get, doy_to_get, deg_day_threshold=0){
   temp = temperature_data %>%
     filter(year==year_to_get, doy<=doy_to_get) %>%
     filter(temp>deg_day_threshold)
@@ -60,7 +58,7 @@ get_degree_days = function(year_to_get, doy_to_get, deg_day_threshold=5){
   return(sum(temp$temp, na.rm=T))
 }
 
-get_chill_days = function(year_to_get, doy_to_get, chill_threshold=5){
+get_chill_days = function(year_to_get, doy_to_get, chill_threshold=0){
   temp = temperature_data %>%
     filter(year==year_to_get, doy<=doy_to_get) %>%
     mutate(is_chill_day = ifelse(temp<chill_threshold, 1,0))
@@ -72,13 +70,43 @@ get_chill_days = function(year_to_get, doy_to_get, chill_threshold=5){
 
 observations = observations %>%
   rowwise() %>%
-  mutate(GDD=get_degree_days(year_to_get = year, doy_to_get = doy), NCD=get_chill_days(year_to_get = year, doy_to_get = doy))
+  mutate(GDD=get_degree_days(year_to_get = year, doy_to_get = doy), NCD=get_chill_days(year_to_get = year, doy_to_get = doy)) %>%
+  ungroup()
 
 
 ######################################################################################
-
+library(broom)
 maple = observations %>%
   filter(species=='acer rubrum')
+
+get_param_estimates = function(df){
+  #Do a lm estimate for the starting values before fitting the nls()
+  #http://stats.stackexchange.com/questions/160552/why-is-nls-giving-me-singular-gradient-matrix-at-initial-parameter-estimates
+  
+  a.0 = min(df$GDD)*0.5
+
+  m.0 = lm(log(GDD-a.0) ~ NCD, data=df)
+  start_list = list(b=exp(coef(m.0)[1]), c=coef(m.0)[2], a=a.0)
+  m = nls(GDD ~ a + b*exp(c*NCD), data=df, start=start_list)
+  return(broom::tidy(m))
+}
+
+parameter_esimates=data.frame()
+for(this_species in unique(observations$species)){
+  this_species_data = observations %>%
+    filter(species==this_species)
+  
+  params = try(get_param_estimates(this_species_data))
+  if(class(params)=='try-error'){
+    print(paste0('nls error: ',this_species))
+  } else {
+    params$species=this_species
+    parameter_esimates = parameter_esimates %>%
+      bind_rows(params)
+  }
+}
+
+
 
 
 
