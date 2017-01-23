@@ -23,6 +23,7 @@ get_param_estimates = function(df){
 
 
 parameter_esimates=data.frame()
+#Models from harvard forest data
 for(this_species in unique(harvard_observations$species)){
   this_species_data = harvard_observations %>%
     filter(species==this_species)
@@ -38,6 +39,7 @@ for(this_species in unique(harvard_observations$species)){
   }
 }
 
+#Models from NPN data
 for(this_species in unique(npn_observations$species)){
   this_species_data = npn_observations %>%
     filter(species==this_species) 
@@ -53,6 +55,24 @@ for(this_species in unique(npn_observations$species)){
   }
 }
 
+############################################################
+#Drop any species that don't have both data sources
+#TODO: explain why I can't compare all the species. data deficient, model won't converge, etc.
+species_to_model = parameter_esimates %>%
+  filter(data_source=='npn') %>%
+  select(species) %>%
+  distinct()
 
+parameter_esimates = parameter_esimates %>%
+  filter(species %in% species_to_model$species)
 
+ggplot(parameter_esimates, aes(x=species, y=estimate, group=data_source, fill=data_source)) +
+  geom_bar(position='dodge', stat='identity') +
+  geom_errorbar(aes(ymax=estimate+std.error, ymin=estimate-std.error))+
+  facet_grid(term~., scales = 'free_y')
+
+ggplot(parameter_esimates, aes(x=species, y=estimate, group=data_source, fill=data_source)) +
+  geom_bar(position='dodge', stat='identity') +
+  geom_errorbar(aes(ymax=estimate+std.error, ymin=estimate-std.error))+
+  facet_grid(term~., scales = 'free_y')
 
