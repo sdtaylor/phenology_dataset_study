@@ -61,10 +61,15 @@ observations = observations %>%
   left_join(select(temperature_data, Site_ID, year, doy, NCD, GDD), by=c('Site_ID','year','doy'))
 rm(temperature_data, temp_data_with_gdd_file)
 
-#Unlikely that people are observing true bud break past august.
+#Unlikely that people are observing true bud break past august, or in the first few days of Jan
+#when no GDD has accumulated.
 #TODO: be more systematic about this.
 observations = observations %>%
   filter(doy<240)
+
+#Some sites are missing GDD and NCD data, likely because they're near a large water body
+#and don't have a prism cell. 
+observations = observations[complete.cases(observations),]
 
 
 write_csv(observations, './cleaned_data/NPN_observations.csv')

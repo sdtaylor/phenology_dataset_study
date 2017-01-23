@@ -42,10 +42,6 @@ for(this_species in unique(npn_observations$species)){
   this_species_data = npn_observations %>%
     filter(species==this_species) 
     
-  #Some sites are missing GDD and NCD data, likely because they're near a large water body
-  #and don't have a prism cell. 
-  this_species_data = this_species_data[complete.cases(this_species_data),]
-  
   params = try(get_param_estimates(this_species_data))
   if(class(params)=='try-error'){
     print(paste0('nls error: ',this_species))
