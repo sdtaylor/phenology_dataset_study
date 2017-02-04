@@ -7,7 +7,7 @@ from scipy import optimize
 #accepts a set of temperature data and observations of phenological event
 #as the doy. Returns the RMSE error of the doy given the  4 UniForc parameters
 class uniforc_model:
-    def __init__(self, temp_data, plant_data, site_data=None, t1_varies=False):
+    def __init__(self, temp_data, plant_data, t1_varies=False):
         self.temp_sites=temp_data['Site_ID'].values
         self.temp_year =temp_data['year'].values
         self.temp_doy  =temp_data['doy'].values
@@ -19,9 +19,6 @@ class uniforc_model:
         self.num_replicates=plant_data.shape[0]
 
         self.t1_varies=t1_varies
-        if t1_varies:
-            self.site_site=site_data['Site_ID'].values
-            self.site_mean_temp=site_data['mean_temp'].values
 
     def site_doy_estimate(self, site_id, year, t1, b, c, F, t1_slope=None):
         subset_temp = self.temp_temp[(self.temp_sites==site_id) &
@@ -34,8 +31,9 @@ class uniforc_model:
 
         #If fitting NPN data, let t1 vary with respect to mean Jan-Feb temp
         #The t1 being estimated by the optimizer is thus the intercept
+        #as opposed to the mean value
         if self.t1_varies:
-            T_jan_feb = np.mean(subset_temp[(subset_doy>=1) & (subset_doy<=60)])
+            T_jan_feb = np.mean(subset_temp[(subset_doy>=0) & (subset_doy<=60)])
             t1 = t1 + t1_slope*T_jan_feb
 
         #Only accumulate after t1
@@ -61,6 +59,10 @@ class uniforc_model:
         errors = np.array(errors)
         return np.sqrt(np.mean(errors**2))
 
+    #The estimated doy given a set of parameters. 
+    def get_all_estimates(self, **kargs):
+        pass
+
     #scipy optimize functions want a array of parameter values
     #use this to unpack it
     def scipy_error(self,x):
@@ -74,14 +76,28 @@ def get_param_estimates(model, bounds):
     optimize_output = optimize.differential_evolution(model,bounds=bounds, disp=False)
     return optimize_output['x']
 
+#######################################################
+num_bootstrap=5
+
 ########################################################
-maple = pd.read_csv('maple.csv')
+harvard_data = pd.read_csv('./cleaned_data/harvard_observations.csv')
 harvard_temp = pd.read_csv('./cleaned_data/harvard_temp.csv')
-maple['Site_ID']=1
+harvard_data['Site_ID']=1
 harvard_temp['Site_ID']=1
-maple_model=uniforc_model(temp_data=harvard_temp, plant_data=maple)
 
+bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
 
-########################################################
-bounds = [(-126,180), (-20,0), (-50,50), (0,100)]
-optimize_output = optimize.differential_evolution(maple_model.scipy_error,bounds=bounds, disp=True)
+results = []
+for species in harvard_data.species.unique():
+    print(species)
+    sp_data = harvard_data[harvard_data.species==species]
+    for bootstrap_iteration in range(num_bootstrap):
+        print('bootstrap iteration '+str(bootstrap_iteration))
+        data_sample = sp_data.sample(frac=1, replace=True).copy()
+        model=uniforc_model(temp_data=harvard_temp, plant_data=data_sample, t1_varies=True)
+
+        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True)
+        x=optimize_output['x']
+        t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
+
+        results.append({'t1_int':t1_int, 'b':b, 'c':c, 'F':F, 't1_slope':t1_slope, 'species':species, 'boostrap_num':bootstrap_iteration})
