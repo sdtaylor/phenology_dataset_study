@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
 from scipy import optimize
+import multiprocessing as mp
 
+########################################################################
 #Evaluate a UniForc model of a single species
 #uniforc model evaluator designed to be used in any optimize function.
 #accepts a set of temperature data and observations of phenological event
@@ -72,22 +74,35 @@ class uniforc_model:
             kargs={'t1':x[0], 'b':x[1], 'c':x[2], 'F':x[3]}
         return self.get_error(**kargs)
 
-def get_param_estimates(model, bounds):
-    optimize_output = optimize.differential_evolution(model,bounds=bounds, disp=False)
-    return optimize_output['x']
+results=[]
+def log_result(x):
+    results.append(x)
+
+#A wrapper to get the results of a model so that they can
+#be run asynchronously
+def run_optimizer(model, bounds, species, bootstrap_num, dataset):
+    optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True)
+    x=optimize_output['x']
+    t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
+    #t1_int, b, c, F, t1_slope = 1,2,3,4,5
+
+    return {'t1_int':t1_int, 'b':b, 'c':c, 'F':F, 't1_slope':t1_slope,
+            'species':species, 'boostrap_num':bootstrap_iteration, 'dataset':dataset}
 
 #######################################################
 num_bootstrap=5
 
+num_processes=2
+pool=mp.Pool(num_processes)
 ########################################################
 harvard_data = pd.read_csv('./cleaned_data/harvard_observations.csv')
 harvard_temp = pd.read_csv('./cleaned_data/harvard_temp.csv')
 harvard_data['Site_ID']=1
 harvard_temp['Site_ID']=1
 
+#             t1         b         c       F*     t1_slope
 bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
 
-results = []
 for species in harvard_data.species.unique():
     print(species)
     sp_data = harvard_data[harvard_data.species==species]
@@ -95,9 +110,10 @@ for species in harvard_data.species.unique():
         print('bootstrap iteration '+str(bootstrap_iteration))
         data_sample = sp_data.sample(frac=1, replace=True).copy()
         model=uniforc_model(temp_data=harvard_temp, plant_data=data_sample, t1_varies=True)
+        pool.apply_async(run_optimizer, args=(model, bounds, species, bootstrap_iteration, 'harvard'), callback=log_result)
 
-        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True)
-        x=optimize_output['x']
-        t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
+pool.close()
+pool.join()
 
-        results.append({'t1_int':t1_int, 'b':b, 'c':c, 'F':F, 't1_slope':t1_slope, 'species':species, 'boostrap_num':bootstrap_iteration})
+results=pd.DataFrame(results)
+results.to_csv('results.csv')
