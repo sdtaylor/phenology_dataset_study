@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from scipy import optimize
-import multiprocessing as mp
+from mpi4py import MPI
 
 ########################################################################
 #Evaluate a UniForc model of a single species
@@ -74,9 +74,6 @@ class uniforc_model:
             kargs={'t1':x[0], 'b':x[1], 'c':x[2], 'F':x[3]}
         return self.get_error(**kargs)
 
-results=[]
-def log_result(x):
-    results.append(x)
 
 #A wrapper to get the results of a model so that they can
 #be run asynchronously
@@ -90,30 +87,90 @@ def run_optimizer(model, bounds, species, bootstrap_num, dataset):
             'species':species, 'boostrap_num':bootstrap_iteration, 'dataset':dataset}
 
 #######################################################
-num_bootstrap=5
 
-num_processes=2
-pool=mp.Pool(num_processes)
 ########################################################
-harvard_data = pd.read_csv('./cleaned_data/harvard_observations.csv')
-harvard_temp = pd.read_csv('./cleaned_data/harvard_temp.csv')
-harvard_data['Site_ID']=1
-harvard_temp['Site_ID']=1
 
-#             t1         b         c       F*     t1_slope
-bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
 
-for species in harvard_data.species.unique():
-    print(species)
-    sp_data = harvard_data[harvard_data.species==species]
-    for bootstrap_iteration in range(num_bootstrap):
-        print('bootstrap iteration '+str(bootstrap_iteration))
-        data_sample = sp_data.sample(frac=1, replace=True).copy()
-        model=uniforc_model(temp_data=harvard_temp, plant_data=data_sample, t1_varies=True)
-        pool.apply_async(run_optimizer, args=(model, bounds, species, bootstrap_iteration, 'harvard'), callback=log_result)
+def master():
+    comm = MPI.COMM_WORLD
+    status = MPI.Status()
+    num_workers = MPI.COMM_WORLD.Get_size()
 
-pool.close()
-pool.join()
+    work_tag=0
+    stop_tag=1
+    job_list=[]
+    ###################################
+    harvard_data = pd.read_csv('./cleaned_data/harvard_observations.csv')
+    harvard_temp = pd.read_csv('./cleaned_data/harvard_temp.csv')
+    harvard_data['Site_ID']=1
+    harvard_temp['Site_ID']=1
 
-results=pd.DataFrame(results)
-results.to_csv('results.csv')
+    num_bootstrap=2
+    #             t1         b         c       F*     t1_slope
+    bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
+
+    results=[]
+    for species in harvard_data.species.unique():
+        print(species)
+        sp_data = harvard_data[harvard_data.species==species]
+        for bootstrap_i in range(num_bootstrap):
+            print('bootstrap iteration '+str(bootstrap_i))
+            data_sample = sp_data.sample(frac=1, replace=True).copy()
+            model=uniforc_model(temp_data=harvard_temp, plant_data=data_sample, t1_varies=True)
+            package = (model, bounds, species, bootstrap_i, 'harvard')
+            job_list.append(package)
+
+    #Dole out the first round of jobs to all workers
+    for i in range(1, num_workers):
+        if len(job_list)>0:
+            next_job = job_list.pop() if len(job_list)>0 else 'done'
+        else:
+            break
+        comm.send(obj=next_job, dest=i, tag=work_tag)
+
+    #While there are new jobs to assign.
+    #Wait for results and assign new jobs when they come
+    while len(job_list)>0:
+        next_job = job_list.pop() if len(job_list)>0 else 'done'
+        job_result = comm.recv(source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG, status=status)
+        results.append(job_result)
+        comm.send(obj=next_job, dest=status.Get_source(), tag=work_tag)
+
+    #Collect last jobs
+    for i in range(1, num_workers):
+        job_result = comm.recv(source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG)
+        results.append(job_result)
+    for i in range(1, num_workers):
+        comm.send(obj=None, dest=i, tag=stop_tag)
+
+    results=pd.DataFrame(results)
+    results.to_csv('results.csv', index=False)
+
+def worker():
+    comm = MPI.COMM_WORLD
+    status = MPI.Status()
+    while 1:
+        model_package = comm.recv(source=0, tag=MPI.ANY_TAG, status=status)
+        if status.Get_tag() == 1: break
+
+        model, bounds, species, bootstrap_i, dataset = model_package
+        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True, maxiter=2)
+        x=optimize_output['x']
+        t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
+
+        return_data={'t1_int':t1_int, 'b':b, 'c':c, 'F':F, 't1_slope':t1_slope,
+                     'species':species, 'boostrap_num':bootstrap_i, 'dataset':dataset}
+        comm.send(obj=return_data, dest=0)
+
+
+if __name__ == "__main__":
+    rank = MPI.COMM_WORLD.Get_rank()
+    name = MPI.Get_processor_name()
+    size = MPI.COMM_WORLD.Get_size()
+
+    if rank == 0:
+        print('master '+str(rank)+' on '+str(name))
+        master()
+    else:
+        print('worker '+str(rank)+' on '+str(name))
+        worker()
