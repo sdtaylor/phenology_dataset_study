@@ -105,7 +105,7 @@ def master():
     harvard_data['Site_ID']=1
     harvard_temp['Site_ID']=1
 
-    num_bootstrap=2
+    num_bootstrap=200
     #             t1         b         c       F*     t1_slope
     bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
 
@@ -114,12 +114,12 @@ def master():
         print(species)
         sp_data = harvard_data[harvard_data.species==species]
         for bootstrap_i in range(num_bootstrap):
-            print('bootstrap iteration '+str(bootstrap_i))
             data_sample = sp_data.sample(frac=1, replace=True).copy()
             model=uniforc_model(temp_data=harvard_temp, plant_data=data_sample, t1_varies=True)
             package = (model, bounds, species, bootstrap_i, 'harvard')
             job_list.append(package)
 
+    total_jobs=len(job_list)
     #Dole out the first round of jobs to all workers
     for i in range(1, num_workers):
         if len(job_list)>0:
@@ -129,12 +129,14 @@ def master():
         comm.send(obj=next_job, dest=i, tag=work_tag)
 
     #While there are new jobs to assign.
-    #Wait for results and assign new jobs when they come
+    #Collect results and assign new jobs as others are finished.
     while len(job_list)>0:
         next_job = job_list.pop() if len(job_list)>0 else 'done'
         job_result = comm.recv(source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG, status=status)
         results.append(job_result)
         comm.send(obj=next_job, dest=status.Get_source(), tag=work_tag)
+        num_jobs_left=len(job_list)
+        print('Completed job '+str(total_jobs-num_jobs_left)+' of '+str(total_jobs))
 
     #Collect last jobs
     for i in range(1, num_workers):
@@ -154,7 +156,7 @@ def worker():
         if status.Get_tag() == 1: break
 
         model, bounds, species, bootstrap_i, dataset = model_package
-        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True, maxiter=2)
+        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False)
         x=optimize_output['x']
         t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
 
