@@ -10,17 +10,47 @@ from mpi4py import MPI
 #as the doy. Returns the RMSE error of the doy given the  4 UniForc parameters
 class uniforc_model:
     def __init__(self, temp_data, plant_data, t1_varies=False):
-        self.temp_sites=temp_data['Site_ID'].values
-        self.temp_year =temp_data['year'].values
-        self.temp_doy  =temp_data['doy'].values
-        self.temp_temp =temp_data['temp'].values
+        #Create a ['Site_ID','year'] x 'doy' matrix with daily temp as the value
+        #This is done to calculate the GDD info for all sites/years at once
+        temp_data = temp_data.pivot_table(index=['Site_ID','year'], columns='doy', values='temp').reset_index()
 
+        #doy are the columns here from -127 to 180
+        self.temp_temp =temp_data.drop(['Site_ID','year'], axis=1).values
+
+        #Indexes to find the temp infor for each site and year
+        self.temp_year=temp_data['year'].values
+        self.temp_site=temp_data['Site_ID'].values
+        self.temp_doy =temp_data.drop(['Site_ID','year'], axis=1).columns
+
+        #Plant data
         self.plant_site=plant_data['Site_ID'].values
         self.plant_year=plant_data['year'].values
         self.plant_doy =plant_data['doy'].values
         self.num_replicates=plant_data.shape[0]
 
         self.t1_varies=t1_varies
+
+    #Get a site/year x doy boolean array of the days meeting the F* requirement
+    def calculate_doy_estimates(self, t1, b, c, F, t1_slope=False):
+        all_site_temps = self.temp_temp.copy()
+
+        all_site_temps = 1 / (1 + np.exp(b*(all_site_temps-c)))
+
+        #Only accumulate forcing after t1
+        all_site_temps[:,self.temp_doy<t1]=0
+
+        all_site_daily_gdd=np.zeros_like(all_site_temps)
+        for doy in range(all_site_daily_gdd.shape[1]):
+            all_site_daily_gdd[:,doy]=all_site_temps[:,0:doy+1].sum(1)
+
+        #The predicted doy for each site/year. If none was predicted give a doy which
+        #will return a very large error
+        doy_estimates = np.zeros(all_site_daily_gdd.shape[0])
+        for site_year in range(all_site_daily_gdd.shape[0]):
+            this_estimate=self.temp_doy[all_site_daily_gdd[site_year]>=F]
+            doy_estimates[site_year]=this_estimate[0] if this_estimate.shape[0]>0 else 1000
+
+        return doy_estimates
 
     def site_doy_estimate(self, site_id, year, t1, b, c, F, t1_slope=None):
         subset_temp = self.temp_temp[(self.temp_sites==site_id) &
@@ -44,19 +74,19 @@ class uniforc_model:
 
         #First day where GDD>=F*
         if np.sum(daily_gdd>=F)==0:
-            return 0
+            return 10000
         else:
             return subset_doy[daily_gdd>=F][0]
 
     #RMSE of the estimated budburst doy of all sites
     def get_error(self, **kargs):
+        doy_estimates=self.calculate_doy_estimates(**kargs)
         errors = []
         for row in range(self.num_replicates):
-            estimated_doy = self.site_doy_estimate(site_id=self.plant_site[row],
-                                                   year=self.plant_year[row],
-                                                   **kargs)
+            estimated_doy = doy_estimates[(self.temp_site == self.plant_site[row]) & (self.temp_year == self.plant_year[row])]
+            if len(estimated_doy)>1: print('>1 estimated doy')
             #print(estimated_doy)
-            errors.append(estimated_doy - self.plant_doy[row])
+            errors.append(estimated_doy[0] - self.plant_doy[row])
 
         errors = np.array(errors)
         return np.sqrt(np.mean(errors**2))
@@ -100,23 +130,26 @@ def master():
     stop_tag=1
     job_list=[]
     ###################################
-    harvard_data = pd.read_csv('./cleaned_data/harvard_observations.csv')
-    harvard_temp = pd.read_csv('./cleaned_data/harvard_temp.csv')
-    harvard_data['Site_ID']=1
-    harvard_temp['Site_ID']=1
+    observation_data = pd.read_csv('./cleaned_data/NPN_observations.csv')
+    temp_data = pd.read_csv('./cleaned_data/npn_temp.csv')
+    #harvard_data['Site_ID']=1
+    #harvard_temp['Site_ID']=1
 
-    num_bootstrap=200
+    num_bootstrap=3
     #             t1         b         c       F*     t1_slope
-    bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
+    #bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
+    #             t1         b         c       F*
+    bounds = [(-126,180), (-20,0), (-50,50), (0,100)]
 
     results=[]
-    for species in harvard_data.species.unique():
+    for species in observation_data.species.unique()[1:5]:
         print(species)
-        sp_data = harvard_data[harvard_data.species==species]
+        sp_data = observation_data[observation_data.species==species]
+        sp_temp_data = temp_data[temp_data.Site_ID.isin(sp_data.Site_ID.unique())].copy()
         for bootstrap_i in range(num_bootstrap):
             data_sample = sp_data.sample(frac=1, replace=True).copy()
-            model=uniforc_model(temp_data=harvard_temp, plant_data=data_sample, t1_varies=True)
-            package = (model, bounds, species, bootstrap_i, 'harvard')
+            model=uniforc_model(temp_data=sp_temp_data, plant_data=data_sample, t1_varies=False)
+            package = (model, bounds, species, bootstrap_i, 'npn')
             job_list.append(package)
 
     total_jobs=len(job_list)
@@ -146,7 +179,7 @@ def master():
         comm.send(obj=None, dest=i, tag=stop_tag)
 
     results=pd.DataFrame(results)
-    results.to_csv('results.csv', index=False)
+    results.to_csv('npn_results.csv', index=False)
 
 def worker():
     comm = MPI.COMM_WORLD
@@ -156,7 +189,7 @@ def worker():
         if status.Get_tag() == 1: break
 
         model, bounds, species, bootstrap_i, dataset = model_package
-        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False)
+        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True)
         x=optimize_output['x']
         t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
 
@@ -176,3 +209,10 @@ if __name__ == "__main__":
     else:
         print('worker '+str(rank)+' on '+str(name))
         worker()
+
+
+temp_data = pd.read_csv('./cleaned_data/npn_temp.csv')
+obs_data = pd.read_csv('./cleaned_data/NPN_observations.csv')
+sp_data = obs_data[obs_data.species=='acer rubrum'].copy()
+species_temp_data=temp_data[temp_data.Site_ID.isin(sp_data.Site_ID.unique())].copy()
+
