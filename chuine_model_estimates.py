@@ -128,27 +128,35 @@ def master():
 
     work_tag=0
     stop_tag=1
-    job_list=[]
     ###################################
     observation_data = pd.read_csv('./cleaned_data/NPN_observations.csv')
     temp_data = pd.read_csv('./cleaned_data/npn_temp.csv')
     #harvard_data['Site_ID']=1
     #harvard_temp['Site_ID']=1
 
-    num_bootstrap=3
-    #             t1         b         c       F*     t1_slope
-    #bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
-    #             t1         b         c       F*
-    bounds = [(-126,180), (-20,0), (-50,50), (0,100)]
+    num_bootstrap=2
+    #Whether to use a simple sub model where t1 varies with mean Jan-Feb temp
+    include_t1_parameter=False
+
+    #Lower and upper bounds of model parameters. Also used by differential_evolution()
+    #for determining the  number of paramters
+    if include_t1_parameter:
+        #             t1         b         c       F*     t1_slope
+        bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
+    else:
+        #             t1         b         c       F*
+        bounds = [(-126,180), (-20,0), (-50,50), (0,100)]
 
     results=[]
-    for species in observation_data.species.unique()[1:5]:
+    job_list=[]
+    #Prepare the list of MPI jobs to send out
+    for species in observation_data.species.unique()[0:4]:
         print(species)
         sp_data = observation_data[observation_data.species==species]
         sp_temp_data = temp_data[temp_data.Site_ID.isin(sp_data.Site_ID.unique())].copy()
         for bootstrap_i in range(num_bootstrap):
             data_sample = sp_data.sample(frac=1, replace=True).copy()
-            model=uniforc_model(temp_data=sp_temp_data, plant_data=data_sample, t1_varies=False)
+            model=uniforc_model(temp_data=sp_temp_data, plant_data=data_sample, t1_varies=include_t1_parameter)
             package = (model, bounds, species, bootstrap_i, 'npn')
             job_list.append(package)
 
@@ -175,6 +183,7 @@ def master():
     for i in range(1, num_workers):
         job_result = comm.recv(source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG)
         results.append(job_result)
+    #Shut down all workers
     for i in range(1, num_workers):
         comm.send(obj=None, dest=i, tag=stop_tag)
 
@@ -191,10 +200,17 @@ def worker():
         model, bounds, species, bootstrap_i, dataset = model_package
         optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True)
         x=optimize_output['x']
-        t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
 
-        return_data={'t1_int':t1_int, 'b':b, 'c':c, 'F':F, 't1_slope':t1_slope,
-                     'species':species, 'boostrap_num':bootstrap_i, 'dataset':dataset}
+        #With 5 paramters the slope is being estimated
+        if x.shape[0]==5:
+            t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
+            return_data={'t1_int':t1_int, 'b':b, 'c':c, 'F':F, 't1_slope':t1_slope,
+                         'species':species, 'boostrap_num':bootstrap_i, 'dataset':dataset}
+        else:
+            t1_int, b, c, F = x[0], x[1], x[2], x[3]
+            return_data={'t1_int':t1_int, 'b':b, 'c':c, 'F':F,
+                         'species':species, 'boostrap_num':bootstrap_i, 'dataset':dataset}
+
         comm.send(obj=return_data, dest=0)
 
 
@@ -211,8 +227,7 @@ if __name__ == "__main__":
         worker()
 
 
-temp_data = pd.read_csv('./cleaned_data/npn_temp.csv')
-obs_data = pd.read_csv('./cleaned_data/NPN_observations.csv')
-sp_data = obs_data[obs_data.species=='acer rubrum'].copy()
-species_temp_data=temp_data[temp_data.Site_ID.isin(sp_data.Site_ID.unique())].copy()
-
+#temp_data = pd.read_csv('./cleaned_data/npn_temp.csv')
+#obs_data = pd.read_csv('./cleaned_data/NPN_observations.csv')
+#sp_data = obs_data[obs_data.species=='acer rubrum'].copy()
+#species_temp_data=temp_data[temp_data.Site_ID.isin(sp_data.Site_ID.unique())].copy()
