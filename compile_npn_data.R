@@ -22,6 +22,19 @@ temperature_data = temperature_data %>%
   mutate(doy = date - base_date) %>%
   select(-date, -base_date)
 
+#NPN data only goes till 2016
+temperature_data = temperature_data %>%
+  filter(year<=2016)
+
+#List of sites which have environmental data
+#to filter observations with
+sites_with_env_data=temperature_data %>%
+  group_by(Site_ID, year) %>%
+  summarise(num_na=sum(is.na(temp))) %>%
+  filter(num_na==0) %>%
+  select(Site_ID) %>%
+  distinct()
+
 write_csv(temperature_data, './cleaned_data/npn_temp.csv')
 
 ######################################################################################
@@ -31,7 +44,8 @@ site_info = read_csv(paste0(data_dir,'site_data.csv')) %>%
 observations = read_csv(paste0(data_dir,'observations_spp_of_interest.csv')) %>%
   filter(Phenophase_ID == 371, Phenophase_Status>=0) %>%
   select(date=Observation_Date, Site_ID, species, Phenophase_Status) %>%
-  mutate(year = year(date), doy=yday(date))
+  mutate(year = year(date), doy=yday(date)) %>%
+  filter(Site_ID %in% sites_with_env_data$Site_ID)
 
 #site,year,species where a budbreak==0 was the first observation in a year
 budbreak_0 = observations %>%
