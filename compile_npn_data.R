@@ -43,21 +43,22 @@ site_info = read_csv(paste0(data_dir,'site_data.csv')) %>%
 
 observations = read_csv(paste0(data_dir,'observations_spp_of_interest.csv')) %>%
   filter(Phenophase_ID == 371, Phenophase_Status>=0) %>%
-  select(date=Observation_Date, Site_ID, species, Phenophase_Status) %>%
+  select(date=Observation_Date, Site_ID, species, Phenophase_Status, Individual_ID) %>%
   mutate(year = year(date), doy=yday(date)) %>%
   filter(Site_ID %in% sites_with_env_data$Site_ID)
 
 #site,year,species where a budbreak==0 was the first observation in a year
 budbreak_0 = observations %>%
-  group_by(species, Site_ID, year) %>%
+  group_by(species, Site_ID, year, Individual_ID) %>%
   top_n(1, -doy) %>%
   filter(Phenophase_Status==0) %>%
-  select(species, Site_ID, year) %>%
+  select(species, Site_ID, year, Individual_ID) %>%
   mutate(keep='yes')
 
+#Keep only budburst observations that were preceded by an observation of no budburst
 observations = observations %>%
   filter(Phenophase_Status==1) %>%
-  left_join(budbreak_0, by=c('species','Site_ID','year')) %>%
+  left_join(budbreak_0, by=c('species','Site_ID','year','Individual_ID')) %>%
   filter(keep=='yes') %>%
   select(-keep, -Phenophase_Status, -date)
   
@@ -66,8 +67,12 @@ observations = observations %>%
 observations = observations %>%
   filter(doy<240)
 
-#Get mean doy for multiple observations of the same species
+#The first budburst date for each individual. doy for multiple individuals
+#are averaged for each site.
 observations = observations %>%
+  group_by(Site_ID, species, year, Individual_ID) %>%
+  top_n(1, -doy) %>%
+  ungroup() %>%
   group_by(Site_ID, species, year) %>%
   summarise(doy=round(mean(doy)))
 
