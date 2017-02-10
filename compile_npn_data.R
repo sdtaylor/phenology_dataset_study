@@ -52,6 +52,11 @@ observations = observations %>%
 observations = observations %>%
   filter(doy<240)
 
+#Get mean doy for multiple observations of the same species
+observations = observations %>%
+  group_by(Site_ID, species, year) %>%
+  summarise(doy=round(mean(doy)))
+
 write_csv(observations, './cleaned_data/NPN_observations.csv')
 
 
