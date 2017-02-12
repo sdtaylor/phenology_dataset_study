@@ -105,16 +105,54 @@ class uniforc_model:
         return self.get_error(**kargs)
 
 
-#A wrapper to get the results of a model so that they can
-#be run asynchronously
-def run_optimizer(model, bounds, species, bootstrap_num, dataset):
-    optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True)
-    x=optimize_output['x']
-    t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
-    #t1_int, b, c, F, t1_slope = 1,2,3,4,5
+class data_store:
+    def __init__(self, dataset_config, num_bootstrap):
+        self.num_bootstrap=num_bootstrap
 
-    return {'t1_int':t1_int, 'b':b, 'c':c, 'F':F, 't1_slope':t1_slope,
-            'species':species, 'boostrap_num':bootstrap_iteration, 'dataset':dataset}
+        self.observation_data = pd.read_csv(dataset_config['observations_data_file'])
+        self.temp_data = pd.read_csv(dataset_config['temp_data_file'])
+        self.dataset_name=dataset_config['dataset_name']
+        self.include_t1_parameter=dataset_config['include_t1_parameter']
+
+        #Lower and upper bounds of model parameters. Also used by differential_evolution()
+        #for determining the  number of parameters
+        if self.include_t1_parameter:
+            #             t1         b         c       F*     t1_slope
+            self.bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
+        else:
+            #             t1         b         c       F*
+            self.bounds = [(-126,180), (-20,0), (-50,50), (0,100)]
+
+        self.job_list=[]
+        for species in self.observation_data.species.unique():
+            for bootstrap_i in range(self.num_bootstrap):
+                self.job_list.append({'species':species, 'bootstrap_i':bootstrap_i})
+
+    def load_next_dataset(self):
+        pass
+
+    def get_next_dataset(self):
+        pass
+
+    #Return a model to optimize and info about the model as a single tuple
+    #ready to be send over MPI
+    def get_next_job(self):
+        if not self.jobs_available:
+            return 'no jobs left'
+
+        job_info=self.job_list.pop()
+        #A bootsrapped sample with replacment of this species observations
+        data_sample = self.observation_data[self.observation_data.species==job_info['species']].sample(frac=1, replace=True).copy()
+        #Temperature data at sites where this species occures
+        sp_temp_data = self.temp_data[self.temp_data.Site_ID.isin(data_sample.Site_ID.unique())].copy()
+
+        model=uniforc_model(temp_data=sp_temp_data, plant_data=data_sample, t1_varies=self.include_t1_parameter)
+        return (model, self.bounds, job_info['species'], job_info['bootstrap_i'], self.dataset_name)
+
+    def jobs_available(self):
+        return len(self.job_list)>0
+    def jobs_left(self):
+        return len(self.job_list)
 
 #######################################################
 
@@ -129,54 +167,36 @@ def master():
     work_tag=0
     stop_tag=1
     ###################################
-    observation_data = pd.read_csv('./cleaned_data/NPN_observations.csv')
-    temp_data = pd.read_csv('./cleaned_data/npn_temp.csv')
+    config={}
+
+    config['dataset_name']='npn'
+    config['observations_data_file'] = './cleaned_data/NPN_observations.csv'
+    config['temp_data_file'] = './cleaned_data/npn_temp.csv'
+    config['include_t1_parameter']=False
+    results_file='npn_results.csv'
+
+    job_queue = data_store(dataset_config=config, num_bootstrap=500)
     #harvard_data['Site_ID']=1
     #harvard_temp['Site_ID']=1
 
-    num_bootstrap=2
-    #Whether to use a simple sub model where t1 varies with mean Jan-Feb temp
-    include_t1_parameter=False
-
-    #Lower and upper bounds of model parameters. Also used by differential_evolution()
-    #for determining the  number of paramters
-    if include_t1_parameter:
-        #             t1         b         c       F*     t1_slope
-        bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
-    else:
-        #             t1         b         c       F*
-        bounds = [(-126,180), (-20,0), (-50,50), (0,100)]
-
-    results=[]
-    job_list=[]
-    #Prepare the list of MPI jobs to send out
-    for species in observation_data.species.unique()[0:4]:
-        print(species)
-        sp_data = observation_data[observation_data.species==species]
-        sp_temp_data = temp_data[temp_data.Site_ID.isin(sp_data.Site_ID.unique())].copy()
-        for bootstrap_i in range(num_bootstrap):
-            data_sample = sp_data.sample(frac=1, replace=True).copy()
-            model=uniforc_model(temp_data=sp_temp_data, plant_data=data_sample, t1_varies=include_t1_parameter)
-            package = (model, bounds, species, bootstrap_i, 'npn')
-            job_list.append(package)
-
-    total_jobs=len(job_list)
+    total_jobs=job_queue.jobs_left()
     #Dole out the first round of jobs to all workers
     for i in range(1, num_workers):
-        if len(job_list)>0:
-            next_job = job_list.pop() if len(job_list)>0 else 'done'
+        if job_queue.jobs_available():
+            next_job = job_queue.get_next_job()
         else:
             break
         comm.send(obj=next_job, dest=i, tag=work_tag)
 
     #While there are new jobs to assign.
     #Collect results and assign new jobs as others are finished.
-    while len(job_list)>0:
-        next_job = job_list.pop() if len(job_list)>0 else 'done'
+    results=[]
+    while job_queue.jobs_available():
+        next_job = job_queue.get_next_job()
         job_result = comm.recv(source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG, status=status)
         results.append(job_result)
         comm.send(obj=next_job, dest=status.Get_source(), tag=work_tag)
-        num_jobs_left=len(job_list)
+        num_jobs_left=job_queue.jobs_left()
         print('Completed job '+str(total_jobs-num_jobs_left)+' of '+str(total_jobs))
 
     #Collect last jobs
@@ -188,20 +208,20 @@ def master():
         comm.send(obj=None, dest=i, tag=stop_tag)
 
     results=pd.DataFrame(results)
-    results.to_csv('npn_results.csv', index=False)
+    results.to_csv(results_file, index=False)
 
 def worker():
     comm = MPI.COMM_WORLD
     status = MPI.Status()
-    while 1:
+    while True:
         model_package = comm.recv(source=0, tag=MPI.ANY_TAG, status=status)
         if status.Get_tag() == 1: break
 
         model, bounds, species, bootstrap_i, dataset = model_package
-        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True)
+        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False)
         x=optimize_output['x']
 
-        #With 5 paramters the slope is being estimated
+        #With 5 paramters the t1 paramter is being estimated
         if x.shape[0]==5:
             t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
             return_data={'t1_int':t1_int, 'b':b, 'c':c, 'F':F, 't1_slope':t1_slope,
