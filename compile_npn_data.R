@@ -76,9 +76,11 @@ observations = observations %>%
   group_by(Site_ID, species, year) %>%
   summarise(doy=round(mean(doy)))
 
+#Minimum 60 observations for each species after all prior filtering
+observations = observations %>%
+  group_by(species) %>%
+  filter(n() > 60) %>%
+  ungroup()
+
 write_csv(observations, './cleaned_data/NPN_observations.csv')
-
-
-
-
 
