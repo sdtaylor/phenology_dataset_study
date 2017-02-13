@@ -76,6 +76,11 @@ observations = observations %>%
   group_by(Site_ID, species, year) %>%
   summarise(doy=round(mean(doy)))
 
+#At the moment climate data starts in 2009
+#TODO: get more climate data
+observations = observations %>%
+  filter(year>=2009)
+
 #Minimum 60 observations for each species after all prior filtering
 observations = observations %>%
   group_by(species) %>%
