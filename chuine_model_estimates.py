@@ -52,32 +52,6 @@ class uniforc_model:
 
         return doy_estimates
 
-    def site_doy_estimate(self, site_id, year, t1, b, c, F, t1_slope=None):
-        subset_temp = self.temp_temp[(self.temp_sites==site_id) &
-                                     (self.temp_year==year)].copy()
-        subset_doy = self.temp_doy[(self.temp_sites==site_id) &
-                                     (self.temp_year==year)].copy()
-
-        #Daily forcing according to sigmoid function params
-        subset_temp = 1 / (1 + np.exp(b*(subset_temp-c)))
-
-        #If fitting NPN data, let t1 vary with respect to mean Jan-Feb temp
-        #The t1 being estimated by the optimizer is thus the intercept
-        #as opposed to the mean value
-        if self.t1_varies:
-            T_jan_feb = np.mean(subset_temp[(subset_doy>=0) & (subset_doy<=60)])
-            t1 = t1 + t1_slope*T_jan_feb
-
-        #Only accumulate after t1
-        subset_temp[subset_doy<=t1]=0
-        daily_gdd = np.array([np.sum(subset_temp[0:i+1]) for i in range(subset_temp.shape[0])])
-
-        #First day where GDD>=F*
-        if np.sum(daily_gdd>=F)==0:
-            return 10000
-        else:
-            return subset_doy[daily_gdd>=F][0]
-
     #RMSE of the estimated budburst doy of all sites
     def get_error(self, **kargs):
         doy_estimates=self.calculate_doy_estimates(**kargs)
@@ -106,13 +80,19 @@ class uniforc_model:
 
 
 class data_store:
-    def __init__(self, dataset_config, num_bootstrap):
+    def __init__(self, dataset_config, num_bootstrap, add_site_dummy_var=False):
         self.num_bootstrap=num_bootstrap
 
         self.observation_data = pd.read_csv(dataset_config['observations_data_file'])
         self.temp_data = pd.read_csv(dataset_config['temp_data_file'])
         self.dataset_name=dataset_config['dataset_name']
         self.include_t1_parameter=dataset_config['include_t1_parameter']
+
+        #The model framework differentiates by site to accomidate the NPN dataset.
+        #For datasets that are a single site, add in a column for it
+        if add_site_dummy_var:
+            self.observation_data['Site_ID']=1
+            self.temp_data['Site_ID']=1
 
         #Lower and upper bounds of model parameters. Also used by differential_evolution()
         #for determining the  number of parameters
