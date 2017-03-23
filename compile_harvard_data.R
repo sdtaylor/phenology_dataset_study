@@ -2,7 +2,7 @@ library(tidyverse)
 library(lubridate)
 
 
-data_dir = '~/data/harvard_forest/'
+data_dir = '~/data/phenology/harvard_forest/'
 
 
 plant_info = read_csv(paste0(data_dir, 'hf003-01-plant.csv')) %>%

@@ -52,32 +52,6 @@ class uniforc_model:
 
         return doy_estimates
 
-    def site_doy_estimate(self, site_id, year, t1, b, c, F, t1_slope=None):
-        subset_temp = self.temp_temp[(self.temp_sites==site_id) &
-                                     (self.temp_year==year)].copy()
-        subset_doy = self.temp_doy[(self.temp_sites==site_id) &
-                                     (self.temp_year==year)].copy()
-
-        #Daily forcing according to sigmoid function params
-        subset_temp = 1 / (1 + np.exp(b*(subset_temp-c)))
-
-        #If fitting NPN data, let t1 vary with respect to mean Jan-Feb temp
-        #The t1 being estimated by the optimizer is thus the intercept
-        #as opposed to the mean value
-        if self.t1_varies:
-            T_jan_feb = np.mean(subset_temp[(subset_doy>=0) & (subset_doy<=60)])
-            t1 = t1 + t1_slope*T_jan_feb
-
-        #Only accumulate after t1
-        subset_temp[subset_doy<=t1]=0
-        daily_gdd = np.array([np.sum(subset_temp[0:i+1]) for i in range(subset_temp.shape[0])])
-
-        #First day where GDD>=F*
-        if np.sum(daily_gdd>=F)==0:
-            return 10000
-        else:
-            return subset_doy[daily_gdd>=F][0]
-
     #RMSE of the estimated budburst doy of all sites
     def get_error(self, **kargs):
         doy_estimates=self.calculate_doy_estimates(**kargs)
@@ -106,13 +80,24 @@ class uniforc_model:
 
 
 class data_store:
-    def __init__(self, dataset_config, num_bootstrap):
+    def __init__(self, all_dataset_configs, num_bootstrap):
         self.num_bootstrap=num_bootstrap
+        self.all_dataset_configs=all_dataset_configs
+        self.load_next_dataset()
+
+    def load_next_dataset(self):
+        dataset_config = self.all_dataset_configs.pop()
 
         self.observation_data = pd.read_csv(dataset_config['observations_data_file'])
         self.temp_data = pd.read_csv(dataset_config['temp_data_file'])
         self.dataset_name=dataset_config['dataset_name']
         self.include_t1_parameter=dataset_config['include_t1_parameter']
+
+        #The model framework differentiates by site to accomidate the NPN dataset.
+        #For datasets that are a single site, add in a column for it
+        if dataset_config['add_site_dummy_var']:
+            self.observation_data['Site_ID']=1
+            self.temp_data['Site_ID']=1
 
         #Lower and upper bounds of model parameters. Also used by differential_evolution()
         #for determining the  number of parameters
@@ -128,8 +113,6 @@ class data_store:
             for bootstrap_i in range(self.num_bootstrap):
                 self.job_list.append({'species':species, 'bootstrap_i':bootstrap_i})
 
-    def load_next_dataset(self):
-        pass
 
     def get_next_dataset(self):
         pass
@@ -137,10 +120,14 @@ class data_store:
     #Return a model to optimize and info about the model as a single tuple
     #ready to be send over MPI
     def get_next_job(self):
-        if not self.jobs_available:
-            return 'no jobs left'
+        if not self.jobs_available_in_current_dataset():
+            print('no jobs left in dataset')
+            return None
 
         job_info=self.job_list.pop()
+        if not self.jobs_available_in_current_dataset() and self.datasets_available():
+            self.load_next_dataset()
+
         #A bootsrapped sample with replacment of this species observations
         data_sample = self.observation_data[self.observation_data.species==job_info['species']].sample(frac=1, replace=True).copy()
         #Temperature data at sites where this species occures
@@ -149,8 +136,15 @@ class data_store:
         model=uniforc_model(temp_data=sp_temp_data, plant_data=data_sample, t1_varies=self.include_t1_parameter)
         return (model, self.bounds, job_info['species'], job_info['bootstrap_i'], self.dataset_name)
 
-    def jobs_available(self):
+    def datasets_available(self):
+        return len(self.all_dataset_configs)>0
+
+    def jobs_available_in_current_dataset(self):
         return len(self.job_list)>0
+
+    def jobs_available(self):
+        return self.datasets_available() or self.jobs_available_in_current_dataset()
+
     def jobs_left(self):
         return len(self.job_list)
 
@@ -167,17 +161,25 @@ def master():
     work_tag=0
     stop_tag=1
     ###################################
-    config={}
+    configs=[]
 
-    config['dataset_name']='npn'
-    config['observations_data_file'] = './cleaned_data/NPN_observations.csv'
-    config['temp_data_file'] = './cleaned_data/npn_temp.csv'
-    config['include_t1_parameter']=False
-    results_file='npn_results.csv'
+    configs.append({})
+    configs[0]['dataset_name']='npn'
+    configs[0]['observations_data_file'] = './cleaned_data/NPN_observations.csv'
+    configs[0]['temp_data_file'] = './cleaned_data/npn_temp.csv'
+    configs[0]['include_t1_parameter']=False
+    configs[0]['add_site_dummy_var']=False
 
-    job_queue = data_store(dataset_config=config, num_bootstrap=500)
-    #harvard_data['Site_ID']=1
-    #harvard_temp['Site_ID']=1
+    configs.append({})
+    configs[1]['dataset_name']='harvard'
+    configs[1]['observations_data_file'] = './cleaned_data/harvard_observations.csv'
+    configs[1]['temp_data_file'] = './cleaned_data/harvard_temp.csv'
+    configs[1]['include_t1_parameter']=False
+    configs[1]['add_site_dummy_var']=True
+
+    results_file='all_results.csv'
+
+    job_queue = data_store(all_dataset_configs=configs, num_bootstrap=500)
 
     total_jobs=job_queue.jobs_left()
     #Dole out the first round of jobs to all workers
@@ -218,7 +220,7 @@ def worker():
         if status.Get_tag() == 1: break
 
         model, bounds, species, bootstrap_i, dataset = model_package
-        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False)
+        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=None)
         x=optimize_output['x']
 
         #With 5 paramters the t1 paramter is being estimated
