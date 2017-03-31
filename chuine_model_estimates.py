@@ -20,7 +20,8 @@ class uniforc_model:
         #Indexes to find the temp infor for each site and year
         self.temp_year=temp_data['year'].values
         self.temp_site=temp_data['Site_ID'].values
-        self.temp_doy =temp_data.drop(['Site_ID','year'], axis=1).columns
+        self.temp_doy =temp_data.drop(['Site_ID','year'], axis=1).columns.values.astype(np.int)
+        self.num_doy  = self.temp_doy.shape[0]
 
         #Plant data
         self.plant_site=plant_data['Site_ID'].values
@@ -31,17 +32,24 @@ class uniforc_model:
         self.t1_varies=t1_varies
 
     #Get a site/year x doy boolean array of the days meeting the F* requirement
+    #This is for all site/year combinations, which does to match up exactly
+    #with all entires in plant_data
     def calculate_doy_estimates(self, t1, b, c, F, t1_slope=False):
+        if b >0:
+            b = b*-1
+        #print(t1,b,c,F)
         all_site_temps = self.temp_temp.copy()
 
         all_site_temps = 1 / (1 + np.exp(b*(all_site_temps-c)))
 
         #Only accumulate forcing after t1
         all_site_temps[:,self.temp_doy<t1]=0
+        #all_site_temps = theano.tensor.set_subtensor(all_site_temps[:,self.temp_doy<t1],0)
 
         all_site_daily_gdd=np.zeros_like(all_site_temps)
-        for doy in range(all_site_daily_gdd.shape[1]):
-            all_site_daily_gdd[:,doy]=all_site_temps[:,0:doy+1].sum(1)
+        #all_site_daily_gdd=theano.tensor.zeros_like(all_site_temps)
+        for doy in range(self.num_doy):
+            all_site_daily_gdd[:,doy] = all_site_temps[:,0:doy+1].sum(1)
 
         #The predicted doy for each site/year. If none was predicted give a doy which
         #will return a very large error
@@ -65,9 +73,16 @@ class uniforc_model:
         errors = np.array(errors)
         return np.sqrt(np.mean(errors**2))
 
-    #The estimated doy given a set of parameters. 
+    #Estimated doy for all entries in self.plant_data
     def get_all_estimates(self, **kargs):
-        pass
+        site_year_doy_estimates=self.calculate_doy_estimates(**kargs)
+        doy_estimates=[]
+        for row in range(self.num_replicates):
+            estimated_doy = site_year_doy_estimates[(self.temp_site == self.plant_site[row]) & (self.temp_year == self.plant_year[row])]
+            doy_estimates.append(estimated_doy[0])
+
+        #print(doy_estimates)
+        return np.array(doy_estimates)
 
     #scipy optimize functions want a array of parameter values
     #use this to unpack it
@@ -222,6 +237,7 @@ def worker():
         model, bounds, species, bootstrap_i, dataset = model_package
         optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=None)
         x=optimize_output['x']
+        #Get estimates of optimzed model
 
         #With 5 paramters the t1 paramter is being estimated
         if x.shape[0]==5:
