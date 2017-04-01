@@ -146,19 +146,20 @@ def worker():
         if status.Get_tag() == 1: break
 
         model, bounds, species, bootstrap_i, dataset = model_package
-        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=None)
+        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=None, popsize=100, mutation=1.5, recombination=0.25)
         x=optimize_output['x']
+        final_score=optimize_output['fun']
         #Get estimates of optimzed model
 
         #With 5 paramters the t1 paramter is being estimated
         if x.shape[0]==5:
             t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
             return_data={'t1_int':t1_int, 'b':b, 'c':c, 'F':F, 't1_slope':t1_slope,
-                         'species':species, 'boostrap_num':bootstrap_i, 'dataset':dataset}
+                         'species':species, 'bootstrap_num':bootstrap_i, 'dataset':dataset, 'final_score':final_score}
         else:
             t1_int, b, c, F = x[0], x[1], x[2], x[3]
             return_data={'t1_int':t1_int, 'b':b, 'c':c, 'F':F,
-                         'species':species, 'boostrap_num':bootstrap_i, 'dataset':dataset}
+                         'species':species, 'bootstrap_num':bootstrap_i, 'dataset':dataset, 'final_score':final_score}
 
         comm.send(obj=return_data, dest=0)
 
