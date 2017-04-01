@@ -16,6 +16,10 @@ all_results = all_results %>%
 all_results = all_results %>%
   gather(Parameter, value, -boostrap_num, -dataset, -species) 
 
+parameter_means = all_results %>%
+  group_by(species, Parameter, dataset) %>%
+  summarise(param_mean = mean(value), param_sd = sd(value))
+
 ############################################################################
 #Statistical test of parameters
 stats_test=function(x,y){
