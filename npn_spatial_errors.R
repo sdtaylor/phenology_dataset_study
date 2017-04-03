@@ -27,6 +27,12 @@ harvard_temperature  = read_csv('./cleaned_data/harvard_temp.csv')
 harvard_temperature$Site_ID=1
 harvard_observations$Site_ID=1
 harvard_observations$dataset='harvard'
+
+#Keep only species that are present in NPN dataset
+npn_species = unique(npn_observations$species)
+
+harvard_observations = harvard_observations %>% 
+  filter(species %in% npn_species)
 #########################################################
 #doy estimate given model parameters, site, and year
 calculate_doy_estimate = function(t1,b,c,F_,site_id,this_year, temp_df){
@@ -79,9 +85,12 @@ all_errors = npn_observations %>%
   bind_rows(harvard_observations)
 
 
-ggplot(all_errors, aes(error)) +
-  geom_histogram(bins=50) +
-  facet_grid(~dataset) +
+ggplot(all_errors, aes(error, group=dataset, color=dataset)) +
+  #geom_histogram(bins=50) +
+  geom_density()+
+  geom_vline(xintercept = 0) +
+  #facet_grid(species~dataset) +
+  facet_wrap(~species)+
   theme_bw()
 
 #########################################################
