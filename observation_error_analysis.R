@@ -88,16 +88,39 @@ new_names=c('Q. rubra', 'Q. alba', 'F. grandifolia', 'P. tremuloides', 'A. rubru
 old_names = c('quercus rubra','quercus alba','fagus grandifolia','populus tremuloides','acer rubrum','betula papyrifera','acer saccharum','prunus serotina')
 all_errors$species = factor(all_errors$species, levels=old_names, labels=new_names)
 
-ggplot(all_errors, aes(error, group=dataset, fill=dataset)) +
+figure_1st_row = c('Q. rubra', 'Q. alba', 'F. grandifolia', 'P. tremuloides')
+all_errors$figure_row = ifelse(all_errors$species %in% figure_1st_row, 'first','second')
+
+first_row = ggplot(filter(all_errors, figure_row=='first'), aes(error, group=dataset, fill=dataset)) +
   geom_histogram(bins=50) +
   geom_vline(xintercept = 0) +  
-  scale_color_manual(values=c('#0072B2','#E69F00')) +
-  scale_fill_manual(values=c('#0072B2','#E69F00')) +
-  facet_grid(species~dataset)+
+  scale_color_manual(values=c('#E69F00','#0072B2')) +
+  scale_fill_manual(values=c('#E69F00','#0072B2')) +
+  facet_wrap(~first_row) +
+  facet_grid(dataset~species, scales = 'free_x')+
   theme_bw()+
-  labs(x = "Budburst Day of Year Error", y = NULL) + 
-  theme(legend.position = "none")
+  labs(x = '', y = NULL) + 
+  theme(legend.position = "none",
+        strip.text.x=element_text(size=22),
+        strip.text.y=element_text(size=22),
+        axis.text = element_text(size = 15))
 
+second_row = ggplot(filter(all_errors, figure_row=='second'), aes(error, group=dataset, fill=dataset)) +
+  geom_histogram(bins=50) +
+  geom_vline(xintercept = 0) +  
+  scale_color_manual(values=c('#E69F00','#0072B2')) +
+  scale_fill_manual(values=c('#E69F00','#0072B2')) +
+  facet_wrap(~first_row) +
+  facet_grid(dataset~species, scales = 'free_x')+
+  theme_bw()+
+  labs(x = 'Budburst Day of Year Error', y = NULL) + 
+  theme(legend.position = "none",
+        strip.text.x=element_text(size=22),
+        strip.text.y=element_text(size=22),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 25))
+
+gridExtra::grid.arrange(first_row, second_row)
 #########################################################
 #Coordinates of npn sites to get the morans statistic
 site_info = read_csv('~/data/phenology/npn/observations_top_20.csv') %>%
@@ -116,10 +139,9 @@ calculate_morans = function(df){
   site_distances = as.matrix(dist(cbind(df$Longitude, df$Latitude)))
   #site_distances = 1/site_distances
   diag(site_distances) = 0
-  moran_stats = ape::Moran.I(df$error, site_distances)
+  moran_stats = as.data.frame(ape::Moran.I(df$error, site_distances))
+  moran_stats$n = nrow(df)
   return(as.data.frame(moran_stats))
-  
-  
   
 }
 
@@ -137,7 +159,8 @@ moran_table_obs = moran_I_values %>%
 
 moran_table_obs$Species = factor(moran_table_obs$Species, levels=old_names, labels=new_names)
 
-gridExtra::grid.table(moran_table_obs, rows=NULL)
+table_theme = gridExtra::ttheme_default(base_size = 24)
+gridExtra::grid.table(moran_table_obs, rows=NULL, theme = table_theme)
 
 
 
