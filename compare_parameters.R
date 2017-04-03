@@ -30,7 +30,7 @@ stats_test=function(x,y){
   y_mean = mean(y)
   y_sd   = sd(y)
   z = (x_mean-y_mean) / sqrt(y_sd^2 + x_sd^2)
-  p_value = 2 * pnorm(abs(z), lower.tail = )
+  p_value = 2 * pnorm(abs(z), lower.tail = F)
 }
 
 
@@ -38,7 +38,7 @@ p_values = all_results %>%
   filter(boostrap_num>0) %>%
   spread(dataset, value) %>%
   group_by(species, Parameter) %>%
-  summarize(p_value = stats_test(npn, harvard))
+  summarise(p_value = stats_test(npn, harvard))
 
 #p_values$text = ifelse(p_values$p_value<0.05, '*', '')
 #p_values$text = ifelse(p_values$p_value<0.001, '**', p_values$text)
@@ -66,7 +66,7 @@ ggplot(all_results, aes(species, value))+
   geom_boxplot(position = 'dodge', outlier.color = NA, aes(fill=dataset)) +
   #geom_violin(position = 'dodge', aes(fill=dataset)) +
   scale_fill_manual(values=c('#0072B2','#E69F00')) +
-  geom_text(data=p_values, aes(x=species, y=y_placement, label=text), size=7) +
+  geom_text(data=p_values, aes(x=species, y=y_placement, label=text), size=4) +
   facet_wrap(~Parameter, scales = 'free', nrow=5, labeller = label_both) + 
   theme(plot.subtitle = element_text(vjust = 1), 
         plot.caption = element_text(vjust = 1), 
