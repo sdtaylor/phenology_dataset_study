@@ -116,15 +116,28 @@ calculate_morans = function(df){
   site_distances = as.matrix(dist(cbind(df$Longitude, df$Latitude)))
   #site_distances = 1/site_distances
   diag(site_distances) = 0
-  ape::Moran.I(df$error, site_distances)$p.value
+  moran_stats = ape::Moran.I(df$error, site_distances)
+  return(as.data.frame(moran_stats))
+  
+  
+  
 }
 
-moran_p_values = npn_observations2 %>%
+moran_I_values = npn_observations2 %>%
   group_by(species, year) %>%
-  do(p_value = calculate_morans(.)) %>%
+  do(calculate_morans(.)) %>%
   ungroup()
 
+moran_I_values$observed = round(moran_I_values$observed, 2)
 
+moran_table_obs = moran_I_values %>%
+  mutate(observed_table = ifelse(p.value<0.05, paste0(observed,'*'), as.character(observed))) %>%
+  select(Species=species, year, observed_table) %>%
+  spread(year, observed_table)
+
+moran_table_obs$Species = factor(moran_table_obs$Species, levels=old_names, labels=new_names)
+
+gridExtra::grid.table(moran_table_obs, rows=NULL)
 
 
 
