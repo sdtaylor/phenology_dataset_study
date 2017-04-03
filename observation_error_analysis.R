@@ -19,14 +19,14 @@ parameter_means = all_results %>%
 #NPN Data
 npn_observations = read_csv('./cleaned_data/NPN_observations.csv')
 npn_temperature  = read_csv('./cleaned_data/npn_temp.csv')
-npn_observations$dataset='npn'
+npn_observations$dataset='NPN'
 
 #harvard data
 harvard_observations = read_csv('./cleaned_data/harvard_observations.csv')
 harvard_temperature  = read_csv('./cleaned_data/harvard_temp.csv')
 harvard_temperature$Site_ID=1
 harvard_observations$Site_ID=1
-harvard_observations$dataset='harvard'
+harvard_observations$dataset='Harvard'
 
 #Keep only species that are present in NPN dataset
 npn_species = unique(npn_observations$species)
@@ -84,14 +84,19 @@ harvard_observations$error = with(harvard_observations, doy-doy_estimate)
 all_errors = npn_observations %>%
   bind_rows(harvard_observations)
 
+new_names=c('Q. rubra', 'Q. alba', 'F. grandifolia', 'P. tremuloides', 'A. rubrum', 'B. papyrifera', 'A. saccharum', 'P. serotina')
+old_names = c('quercus rubra','quercus alba','fagus grandifolia','populus tremuloides','acer rubrum','betula papyrifera','acer saccharum','prunus serotina')
+all_errors$species = factor(all_errors$species, levels=old_names, labels=new_names)
 
-ggplot(all_errors, aes(error, group=dataset, color=dataset)) +
-  #geom_histogram(bins=50) +
-  geom_density()+
-  geom_vline(xintercept = 0) +
-  #facet_grid(species~dataset) +
-  facet_wrap(~species)+
-  theme_bw()
+ggplot(all_errors, aes(error, group=dataset, fill=dataset)) +
+  geom_histogram(bins=50) +
+  geom_vline(xintercept = 0) +  
+  scale_color_manual(values=c('#0072B2','#E69F00')) +
+  scale_fill_manual(values=c('#0072B2','#E69F00')) +
+  facet_grid(species~dataset)+
+  theme_bw()+
+  labs(x = "Budburst Day of Year Error", y = NULL) + 
+  theme(legend.position = "none")
 
 #########################################################
 #Coordinates of npn sites to get the morans statistic
@@ -99,7 +104,7 @@ site_info = read_csv('~/data/phenology/npn/observations_top_20.csv') %>%
   dplyr::select(Site_ID, Latitude, Longitude) %>%
   dplyr::distinct()
 
-observations2 = observations %>%
+npn_observations2 = npn_observations %>%
   left_join(site_info, by='Site_ID')
 
 ########################################################
@@ -114,7 +119,7 @@ calculate_morans = function(df){
   ape::Moran.I(df$error, site_distances)$p.value
 }
 
-moran_p_values = observations2 %>%
+moran_p_values = npn_observations2 %>%
   group_by(species, year) %>%
   do(p_value = calculate_morans(.)) %>%
   ungroup()
