@@ -56,7 +56,7 @@ npn_observations$doy_estimate=NA
 for(i in 1:nrow(npn_observations)){
   this_obs = npn_observations[i,]
   params = parameter_means %>%
-    filter(species==this_obs$species)
+    filter(species==this_obs$species, dataset == 'npn')
   
   npn_observations$doy_estimate[i] = calculate_doy_estimate(t1=params$T1, b=params$b, c=params$c, F_=params$F,
                                                             site_id=this_obs$Site_ID, this_year=this_obs$year,
@@ -70,7 +70,7 @@ harvard_observations$doy_estimate=NA
 for(i in 1:nrow(harvard_observations)){
   this_obs = harvard_observations[i,]
   params = parameter_means %>%
-    filter(species==this_obs$species)
+    filter(species==this_obs$species, dataset == 'harvard')
   
   harvard_observations$doy_estimate[i] = calculate_doy_estimate(t1=params$T1, b=params$b, c=params$c, F_=params$F,
                                                             site_id=this_obs$Site_ID, this_year=this_obs$year,
@@ -84,19 +84,37 @@ harvard_observations$error = with(harvard_observations, doy-doy_estimate)
 all_errors = npn_observations %>%
   bind_rows(harvard_observations)
 
+error_stats = all_errors %>%
+  group_by(species, dataset) %>%
+  summarise(error_mean = mean(error), error_sd=sd(error)) %>%
+  ungroup()
+
 new_names=c('Q. rubra', 'Q. alba', 'F. grandifolia', 'P. tremuloides', 'A. rubrum', 'B. papyrifera', 'A. saccharum', 'P. serotina')
 old_names = c('quercus rubra','quercus alba','fagus grandifolia','populus tremuloides','acer rubrum','betula papyrifera','acer saccharum','prunus serotina')
 all_errors$species = factor(all_errors$species, levels=old_names, labels=new_names)
 
+error_stats = all_errors %>%
+  group_by(species, dataset) %>%
+  summarise(error_mean = mean(error), error_sd=sd(error)) %>%
+  ungroup() %>%
+  mutate(text1 = paste('mu: ', round(error_mean,2)),
+         text2 = paste('sigma^2: ', round(error_sd,2))) %>%
+  left_join(data.frame(species=new_names,
+                       x_placement=c(40, 30, 50, 40, 50, 70, 70, 70)), by='species')
+
+
 figure_1st_row = c('Q. rubra', 'Q. alba', 'F. grandifolia', 'P. tremuloides')
 all_errors$figure_row = ifelse(all_errors$species %in% figure_1st_row, 'first','second')
+error_stats$figure_row = ifelse(error_stats$species %in% figure_1st_row, 'first','second')
 
 first_row = ggplot(filter(all_errors, figure_row=='first'), aes(error, group=dataset, fill=dataset)) +
-  geom_histogram(bins=50) +
+  geom_histogram(bins=30) +
   geom_vline(xintercept = 0) +  
+  ylim(0,100) +
+  geom_text(data = filter(error_stats, figure_row=='first'), aes(x=x_placement, y=85, label=text1),size=5, parse=TRUE)+
+  geom_text(data = filter(error_stats, figure_row=='first'), aes(x=x_placement, y=65, label=text2),size=5, parse=TRUE)+
   scale_color_manual(values=c('#E69F00','#0072B2')) +
   scale_fill_manual(values=c('#E69F00','#0072B2')) +
-  facet_wrap(~first_row) +
   facet_grid(dataset~species, scales = 'free_x')+
   theme_bw()+
   labs(x = '', y = NULL) + 
@@ -106,11 +124,13 @@ first_row = ggplot(filter(all_errors, figure_row=='first'), aes(error, group=dat
         axis.text = element_text(size = 15))
 
 second_row = ggplot(filter(all_errors, figure_row=='second'), aes(error, group=dataset, fill=dataset)) +
-  geom_histogram(bins=50) +
+  geom_histogram(bins=30) +
   geom_vline(xintercept = 0) +  
+  ylim(0,100) +
+  geom_text(data = filter(error_stats, figure_row=='second'), aes(x=x_placement, y=85, label=text1),size=5, parse=TRUE)+
+  geom_text(data = filter(error_stats, figure_row=='second'), aes(x=x_placement, y=65, label=text2),size=5, parse=TRUE)+
   scale_color_manual(values=c('#E69F00','#0072B2')) +
   scale_fill_manual(values=c('#E69F00','#0072B2')) +
-  facet_wrap(~first_row) +
   facet_grid(dataset~species, scales = 'free_x')+
   theme_bw()+
   labs(x = 'Budburst Day of Year Error', y = NULL) + 
@@ -121,6 +141,8 @@ second_row = ggplot(filter(all_errors, figure_row=='second'), aes(error, group=d
         axis.title = element_text(size = 25))
 
 gridExtra::grid.arrange(first_row, second_row)
+
+
 #########################################################
 #Coordinates of npn sites to get the morans statistic
 site_info = read_csv('~/data/phenology/npn/observations_top_20.csv') %>%
