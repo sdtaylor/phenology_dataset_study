@@ -3,9 +3,8 @@ library(sp)
 
 ###################################################
 #Param estimates for all NPN models
-all_results = read_csv('./results/all_results.csv') %>%
-  rename(T1=t1_int) %>%
-  filter(dataset=='npn')
+all_results = read_csv('./results/all_results_bootstrapped.csv') %>%
+  rename(T1=t1_int) 
 
 all_results = all_results %>%
   gather(Parameter, value, -boostrap_num, -dataset, -species) 
@@ -18,13 +17,20 @@ parameter_means = all_results %>%
 
 #########################################################
 #NPN Data
-observations = read_csv('./cleaned_data/NPN_observations.csv')
-temperature  = read_csv('./cleaned_data/npn_temp.csv')
+npn_observations = read_csv('./cleaned_data/NPN_observations.csv')
+npn_temperature  = read_csv('./cleaned_data/npn_temp.csv')
+npn_observations$dataset='npn'
 
+#harvard data
+harvard_observations = read_csv('./cleaned_data/harvard_observations.csv')
+harvard_temperature  = read_csv('./cleaned_data/harvard_temp.csv')
+harvard_temperature$Site_ID=1
+harvard_observations$Site_ID=1
+harvard_observations$dataset='harvard'
 #########################################################
 #doy estimate given model parameters, site, and year
-calculate_doy_estimate = function(t1,b,c,F_,site_id,this_year){
-  temp_data = temperature %>%
+calculate_doy_estimate = function(t1,b,c,F_,site_id,this_year, temp_df){
+  temp_data = temp_df %>%
     filter(Site_ID==site_id, year==this_year)
   
   temp_data$temp =   1 / (1 + exp(b*(temp_data$temp-c)))
@@ -39,22 +45,47 @@ calculate_doy_estimate = function(t1,b,c,F_,site_id,this_year){
 }
 
 #########################################################
-#Make doy estimates based on modeled parameters
-
-observations$doy_estimate=NA
-for(i in 1:nrow(observations)){
-  this_obs = observations[i,]
+#Make doy estimates & errors based on modeled parameters
+npn_observations$doy_estimate=NA
+for(i in 1:nrow(npn_observations)){
+  this_obs = npn_observations[i,]
   params = parameter_means %>%
     filter(species==this_obs$species)
   
-  observations$doy_estimate[i] = calculate_doy_estimate(t1=params$T1, b=params$b, c=params$c, F_=params$F,site_id=this_obs$Site_ID, this_year=this_obs$year)
+  npn_observations$doy_estimate[i] = calculate_doy_estimate(t1=params$T1, b=params$b, c=params$c, F_=params$F,
+                                                            site_id=this_obs$Site_ID, this_year=this_obs$year,
+                                                            temp_df = npn_temperature)
   print(i)
   
 }
-
-observations$error = with(observations, doy-doy_estimate)
+npn_observations$error = with(npn_observations, doy-doy_estimate)
+#####
+harvard_observations$doy_estimate=NA
+for(i in 1:nrow(harvard_observations)){
+  this_obs = harvard_observations[i,]
+  params = parameter_means %>%
+    filter(species==this_obs$species)
+  
+  harvard_observations$doy_estimate[i] = calculate_doy_estimate(t1=params$T1, b=params$b, c=params$c, F_=params$F,
+                                                            site_id=this_obs$Site_ID, this_year=this_obs$year,
+                                                            temp_df = harvard_temperature)
+  print(i)
+  
+}
+harvard_observations$error = with(harvard_observations, doy-doy_estimate)
 #########################################################
-#lat long
+
+all_errors = npn_observations %>%
+  bind_rows(harvard_observations)
+
+
+ggplot(all_errors, aes(error)) +
+  geom_histogram(bins=50) +
+  facet_grid(~dataset) +
+  theme_bw()
+
+#########################################################
+#Coordinates of npn sites to get the morans statistic
 site_info = read_csv('~/data/phenology/npn/observations_top_20.csv') %>%
   dplyr::select(Site_ID, Latitude, Longitude) %>%
   dplyr::distinct()
