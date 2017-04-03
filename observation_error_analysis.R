@@ -64,7 +64,7 @@ for(i in 1:nrow(npn_observations)){
   print(i)
   
 }
-npn_observations$error = with(npn_observations, doy-doy_estimate)
+npn_observations$error = npn_observations$doy - npn_observations$doy_estimate
 #####
 harvard_observations$doy_estimate=NA
 for(i in 1:nrow(harvard_observations)){
@@ -184,5 +184,8 @@ moran_table_obs$Species = factor(moran_table_obs$Species, levels=old_names, labe
 table_theme = gridExtra::ttheme_default(base_size = 24)
 gridExtra::grid.table(moran_table_obs, rows=NULL, theme = table_theme)
 
-
+#ggplot(filter(npn_observations2, year==2015), aes(x=Longitude, y=Latitude, color=error, size=5)) +
+#  geom_point() +
+#  scale_color_gradient2(low='red',mid='white',high='green') +
+#  facet_wrap(~species)
 
