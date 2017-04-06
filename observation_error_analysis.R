@@ -93,12 +93,13 @@ new_names=c('Q. rubra', 'Q. alba', 'F. grandifolia', 'P. tremuloides', 'A. rubru
 old_names = c('quercus rubra','quercus alba','fagus grandifolia','populus tremuloides','acer rubrum','betula papyrifera','acer saccharum','prunus serotina')
 all_errors$species = factor(all_errors$species, levels=old_names, labels=new_names)
 
+#The in graph mu and standard devitation. See ?plotmath for details of special symbols
 error_stats = all_errors %>%
   group_by(species, dataset) %>%
   summarise(error_mean = mean(error), error_sd=sd(error)) %>%
   ungroup() %>%
   mutate(text1 = paste('mu: ', round(error_mean,2)),
-         text2 = paste('sigma^2: ', round(error_sd,2))) %>%
+         text2 = paste('sigma: ', round(error_sd,2))) %>%
   left_join(data.frame(species=new_names,
                        x_placement=c(40, 30, 50, 40, 50, 70, 70, 70)), by='species')
 
@@ -133,7 +134,7 @@ second_row = ggplot(filter(all_errors, figure_row=='second'), aes(error, group=d
   scale_fill_manual(values=c('#E69F00','#0072B2')) +
   facet_grid(dataset~species, scales = 'free_x')+
   theme_bw()+
-  labs(x = 'Budburst Day of Year Error', y = NULL) + 
+  labs(x = 'Budburst Day of Year Error (observation - prediction)', y = NULL) + 
   theme(legend.position = "none",
         strip.text.x=element_text(size=22),
         strip.text.y=element_text(size=22),
@@ -142,7 +143,8 @@ second_row = ggplot(filter(all_errors, figure_row=='second'), aes(error, group=d
 
 gridExtra::grid.arrange(first_row, second_row)
 
-
+###########################################################################3
+#Analysis of spatial autocorrelation in NPN errors
 #########################################################
 #Coordinates of npn sites to get the morans statistic
 site_info = read_csv('~/data/phenology/npn/observations_top_20.csv') %>%
@@ -184,6 +186,9 @@ moran_table_obs$Species = factor(moran_table_obs$Species, levels=old_names, labe
 table_theme = gridExtra::ttheme_default(base_size = 24)
 gridExtra::grid.table(moran_table_obs, rows=NULL, theme = table_theme)
 
+
+#Maps of error. probably a suppliment material.
+#TODO: print moran stats directly on them. 
 #ggplot(filter(npn_observations2, year==2015), aes(x=Longitude, y=Latitude, color=error, size=5)) +
 #  geom_point() +
 #  scale_color_gradient2(low='red',mid='white',high='green') +
