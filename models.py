@@ -7,7 +7,7 @@ import numpy as np
 #accepts a set of temperature data and observations of phenological event
 #as the doy. Returns the RMSE error of the doy given the  4 UniForc parameters
 class phenology_model:
-    def __init__(self, temp_data, plant_data, t1_varies=False):
+    def __init__(self, temp_data, plant_data, model_name):
         #Create a ['Site_ID','year'] x 'doy' matrix with daily temp as the value
         #This is done to calculate the GDD info for all sites/years at once
         temp_data = temp_data.pivot_table(index=['Site_ID','year'], columns='doy', values='temp').reset_index()
@@ -27,16 +27,13 @@ class phenology_model:
         self.plant_doy =plant_data['doy'].values
         self.num_replicates=plant_data.shape[0]
 
-        self.t1_varies=t1_varies
-
-    def set_model_type(self, model_name):
-        if model_name=='uniforc':
+        self.model_name=model_name
+        if self.model_name=='uniforc':
             self.model = self.uniforc
-        elif model_name=='gdd':
+        elif self.model_name=='gdd':
             self.model = self.gdd
         else:
             print('unknown model type: ' + model_name)
-        pass
 
     #Get a site/year x doy boolean array of the days meeting the F* requirement
     #This is for all site/year combinations, which needs to match up exactly
@@ -123,8 +120,9 @@ class phenology_model:
     #scipy optimize functions want a array of parameter values
     #use this to unpack it
     def scipy_error(self,x):
-        if self.t1_varies:
-            kargs={'t1':x[0], 'b':x[1], 'c':x[2], 'F':x[3],'t1_slope':x[4]}
-        else:
+        if self.model_name=='uniforc':
             kargs={'t1':x[0], 'b':x[1], 'c':x[2], 'F':x[3]}
+        elif self.model_name=='gdd':
+            kargs={'t1':x[0], 'T':x[1], 'F':x[2]}
+
         return self.get_error(**kargs)
