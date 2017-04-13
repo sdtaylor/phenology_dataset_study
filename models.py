@@ -6,7 +6,7 @@ import numpy as np
 #uniforc model evaluator designed to be used in any optimize function.
 #accepts a set of temperature data and observations of phenological event
 #as the doy. Returns the RMSE error of the doy given the  4 UniForc parameters
-class uniforc_model:
+class phenology_model:
     def __init__(self, temp_data, plant_data, t1_varies=False):
         #Create a ['Site_ID','year'] x 'doy' matrix with daily temp as the value
         #This is done to calculate the GDD info for all sites/years at once
@@ -29,10 +29,49 @@ class uniforc_model:
 
         self.t1_varies=t1_varies
 
+    def set_model_type(self, model_name):
+        if model_name=='uniforc':
+            self.model = self.uniforc
+        elif model_name=='gdd':
+            self.model = self.gdd
+        else:
+            print('unknown model type: ' + model_name)
+        pass
+
     #Get a site/year x doy boolean array of the days meeting the F* requirement
-    #This is for all site/year combinations, which does to match up exactly
+    #This is for all site/year combinations, which needs to match up exactly
     #with all entires in plant_data
-    def calculate_doy_estimates(self, t1, b, c, F, t1_slope=False):
+    def calculate_doy_estimates(self, **kwargs):
+        return self.model(**kwargs)
+
+    #simple gdd model. 
+    #t1: day gdd accumulation begins
+    #T: temperature cutoff for GDD
+    #F: total gdd required
+    def gdd(self, t1,T,F):
+        all_site_temps = self.temp_temp.copy()
+
+        #Temperature cutoff
+        all_site_temps[all_site_temps<T]=0
+
+        #Only accumulate forcing after t1
+        all_site_temps[:,self.temp_doy<t1]=0
+
+        all_site_daily_gdd=np.zeros_like(all_site_temps)
+        for doy in range(self.num_doy):
+            all_site_daily_gdd[:,doy] = all_site_temps[:,0:doy+1].sum(1)
+
+        #The predicted doy for each site/year. If none was predicted give a doy which
+        #will return a very large error
+        doy_estimates = np.zeros(all_site_daily_gdd.shape[0])
+        for site_year in range(all_site_daily_gdd.shape[0]):
+            this_estimate=self.temp_doy[all_site_daily_gdd[site_year]>=F]
+            doy_estimates[site_year]=this_estimate[0] if this_estimate.shape[0]>0 else 1000
+
+        return doy_estimates
+
+    #uniforc model from Chuine 2000
+    def uniforc(self, t1, b, c, F):
         if b >0:
             b = b*-1
         #print(t1,b,c,F)
@@ -42,7 +81,6 @@ class uniforc_model:
 
         #Only accumulate forcing after t1
         all_site_temps[:,self.temp_doy<t1]=0
-        #all_site_temps = theano.tensor.set_subtensor(all_site_temps[:,self.temp_doy<t1],0)
 
         all_site_daily_gdd=np.zeros_like(all_site_temps)
         #all_site_daily_gdd=theano.tensor.zeros_like(all_site_temps)
