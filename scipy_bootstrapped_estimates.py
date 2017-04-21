@@ -6,10 +6,11 @@ from models import *
 
 
 class data_store:
-    def __init__(self, all_dataset_configs, num_bootstrap):
+    def __init__(self, all_dataset_configs, num_bootstrap, models=['uniforc','gdd']):
         self.num_bootstrap=num_bootstrap
         self.all_dataset_configs=all_dataset_configs
         self.load_next_dataset()
+        self.models=models
 
     def load_next_dataset(self):
         dataset_config = self.all_dataset_configs.pop()
@@ -17,7 +18,6 @@ class data_store:
         self.observation_data = pd.read_csv(dataset_config['observations_data_file'])
         self.temp_data = pd.read_csv(dataset_config['temp_data_file'])
         self.dataset_name=dataset_config['dataset_name']
-        self.include_t1_parameter=dataset_config['include_t1_parameter']
 
         #The model framework differentiates by site to accomidate the NPN dataset.
         #For datasets that are a single site, add in a column for it
@@ -25,23 +25,11 @@ class data_store:
             self.observation_data['Site_ID']=1
             self.temp_data['Site_ID']=1
 
-        #Lower and upper bounds of model parameters. Also used by differential_evolution()
-        #for determining the  number of parameters
-        if self.include_t1_parameter:
-            #             t1         b         c       F*     t1_slope
-            self.bounds = [(-126,180), (-20,0), (-50,50), (0,100), (-20,20)]
-        else:
-            #             t1         b         c       F*
-            self.bounds = [(-126,180), (-20,0), (-50,50), (0,100)]
-
         self.job_list=[]
         for species in self.observation_data.species.unique():
             for bootstrap_i in range(self.num_bootstrap):
                 self.job_list.append({'species':species, 'bootstrap_i':bootstrap_i})
 
-
-    def get_next_dataset(self):
-        pass
 
     #Return a model to optimize and info about the model as a single tuple
     #ready to be send over MPI
@@ -51,16 +39,20 @@ class data_store:
             return None
 
         job_info=self.job_list.pop()
-        if not self.jobs_available_in_current_dataset() and self.datasets_available():
-            self.load_next_dataset()
 
+        print(job_info)
         #A bootsrapped sample with replacment of this species observations
         data_sample = self.observation_data[self.observation_data.species==job_info['species']].sample(frac=1, replace=True).copy()
         #Temperature data at sites where this species occures
         sp_temp_data = self.temp_data[self.temp_data.Site_ID.isin(data_sample.Site_ID.unique())].copy()
 
-        model=uniforc_model(temp_data=sp_temp_data, plant_data=data_sample, t1_varies=self.include_t1_parameter)
-        return (model, self.bounds, job_info['species'], job_info['bootstrap_i'], self.dataset_name)
+        model=phenology_model(temp_data=sp_temp_data, plant_data=data_sample, model_name='uniforc')
+        model_bounds = model.get_scipy_parameter_bounds()
+
+        if (not self.jobs_available_in_current_dataset()) and self.datasets_available():
+            self.load_next_dataset()
+
+        return (model, model_bounds, job_info['species'], job_info['bootstrap_i'], self.dataset_name)
 
     def datasets_available(self):
         return len(self.all_dataset_configs)>0
@@ -93,17 +85,15 @@ def master():
     configs[0]['dataset_name']='npn'
     configs[0]['observations_data_file'] = './cleaned_data/NPN_observations.csv'
     configs[0]['temp_data_file'] = './cleaned_data/npn_temp.csv'
-    configs[0]['include_t1_parameter']=False
     configs[0]['add_site_dummy_var']=False
 
     configs.append({})
     configs[1]['dataset_name']='harvard'
     configs[1]['observations_data_file'] = './cleaned_data/harvard_observations.csv'
     configs[1]['temp_data_file'] = './cleaned_data/harvard_temp.csv'
-    configs[1]['include_t1_parameter']=False
     configs[1]['add_site_dummy_var']=True
 
-    results_file='all_results.csv'
+    results_file='test_results.csv'
 
     job_queue = data_store(all_dataset_configs=configs, num_bootstrap=500)
 
@@ -147,19 +137,13 @@ def worker():
 
         model, bounds, species, bootstrap_i, dataset = model_package
         optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=None, popsize=100, mutation=1.5, recombination=0.25)
-        x=optimize_output['x']
-        final_score=optimize_output['fun']
-        #Get estimates of optimzed model
-
-        #With 5 paramters the t1 paramter is being estimated
-        if x.shape[0]==5:
-            t1_int, b, c, F, t1_slope = x[0], x[1], x[2], x[3], x[4]
-            return_data={'t1_int':t1_int, 'b':b, 'c':c, 'F':F, 't1_slope':t1_slope,
-                         'species':species, 'bootstrap_num':bootstrap_i, 'dataset':dataset, 'final_score':final_score}
-        else:
-            t1_int, b, c, F = x[0], x[1], x[2], x[3]
-            return_data={'t1_int':t1_int, 'b':b, 'c':c, 'F':F,
-                         'species':species, 'bootstrap_num':bootstrap_i, 'dataset':dataset, 'final_score':final_score}
+        #quicker testing optimizer
+        #optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True, maxiter=100, popsize=10)
+        return_data = model.translate_scipy_parameter_output(optimize_output['x'])
+        return_data['final_score']=optimize_output['fun']
+        return_data['species']    = species
+        return_data['bootstrap_num']=bootstrap_i
+        return_data['dataset']      =dataset
 
         comm.send(obj=return_data, dest=0)
 

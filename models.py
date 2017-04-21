@@ -117,6 +117,25 @@ class phenology_model:
         #print(doy_estimates)
         return np.array(doy_estimates)
 
+    #upper and lower bounds used in scipy.optimize.differential_evolution
+    def get_scipy_parameter_bounds(self):
+        if self.model_name=='uniforc':
+            #           t1         b         c       F*
+            return [(-126,180), (-20,0), (-50,50), (0,100)]
+        elif self.model_name=='gdd':
+            #           t1         T         F*
+            return [(-126,180), (-20,20), (0,500)]
+
+    #Package the optimized parameter output from scipy.optimize in a nice labeled dictionary
+    def translate_scipy_parameter_output(self, x):
+        o={}
+        if self.model_name=='uniforc':
+            o['t1'], o['b'], o['c'], o['F'] = x[0], x[1], x[2], x[3]
+        elif self.model_name=='gdd':
+            o['t1'], o['T'], o['F'] = x[0], x[1], x[2]
+
+        return o
+
     #scipy optimize functions want a array of parameter values
     #use this to unpack it
     def scipy_error(self,x):
