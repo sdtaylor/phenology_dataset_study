@@ -12,3 +12,5 @@ models_to_use:
     - uniforc
 
 num_bootstrap: 500
+
+model_parameter_file: ./results/model_parameters.csv

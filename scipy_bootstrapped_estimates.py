@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from scipy import optimize
 from mpi4py import MPI
+import yaml
 from models import *
 
 
@@ -79,23 +80,14 @@ def master():
     work_tag=0
     stop_tag=1
     ###################################
-    configs=[]
+    with open('config.yaml', 'r') as f:
+        config = yaml.load(f)
 
-    configs.append({})
-    configs[0]['dataset_name']='npn'
-    configs[0]['observations_data_file'] = './cleaned_data/NPN_observations.csv'
-    configs[0]['temp_data_file'] = './cleaned_data/npn_temp.csv'
-    configs[0]['add_site_dummy_var']=False
+    results_file = config['model_parameter_file']
 
-    configs.append({})
-    configs[1]['dataset_name']='harvard'
-    configs[1]['observations_data_file'] = './cleaned_data/harvard_observations.csv'
-    configs[1]['temp_data_file'] = './cleaned_data/harvard_temp.csv'
-    configs[1]['add_site_dummy_var']=True
-
-    results_file='test_results.csv'
-
-    job_queue = data_store(all_dataset_configs=configs, num_bootstrap=500)
+    job_queue = data_store(all_dataset_configs = config['dataset_configs'],
+                           num_bootstrap =       config['num_bootsrap'],
+                           models =              config['models_to_use'])
 
     total_jobs=job_queue.jobs_left()
     #Dole out the first round of jobs to all workers
@@ -140,7 +132,7 @@ def worker():
         #quicker testing optimizer
         #optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True, maxiter=100, popsize=10)
         return_data = model.translate_scipy_parameter_output(optimize_output['x'])
-        return_data['final_score']=optimize_output['fun']
+        #return_data['final_score']=optimize_output['fun']
         return_data['species']    = species
         return_data['bootstrap_num']=bootstrap_i
         return_data['dataset']      =dataset
