@@ -48,7 +48,7 @@ for dataset in config['dataset_configs']:
                 #Each line will be parameters from a single bootsrapped run
                 parameter_values = parameter_values.pivot(index='bootstrap_num', columns='parameter', values='value').reset_index()
 
-                #sanity check, bootsrap numbers are sometimes low. possibly due to the optimizer erroring out?
+                #sanity check, bootstrap numbers are sometimes low. possibly due to the optimizer erroring out?
                 #TODO: figure that out
                 print(parameter_values.shape)
                 print(parameter_values.head())
@@ -57,7 +57,9 @@ for dataset in config['dataset_configs']:
                 for bootstrap_iteration in parameter_values.to_dict('records'):
                     bootstrap_num=bootstrap_iteration.pop('bootstrap_num')
                     doy_estimated = model_estimator.get_all_estimates(**bootstrap_iteration)
-                    doy_observed = model_estimator.plant_doy
+                    doy_observed  = model_estimator.plant_doy
+                    year_observed = model_estimator.plant_year
+                    site_observed = model_estimator.plant_site
 
                     print(dataset['dataset_name']+', '+species+', '+parameter_source+', '+str(bootstrap_num))
                     for i in range(doy_observed.shape[0]):
@@ -67,6 +69,8 @@ for dataset in config['dataset_configs']:
                                         'parameter_source':parameter_source,
                                         'observation_source': dataset_obs_name,
                                         'doy_observed':       doy_observed[i],
+                                        'year_observed':       year_observed[i],
+                                        'site_observed':       site_observed[i],
                                         'doy_estimated':      doy_estimated[i]})
 
 
