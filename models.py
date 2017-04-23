@@ -2,10 +2,10 @@ import pandas as pd
 import numpy as np
 
 ########################################################################
-#Evaluate a UniForc model of a single species
-#uniforc model evaluator designed to be used in any optimize function.
+#Evaluate a phenology forcing model of a single species
+#model evaluator designed to be used in any optimize function.
 #accepts a set of temperature data and observations of phenological event
-#as the doy. Returns the RMSE error of the doy given the  4 UniForc parameters
+#as the doy. 
 class phenology_model:
     def __init__(self, temp_data, plant_data, model_name):
         #Create a ['Site_ID','year'] x 'doy' matrix with daily temp as the value
@@ -21,11 +21,19 @@ class phenology_model:
         self.temp_doy =temp_data.drop(['Site_ID','year'], axis=1).columns.values.astype(np.int)
         self.num_doy  = self.temp_doy.shape[0]
 
+
         #Plant data
         self.plant_site=plant_data['Site_ID'].values
         self.plant_year=plant_data['year'].values
         self.plant_doy =plant_data['doy'].values
         self.num_replicates=plant_data.shape[0]
+
+        #A helper array for calculating GDD.
+        #WIP 
+        #self.doy_sum_matrix = np.ones((self.num_doy, self.num_doy)).astype(bool)
+        #for i in range(self.num_doy):
+        #    self.doy_sum_matrix[(i+1):self.num_doy,i] = False
+        #self.doy_sum_matrix = np.tile(self.doy_sum_rules, (self.num_replicates, 1,1))
 
         self.model_name=model_name
         if self.model_name=='uniforc':
@@ -41,6 +49,24 @@ class phenology_model:
     def calculate_doy_estimates(self, **kwargs):
         return self.model(**kwargs)
 
+    #gdd has site/year observarionts by rows, and doy in columns.
+    #returns the first doy which meets forcing requirement F for each observation
+    #if it's not met then return a very large doy estimate to produce a large error
+    def doy_estimator(self, gdd, doy_index, F):
+        doy_estimates = np.zeros(gdd.shape[0])
+        for site_year in range(gdd.shape[0]):
+            this_estimate=doy_index[gdd[site_year]>=F]
+            doy_estimates[site_year]=this_estimate[0] if this_estimate.shape[0]>0 else 1000
+        return doy_estimates
+
+    #temps has site/year observations by rows, and doy in columns.
+    #return the accumulated forcing/gdd for each doy for each observation
+    def gdd_calculator(self, temps, num_doy):
+        gdd = np.zeros_like(temps)
+        for doy in range(num_doy):
+            gdd[:,doy] = temps[:,0:doy+1].sum(1)
+        return gdd
+
     #simple gdd model. 
     #t1: day gdd accumulation begins
     #T: temperature cutoff for GDD
@@ -54,24 +80,15 @@ class phenology_model:
         #Only accumulate forcing after t1
         all_site_temps[:,self.temp_doy<t1]=0
 
-        all_site_daily_gdd=np.zeros_like(all_site_temps)
-        for doy in range(self.num_doy):
-            all_site_daily_gdd[:,doy] = all_site_temps[:,0:doy+1].sum(1)
+        all_site_daily_gdd=self.gdd_calculator(all_site_temps, self.num_doy)
 
-        #The predicted doy for each site/year. If none was predicted give a doy which
-        #will return a very large error
-        doy_estimates = np.zeros(all_site_daily_gdd.shape[0])
-        for site_year in range(all_site_daily_gdd.shape[0]):
-            this_estimate=self.temp_doy[all_site_daily_gdd[site_year]>=F]
-            doy_estimates[site_year]=this_estimate[0] if this_estimate.shape[0]>0 else 1000
-
-        return doy_estimates
+        return self.doy_estimator(all_site_daily_gdd, self.temp_doy, F)
 
     #uniforc model from Chuine 2000
+    #t1: day forcing accumulation begins
+    #b,c: daily temp fitting paramters
+    #F: total forcing required
     def uniforc(self, t1, b, c, F):
-        if b >0:
-            b = b*-1
-        #print(t1,b,c,F)
         all_site_temps = self.temp_temp.copy()
 
         all_site_temps = 1 / (1 + np.exp(b*(all_site_temps-c)))
@@ -79,19 +96,9 @@ class phenology_model:
         #Only accumulate forcing after t1
         all_site_temps[:,self.temp_doy<t1]=0
 
-        all_site_daily_gdd=np.zeros_like(all_site_temps)
-        #all_site_daily_gdd=theano.tensor.zeros_like(all_site_temps)
-        for doy in range(self.num_doy):
-            all_site_daily_gdd[:,doy] = all_site_temps[:,0:doy+1].sum(1)
+        all_site_daily_gdd=self.gdd_calculator(all_site_temps, self.num_doy)
 
-        #The predicted doy for each site/year. If none was predicted give a doy which
-        #will return a very large error
-        doy_estimates = np.zeros(all_site_daily_gdd.shape[0])
-        for site_year in range(all_site_daily_gdd.shape[0]):
-            this_estimate=self.temp_doy[all_site_daily_gdd[site_year]>=F]
-            doy_estimates[site_year]=this_estimate[0] if this_estimate.shape[0]>0 else 1000
-
-        return doy_estimates
+        return self.doy_estimator(all_site_daily_gdd, self.temp_doy, F)
 
     #RMSE of the estimated budburst doy of all sites
     def get_error(self, **kargs):
@@ -100,13 +107,12 @@ class phenology_model:
         for row in range(self.num_replicates):
             estimated_doy = doy_estimates[(self.temp_site == self.plant_site[row]) & (self.temp_year == self.plant_year[row])]
             if len(estimated_doy)>1: print('>1 estimated doy')
-            #print(estimated_doy)
             errors.append(estimated_doy[0] - self.plant_doy[row])
 
         errors = np.array(errors)
         return np.sqrt(np.mean(errors**2))
 
-    #Estimated doy for all entries in self.plant_data
+    #Estimated doy for all entries in self.plant_data given parameters
     def get_all_estimates(self, **kargs):
         site_year_doy_estimates=self.calculate_doy_estimates(**kargs)
         doy_estimates=[]
@@ -114,7 +120,6 @@ class phenology_model:
             estimated_doy = site_year_doy_estimates[(self.temp_site == self.plant_site[row]) & (self.temp_year == self.plant_year[row])]
             doy_estimates.append(estimated_doy[0])
 
-        #print(doy_estimates)
         return np.array(doy_estimates)
 
     #upper and lower bounds used in scipy.optimize.differential_evolution
@@ -126,7 +131,7 @@ class phenology_model:
             #           t1         T         F*
             return [(-126,180), (-20,20), (0,500)]
 
-    #Package the optimized parameter output from scipy.optimize in a nice labeled dictionary
+    #Organize the optimized parameter output from scipy.optimize in a nice labeled dictionary
     def translate_scipy_parameter_output(self, x):
         o={}
         if self.model_name=='uniforc':
