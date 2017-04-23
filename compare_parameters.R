@@ -66,16 +66,21 @@ ggplot(all_results, aes(species, value))+
   geom_boxplot(position = 'dodge', outlier.color = NA, aes(fill=dataset)) +
   #geom_violin(position = 'dodge', aes(fill=dataset)) +
   scale_fill_manual(values=c('#0072B2','#E69F00')) +
-  geom_text(data=p_values, aes(x=species, y=y_placement, label=text), size=4) +
+  geom_text(data=p_values, aes(x=species, y=y_placement, label=text), size=6) +
   facet_wrap(~Parameter, scales = 'free', nrow=5, labeller = label_both) + 
   theme(plot.subtitle = element_text(vjust = 1), 
         plot.caption = element_text(vjust = 1), 
-        axis.text.x = element_text(size = 8, 
-        angle = 0)) +
-  labs(x = "Species", y = "Paramter Values",  fill = "Dataset") + 
-  theme(legend.title = element_text(colour = NA), 
+        axis.text.x = element_text(size = 15),
+        strip.text.x=element_text(size=22),
+        axis.text = element_text(size = 20),
+        legend.title = element_text(colour = NA), 
         legend.position = "bottom", 
-        legend.direction = "horizontal")
+        legend.direction = "horizontal",
+        legend.text = element_text(size = 20), 
+        legend.key = element_rect(size = 10)) +
+  labs(x = "", 
+       y = "Paramter Values",  
+       fill = "Dataset")
 
 
 
