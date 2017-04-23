@@ -1,101 +1,35 @@
 library(tidyverse)
-library(sp)
+#Compare out of sample verification between datasets
 
-###################################################
-#Param estimates for all NPN models
-all_results = read_csv('./results/all_results_bootstrapped.csv') %>%
-  rename(T1=t1_int) 
 
-all_results = all_results %>%
-  gather(Parameter, value, -boostrap_num, -dataset, -species) 
-
-parameter_means = all_results %>%
-  group_by(species, Parameter, dataset) %>%
-  summarise(param_mean = mean(value)) %>%
-  ungroup() %>%
-  spread(Parameter, param_mean)
-
-#########################################################
-#NPN Data
-npn_observations = read_csv('./cleaned_data/NPN_observations.csv')
-npn_temperature  = read_csv('./cleaned_data/npn_temp.csv')
-npn_observations$dataset='NPN'
-
-#harvard data
-harvard_observations = read_csv('./cleaned_data/harvard_observations.csv')
-harvard_temperature  = read_csv('./cleaned_data/harvard_temp.csv')
-harvard_temperature$Site_ID=1
-harvard_observations$Site_ID=1
-harvard_observations$dataset='Harvard'
-
+oos_data = read_csv('./results/out_of_sample_doy_estimates.csv')
 #Keep only species that are present in NPN dataset
-npn_species = unique(npn_observations$species)
+npn_species = oos_data %>%
+  filter(observation_source == 'npn') %>%
+  select(species) %>%
+  distinct()
 
-harvard_observations = harvard_observations %>% 
-  filter(species %in% npn_species)
-#########################################################
-#doy estimate given model parameters, site, and year
-calculate_doy_estimate = function(t1,b,c,F_,site_id,this_year, temp_df){
-  temp_data = temp_df %>%
-    filter(Site_ID==site_id, year==this_year)
-  
-  temp_data$temp =   1 / (1 + exp(b*(temp_data$temp-c)))
-  temp_data$temp[temp_data$doy<t1]=0
-  
-  temp_data$forcing=0
-  for(d in 1:nrow(temp_data)){
-    temp_data$forcing[d] = sum(temp_data$temp[1:d])
-  }
-  
-  temp_data$doy[match(TRUE,temp_data$forcing>=F_)]
-}
+oos_data = oos_data %>% 
+  filter(species %in% npn_species$species)
 
-#########################################################
-#Make doy estimates & errors based on modeled parameters
-npn_observations$doy_estimate=NA
-for(i in 1:nrow(npn_observations)){
-  this_obs = npn_observations[i,]
-  params = parameter_means %>%
-    filter(species==this_obs$species, dataset == 'npn')
-  
-  npn_observations$doy_estimate[i] = calculate_doy_estimate(t1=params$T1, b=params$b, c=params$c, F_=params$F,
-                                                            site_id=this_obs$Site_ID, this_year=this_obs$year,
-                                                            temp_df = npn_temperature)
-  print(i)
-  
-}
-npn_observations$error = npn_observations$doy - npn_observations$doy_estimate
-#####
-harvard_observations$doy_estimate=NA
-for(i in 1:nrow(harvard_observations)){
-  this_obs = harvard_observations[i,]
-  params = parameter_means %>%
-    filter(species==this_obs$species, dataset == 'harvard')
-  
-  harvard_observations$doy_estimate[i] = calculate_doy_estimate(t1=params$T1, b=params$b, c=params$c, F_=params$F,
-                                                            site_id=this_obs$Site_ID, this_year=this_obs$year,
-                                                            temp_df = harvard_temperature)
-  print(i)
-  
-}
-harvard_observations$error = with(harvard_observations, doy-doy_estimate)
-#########################################################
 
-all_errors = npn_observations %>%
-  bind_rows(harvard_observations)
+oos_estimates = oos_data %>%
+  group_by(model_name, observation_source, parameter_source, site_observed, species, year_observed) %>%
+  summarise(n=n(), doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
+  ungroup() %>%
+  mutate(error = doy_observed - doy_estimated) %>%
+  filter(parameter_source=='npn')
 
-error_stats = all_errors %>%
-  group_by(species, dataset) %>%
-  summarise(error_mean = mean(error), error_sd=sd(error)) %>%
-  ungroup()
+
+####################################################
 
 new_names=c('Q. rubra', 'Q. alba', 'F. grandifolia', 'P. tremuloides', 'A. rubrum', 'B. papyrifera', 'A. saccharum', 'P. serotina')
 old_names = c('quercus rubra','quercus alba','fagus grandifolia','populus tremuloides','acer rubrum','betula papyrifera','acer saccharum','prunus serotina')
-all_errors$species = factor(all_errors$species, levels=old_names, labels=new_names)
+oos_estimates$species = factor(oos_estimates$species, levels=old_names, labels=new_names)
 
 #The in graph mu and standard devitation. See ?plotmath for details of special symbols
-error_stats = all_errors %>%
-  group_by(species, dataset) %>%
+error_stats = oos_estimates %>%
+  group_by(species, observation_source, parameter_source) %>%
   summarise(error_mean = mean(error), error_sd=sd(error)) %>%
   ungroup() %>%
   mutate(text1 = paste('mu: ', round(error_mean,2)),
@@ -105,10 +39,10 @@ error_stats = all_errors %>%
 
 
 figure_1st_row = c('Q. rubra', 'Q. alba', 'F. grandifolia', 'P. tremuloides')
-all_errors$figure_row = ifelse(all_errors$species %in% figure_1st_row, 'first','second')
+oos_estimates$figure_row = ifelse(oos_estimates$species %in% figure_1st_row, 'first','second')
 error_stats$figure_row = ifelse(error_stats$species %in% figure_1st_row, 'first','second')
 
-first_row = ggplot(filter(all_errors, figure_row=='first'), aes(error, group=dataset, fill=dataset)) +
+first_row = ggplot(filter(oos_estimates, figure_row=='first'), aes(error, group=observation_source, fill=observation_source)) +
   geom_histogram(bins=30) +
   geom_vline(xintercept = 0) +  
   ylim(0,100) +
@@ -116,7 +50,7 @@ first_row = ggplot(filter(all_errors, figure_row=='first'), aes(error, group=dat
   geom_text(data = filter(error_stats, figure_row=='first'), aes(x=x_placement, y=65, label=text2),size=5, parse=TRUE)+
   scale_color_manual(values=c('#E69F00','#0072B2')) +
   scale_fill_manual(values=c('#E69F00','#0072B2')) +
-  facet_grid(dataset~species, scales = 'free_x')+
+  facet_grid(observation_source~species, scales = 'free_x')+
   theme_bw()+
   labs(x = '', y = NULL) + 
   theme(legend.position = "none",
@@ -124,7 +58,7 @@ first_row = ggplot(filter(all_errors, figure_row=='first'), aes(error, group=dat
         strip.text.y=element_text(size=22),
         axis.text = element_text(size = 15))
 
-second_row = ggplot(filter(all_errors, figure_row=='second'), aes(error, group=dataset, fill=dataset)) +
+second_row = ggplot(filter(oos_estimates, figure_row=='second'), aes(error, group=observation_source, fill=observation_source)) +
   geom_histogram(bins=30) +
   geom_vline(xintercept = 0) +  
   ylim(0,100) +
@@ -132,7 +66,7 @@ second_row = ggplot(filter(all_errors, figure_row=='second'), aes(error, group=d
   geom_text(data = filter(error_stats, figure_row=='second'), aes(x=x_placement, y=65, label=text2),size=5, parse=TRUE)+
   scale_color_manual(values=c('#E69F00','#0072B2')) +
   scale_fill_manual(values=c('#E69F00','#0072B2')) +
-  facet_grid(dataset~species, scales = 'free_x')+
+  facet_grid(observation_source~species, scales = 'free_x')+
   theme_bw()+
   labs(x = 'Budburst Day of Year Error (observation - prediction)', y = NULL) + 
   theme(legend.position = "none",
@@ -143,6 +77,7 @@ second_row = ggplot(filter(all_errors, figure_row=='second'), aes(error, group=d
 
 gridExtra::grid.arrange(first_row, second_row)
 
+
 ###########################################################################3
 #Analysis of spatial autocorrelation in NPN errors
 #########################################################
@@ -151,8 +86,9 @@ site_info = read_csv('~/data/phenology/npn/observations_top_20.csv') %>%
   dplyr::select(Site_ID, Latitude, Longitude) %>%
   dplyr::distinct()
 
-npn_observations2 = npn_observations %>%
-  left_join(site_info, by='Site_ID')
+npn_observations = oos_estimates %>%
+  filter(observation_source=='npn', parameter_source=='npn') %>%
+  left_join(site_info, by=c('site_observed'='Site_ID'))
 
 ########################################################
 #http://stats.idre.ucla.edu/r/faq/how-can-i-calculate-morans-i-in-r/
@@ -169,8 +105,8 @@ calculate_morans = function(df){
   
 }
 
-moran_I_values = npn_observations2 %>%
-  group_by(species, year) %>%
+moran_I_values = npn_observations %>%
+  group_by(species, year_observed) %>%
   do(calculate_morans(.)) %>%
   ungroup()
 
@@ -178,8 +114,8 @@ moran_I_values$observed = round(moran_I_values$observed, 2)
 
 moran_table_obs = moran_I_values %>%
   mutate(observed_table = ifelse(p.value<0.05, paste0(observed,'*'), as.character(observed))) %>%
-  select(Species=species, year, observed_table) %>%
-  spread(year, observed_table)
+  select(Species=species, year_observed, observed_table) %>%
+  spread(year_observed, observed_table)
 
 moran_table_obs$Species = factor(moran_table_obs$Species, levels=old_names, labels=new_names)
 
@@ -189,8 +125,8 @@ gridExtra::grid.table(moran_table_obs, rows=NULL, theme = table_theme)
 
 #Maps of error. probably a suppliment material.
 #TODO: print moran stats directly on them. 
-#ggplot(filter(npn_observations2, year==2015), aes(x=Longitude, y=Latitude, color=error, size=5)) +
-#  geom_point() +
-#  scale_color_gradient2(low='red',mid='white',high='green') +
-#  facet_wrap(~species)
+ggplot(filter(npn_observations, year_observed==2015), aes(x=Longitude, y=Latitude, color=error, size=5)) +
+  geom_point() +
+  scale_color_gradient2(low='red',mid='white',high='green') +
+  facet_wrap(~species)
 
