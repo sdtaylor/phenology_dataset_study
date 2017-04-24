@@ -61,11 +61,8 @@ class phenology_model:
 
     #temps has site/year observations by rows, and doy in columns.
     #return the accumulated forcing/gdd for each doy for each observation
-    def gdd_calculator(self, temps, num_doy):
-        gdd = np.zeros_like(temps)
-        for doy in range(num_doy):
-            gdd[:,doy] = temps[:,0:doy+1].sum(1)
-        return gdd
+    def gdd_calculator(self, temps):
+        return temps.cumsum(axis=1)
 
     #simple gdd model. 
     #t1: day gdd accumulation begins
@@ -80,7 +77,7 @@ class phenology_model:
         #Only accumulate forcing after t1
         all_site_temps[:,self.temp_doy<t1]=0
 
-        all_site_daily_gdd=self.gdd_calculator(all_site_temps, self.num_doy)
+        all_site_daily_gdd=self.gdd_calculator(all_site_temps)
 
         return self.doy_estimator(all_site_daily_gdd, self.temp_doy, F)
 
@@ -96,7 +93,7 @@ class phenology_model:
         #Only accumulate forcing after t1
         all_site_temps[:,self.temp_doy<t1]=0
 
-        all_site_daily_gdd=self.gdd_calculator(all_site_temps, self.num_doy)
+        all_site_daily_gdd=self.gdd_calculator(all_site_temps)
 
         return self.doy_estimator(all_site_daily_gdd, self.temp_doy, F)
 
