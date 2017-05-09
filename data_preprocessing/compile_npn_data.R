@@ -1,7 +1,7 @@
 library(tidyverse)
 library(lubridate)
 
-data_dir = '~/data/phenology/'
+data_dir = '~/data/phenology/npn-core/'
 
 ################################################################
 temperature_data = read_csv(paste0(data_dir,'site_PRISM_values.csv')) %>%
@@ -38,7 +38,7 @@ sites_with_env_data=temperature_data %>%
 write_csv(temperature_data, './cleaned_data/npn_temp.csv')
 
 ######################################################################################
-site_info = read_csv(paste0(data_dir,'site_data.csv')) %>%
+site_info = read_csv(paste0(data_dir,'status_intensity_observation_data.csv')) %>%
   select(Site_ID, Latitude, Longitude)
 
 observations = read_csv(paste0(data_dir,'observations_spp_of_interest.csv')) %>%
