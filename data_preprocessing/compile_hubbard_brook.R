@@ -64,3 +64,20 @@ if(there_are_duplicates) stop('duplicates')
 
 write_csv(observations, './cleaned_data/hubbardbrook_observations.csv')
 
+#Record the species present to use in NPN data filter
+species = observations %>% 
+  select(species) %>%
+  distinct() %>%
+  mutate(dataset='hubbard')
+
+#Append to the same file written by other scripts
+non_npn_species_file = './cleaned_data/non_npn_species_list.csv'
+if(file.exists(non_npn_species_file)){
+  read_csv(non_npn_species_file) %>%
+    bind_rows(species) %>%
+    distinct() %>%
+    write_csv(non_npn_species_file)
+} else {
+  write_csv(species, non_npn_species_file)
+}
+

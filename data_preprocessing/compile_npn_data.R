@@ -1,7 +1,7 @@
 library(tidyverse)
 library(lubridate)
 
-data_dir = '~/data/phenology/npn-core/'
+data_dir = '~/data/phenology/npn_core/'
 
 ################################################################
 temperature_data = read_csv(paste0(data_dir,'site_PRISM_values.csv')) %>%
@@ -38,13 +38,16 @@ sites_with_env_data=temperature_data %>%
 write_csv(temperature_data, './cleaned_data/npn_temp.csv')
 
 ######################################################################################
-site_info = read_csv(paste0(data_dir,'status_intensity_observation_data.csv')) %>%
+site_info = read_csv(paste0(data_dir,'ancillary_site_data.csv')) %>%
   select(Site_ID, Latitude, Longitude)
 
-observations = read_csv(paste0(data_dir,'observations_spp_of_interest.csv')) %>%
+non_npn_species = read_csv('./cleaned_data/non_npn_species_list.csv')
+
+observations = read_csv(paste0(data_dir,'status_intensity_observation_data.csv')) %>%
   filter(Phenophase_ID == 371, Phenophase_Status>=0) %>%
-  select(date=Observation_Date, Site_ID, species, Phenophase_Status, Individual_ID) %>%
-  mutate(year = year(date), doy=yday(date)) %>%
+  select(date=Observation_Date, Site_ID, Genus, Species, Phenophase_Status, Individual_ID) %>%
+  mutate(year = year(date), doy=yday(date), species = tolower(paste(Genus, Species))) %>%
+  filter(species %in% non_npn_species$species)
   filter(Site_ID %in% sites_with_env_data$Site_ID)
 
 #site,year,species where a budbreak==0 was the first observation in a year

@@ -41,6 +41,23 @@ observations = observations %>%
 
 write_csv(observations, './cleaned_data/harvard_observations.csv')
 
+#Record the species present to use in NPN data filter
+species = observations %>% 
+  select(species) %>%
+  distinct() %>%
+  mutate(dataset='harvard')
+
+#Append to the same file written by other scripts
+non_npn_species_file = './cleaned_data/non_npn_species_list.csv'
+if(file.exists(non_npn_species_file)){
+  read_csv(non_npn_species_file) %>%
+    bind_rows(species) %>%
+    distinct() %>%
+    write_csv(non_npn_species_file)
+} else {
+  write_csv(species, non_npn_species_file)
+}
+
 #########################################################
 #Downloaded from the PRISM website. tmean for 1990-01-01 - 2016-12-32 for Latitude: 42.5429   Longitude: -72.2011
 temperature_data = read_csv(paste0(data_dir, 'PRISM_Harvard_forest_tmean.csv'), skip = 10)
@@ -61,6 +78,4 @@ temperature_data = temperature_data %>%
   select(-date, -base_date)
 
 write_csv(temperature_data, './cleaned_data/harvard_temp.csv')
-
-
 
