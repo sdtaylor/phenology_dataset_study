@@ -68,7 +68,7 @@ write_csv(observations, './cleaned_data/hubbardbrook_observations.csv')
 species = observations %>% 
   select(species) %>%
   distinct() %>%
-  mutate(dataset='hubbard')
+  mutate(dataset='hubbard', Phenophase_ID=371)
 
 #Append to the same file written by other scripts
 non_npn_species_file = './cleaned_data/non_npn_species_list.csv'

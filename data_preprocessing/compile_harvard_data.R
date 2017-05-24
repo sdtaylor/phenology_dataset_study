@@ -13,9 +13,9 @@ observations = read_csv(paste0(data_dir, 'hf003-03-spring.csv')) %>%
   rename(doy=julian) 
 
 #For each tree and year, get the  first day that
-#Bud Break is > 50%
+#Bud Break is >= 10%
 observations = observations %>%
-  filter(bcon=='BB', bbrk > 50) %>%
+  filter(bcon=='BB', bbrk > 10) %>%
   select(doy, tree.id, year) %>%
   group_by(tree.id, year) %>%
   top_n(1, -doy) %>%
@@ -41,11 +41,15 @@ observations = observations %>%
 
 write_csv(observations, './cleaned_data/harvard_observations.csv')
 
-#Record the species present to use in NPN data filter
+#Record the species and phenophase type to use in NPN data filter
 species = observations %>% 
   select(species) %>%
   distinct() %>%
-  mutate(dataset='harvard')
+  mutate(dataset='harvard', Phenophase_ID=371)
+
+#tusga (evergreen conifer) and pinus (pine) have special budbreak phenophases
+species$Phenophase_ID[species$species=='tsuga canadensis'] = 480
+species$Phenophase_ID[species$species=='pinus strobus'] = 496
 
 #Append to the same file written by other scripts
 non_npn_species_file = './cleaned_data/non_npn_species_list.csv'

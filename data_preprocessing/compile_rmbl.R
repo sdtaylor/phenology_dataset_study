@@ -96,7 +96,7 @@ write_csv(first_flowering, './cleaned_data/rmbl_observations.csv')
 species = first_flowering %>% 
   select(species) %>%
   distinct() %>%
-  mutate(dataset='rmbl')
+  mutate(dataset='rmbl', Phenophase_ID=501)
 
 #Append to the same file written by other scripts
 non_npn_species_file = './cleaned_data/non_npn_species_list.csv'
