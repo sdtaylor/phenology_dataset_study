@@ -33,10 +33,10 @@ get_species_phenophase_observations = function(this_species, this_phenophase){
 ##################################################################################
 data_dir = '~/data/phenology/npn_core/'
 
-site_info = read_csv(paste0(data_dir,'ancillary_site_data.csv')) %>%
-  select(Site_ID, Latitude, Longitude)
-
-non_npn_species = read_csv('./cleaned_data/non_npn_species_list.csv')
+#Some species are in > dataset, so only get distinct species/phenophases
+non_npn_species = read_csv('./cleaned_data/non_npn_species_list.csv') %>%
+  select(-dataset) %>%
+  distinct()
 
 #The raw npn data
 all_observations = read_csv(paste0(data_dir,'status_intensity_observation_data.csv')) %>%
@@ -67,5 +67,4 @@ processed_data = processed_data %>%
   filter(n() > 40) %>%
   ungroup()
 
-write_csv(processed_data, './cleaned_data/npn_observations.csv')
-
+write_csv(processed_data, './cleaned_data/npn_observations.csv') 
