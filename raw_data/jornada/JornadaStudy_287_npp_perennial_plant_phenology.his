@@ -1,0 +1,568 @@
+File: NPPPhen.HIS     Last update: 03/28/2005   By: LJ Lamit
+
+FIELD HISTORY LOG
+
+Data set:   Plant phenology at NPP sites (LTER-II)
+Project:    Plant phenology at NPP sites
+File name:  NPPPHEN.HIS
+======================================================================
+============= START of FIELD HISTORY LOG =============================
+    INIT   CIS = Cathie Sandell
+           CMM = Chris McGlone
+           JPA = John Anderson
+           SMG = Sophia Gehlhausen
+            SR = Stephanie Richmond
+           MAB = Michelle Buonopane
+           LJL = Louis J. Lamit
+           MLA = Michael Anthony
+
+============= START comments =========
+In July 1998 the phenology data were analyzed in order to determine if
+sufficient samples sizes existed for the species tallied.  Those species with
+insufficient sample sizes were dropped from transect tallies.  New data sheets
+were made to reflect these changes.  Data were analyzed by Chris McGlone.
+
+============= START comments by CIS =========
+Last update: 04/18/1994    By: Cathie Sandell
+Book #1 (August 92-July 93)
+Note:  It is not clear to me in many instances what transect methodology was
+used
+at the start of the project for a given species.  Information listed below has
+been
+validated with the data unless otherwise noted (MB).
+
+1992
+July       Transects on E & S sides.
+August     Transects switched to S & W on WELL, IBPE, WEST, RABB, NORT.
+September  Switched all plots to S & W sides for transects.
+           Walked transect a second time for total counts on ERPU, SCBR
+                and MUAR
+             Changed count at P-SMAL to 1 m intervals instead of individual
+                plants where PAOB is solid.
+             Changed count at P-COLL to 1 m intervals between plot 8 post
+                and end of transect, counted individual plants between plots
+                1 and 7. (Looks like this happened in August not September
+(MB).)
+October    Switched to single line transect for SCBR & MUAR at T sites.  (It
+                is not clear to me whether MUAR was ever on a 1 m belt transect
+                at T-WEST from beginning of project; numbers never change and
+are
+                low(MB).)
+November   Switched to single line transect for SPAI & HIMU at TOBO,
+                ERPU at C sites and RABB & WELL.
+             Conversation with Laura:
+                        If fruits are obvious, then plant is in fruit; if
+                        fruits obviously gone, then plant is non-reproductive;
+                        if unclear whether seeds have dropped or not, then
+                        call plant in fruit.
+                        Do not spend a lot of time trying to ascertain if
+                        seeds are still in fruit and on plant.
+                        The beginning of part of reproductive cycle is what is
+                        important as this is a basic extensive survey on 15
+                        plots with many different plants.
+                        It would be interesting to note how long creosote bush
+                        fruits stay on the plants.
+           Conversation with Rich Spellenberg:
+                        When Aristidae awns are gone, seed is gone and plant
+                        would be non-reproductive.
+                        DAPU (formerly ERPU) with white fuzz on vegetation is
+                        flowering.
+             Conversation with Bob Gibbons:
+                        Mesa Dropseed (Sporobolus flectuosus)drops its seed
+                        fairly quickly after panicle opens.
+
+            Quick List of Sites: Does not necessarily indicate CHANGE in
+                methodology.
+          GRAV - begin SE corner, separate trip for ERPU, do tape intercept
+                 for total count.
+          SAND - begin NW corner, separate trip for ERPU.
+          CALI - begin NW corner, separate trip for ERPU.
+          SUMM - begin SE corner, separate trip for BOER.
+          BASN - begin NE corner, one time thru (all SCRR is within 30m).
+          EAST - begin NW corner, separate trip for ERPU & MUAR.
+          TOBO - begin NW corner, separate trip for HIMU.
+          NORT - begin SE corner, count PRGL by dunes.
+          RABB - begin SE corner, count PRGL by dunes, separate trip for ERPU
+          WELL - begin either end (SE), separate trip for ERPU.
+          IBPE - begin SE corner, separate trip for BOER using 1m transect.
+          COLL - begin SE corner, do E & N edges, for PAOB divide transect
+                 into 1m x 1m segments for determining phenology for 190
+                 possible observations. (Correct # is 170- MB.)
+          SMAL - begin SE, for PAOB divide transect into 1m x 1m segments for
+                 determining phenology for 140 possible observations.
+          TAYL - begin NW corner, 2nd trip for SCBR & MUAR.
+          WEST - begin SE corner.
+
+December   Checked XASA/XAMI ID with NPP IDs, call all at M-WELL the same.
+
+1993
+January    Conversation with Laura:
+                        Call all "dead" plants dormant until spring green-up.
+                        Call all Xanthocephalum the same at M-WELL when not in
+                        flower or use XASA/MI.
+                        Don't spend additional time looking for single species
+                        plants missed on regular transect.
+                        Count mesquite by dune at NORT and RABB.
+                        If over a third of the plant is in, call it in for grass
+                        and subshrub.  Count dominant shrub in if a major branch
+                        is in even if less than a third of the plant.
+March      Count BOER in line at SUMM, IBPE, BASN.  (It appears from the data
+                that this methodology change happened in Sept.92 for G-IBPE, in
+                Nov.92 for G-SUMM; there is no indication of a methodology
+change
+                for G-BASN (MB).)
+             New observation sheets with species code and # of plants found.
+May        ARWR at TAYL, RABB, BASN & IBPE was ID'd as ARFE by Dr. Allred
+                from samples.
+June         It is not clear whether FLCE count includes seedlings at T-TAYL
+                and T-WEST. (MB)
+July         Switched TOBO to line count for HIMU and SPAI.  (This happened in
+                Nov.92 and not in July accord. to data (MB).)
+August     New observation sheets with species code and plot #.
+           Sample sheet to John Anderson for computer entry.
+             It is not clear whether XANT count includes seedlings at M-WELL
+                (MB).
+September  It is not clear whether XANT count includes seedlings at M-WELL
+                (MB).
+October    It is not clear whether ARSP count includes seedlings at M-RABB.
+November   Changed count for ARSP at G-IBPE accord. to field data(MB).
+December   Count MUAR by 1 m at WEST and EAST.  (There is no evidence that
+                methodology changed this month; if it changed at all it changed
+                in Sept.92 for T-EAST and Nov.92 for T-WEST (MB).)
+============= END comments by CIS =========
+
+1994
+January    Changed Aristidae to ARPU unless positively ID'd otherwise.
+February   It is not clear whether XANT count at M-WELL includes seedlings
+                (MB).
+March      Switched counts for P-COLL and P-SMALL as they were accidentally
+                recorded in the wrong field (MB).
+April        Changed count for MELE at C-GRAV accord. to field data (MB).
+May          Changed count for XANT at G-IBPE accord. to field data (MB).
+September  It is not clear whether XANT count at G-IBPE includes seedlings
+                (MB).
+December   Field Sheets revised to show changes and include plot number
+                where single species were found.
+1995
+March        Change ERPU to DAPU, HIMU to PLMU, ERLA to DYAC.
+             DAPU switched from line to counting all in 1 m width at RABB,
+                WELL, EAST.  (Unclear whether there is evidence for this in the
+                data (MB).)
+             Changed count for FLCE at T-WEST and XANT at M-RABB accord. to
+                field data. (MB)
+April        Changed count for FLCE at T-WEST accord. to field data (MB).
+             Added seedling count in comment column for XANT at M-WELL (MB).
+             It is not clear whether ZIGR count includes seedlings at G-SUMM
+                and G-BASN (MB).
+June         DAPU switched from line to counting all in 1 m width at GRAV.
+             Changed count for FLCE at T-WEST accord. to field data (MB).
+             Added seedling count in comment column for XANT at M-WELL (MB).
+July         DAPU switched from line to counting all in 1 m width at SAND.
+             Added seedling count in comment column for XANT at M-WELL (MB).
+August     Changed count for XANT at M-WELL accord. to field data (MB).
+             Changed count for XANT at M-RABB accord. to field data (MB).
+September  Changed count for FLCE at T-WEST accord. to field data (MB).
+             Changed count for XANT at M-WELL accord. to field data (MB).
+October    Swtiched to counting all plants on a line at COLL because so
+                few living plants.
+             Switched back to line for DAPU at SAND with 100's of 0.01 plants.
+             It is not clear whether the non-reproductive plants for FLCE at
+                T-WEST are seedlings (non-reproductive size) or not (MB).
+             Counts of XANT at M-WELL may include seedlings (MB).
+             Added seedling counts for DAPU at M-RABB (MB).
+November   Changed count for FLCE at T-WEST accord. to field data (MB).
+             It is not clear whether seedlings were included in DAPU counts at
+                M-RABB (MB).
+December   Field sheets revised to include name changes and removal of
+                species no longer found on plots.
+             Changed count for FLCE at T-WEST accord. to field data (MB).
+             It is not clear whether seedlings were included in DAPU counts at
+                M-RABB (MB).
+1996
+January    Timing changed from third week to second week to accommodate
+                SMAMEX schedule.
+             Added FLCE seedlings at T-WEST (MB).
+March        Use XANT code at WELL for XANThocephalum
+             It is not clear whether XANT count at M-WELL includes individuals
+                that have not reached reproductive size (MB).
+May          Paul Hyder ID'd cactus at all NPP plots:
+                        GRAV #47 Echinocereus triglochidiates
+                        WEST #20 Coryphantha macromeris
+             It is not clear whether XANT count at M-WELL includes individuals
+                that have not reached reproductive size (MB).
+             Changed count for ATCA at M-RABB accord. to field data (MB).
+June         Changed count for ATCA at M-RABB accord. to field data (MB).
+July         P-COLL switched back to 1 m intervals from single plants (lots of
+                rain)
+             Conversation with Laura:
+                        If plants haven't greened up after 2" of rain, they are
+                        dead.
+             It is not clear whether XANT and YUEL count at M-WELL includes
+                individuals that have not reached reproductive size (MB).
+             Counted DAPU in 1 m belt instead of line at M-RABB (note on field
+                data sheets not previously recorded in history (MB)).
+1998
+July         Data analyzed for sample size; species with insufficient sample
+                size were dropped from transect observations.  New Data sheets
+                were made.
+1999
+March      Corrected count for XANT at G-IBPE and M-RABB and M-WELL, as well
+                as for DAPU at M-RABB, subtracting seedling numbers from overall
+                count and added to comment data column.
+April      Corrected count for XANT at G-IBPE and M-RABB and M-WELL,
+                subtracting seedling numbers from overall count and added to
+                comment data column.
+May        Corrected count for XANT at G-IBPE and M-RABB and M-WELL,
+                subtracting seedling numbers from overall count and added to
+                comment data column.
+June       Corrected count for XANT at G-IBPE and M-RABB and M-WELL,
+                subtracting seedling numbers from overall count and added to
+                comment data column.
+July       Corrected count for XANT at G-IBPE and M-RABB and M-WELL,
+                subtracting seedling numbers from overall count and added to
+                comment data column.
+August     Corrected count for XANT at G-IBPE and M-RABB and M-WELL,
+                subtracting seedling numbers from overall count and added to
+                comment data colum.
+September  Corrected count for P-COLL; total count should be 170, not 190;
+                deleted number of non-reprod from fruit total to get true fruit
+                total. Thus excel file and data book have different values. (MB)
+October    Corrected count for P-COLL; total count should be 170, not 190;
+                deleted number of non-reprod from fruit total to get true fruit
+                total. Thus excel file and data book have different values. (MB)
+November   Corrected count for LATR at C-CALI; moved dormant individuals to
+                non-reproductive. (MB)
+           Corrected count for P-COLL; total count should be 170, not 190;
+                deleted number of fruiting from total to get true non-reprod
+                total. Thus excel file and data book have different values. (MB)
+December   Corrected count for P-COLL; total count should be 170, not 190;
+                deleted number of fruiting from total to get true non-reprod
+                total. Thus excel file and data book have different values. (MB)
+============================================================================
+2000
+June       No measurements made at P-SMAL; playa flooded.
+============================================================================
+2001
+January    Number of square meter quads miscalculated for P-COLL in the past.
+                For all readings (at least) by C. McGlone and S. Richmond, and
+                all subsequent readings, the total number of square meter quads
+                should be changed to 170 from 190.
+April      Switched from line counting to counting all in 1 m width for MUAR
+                at T-WEST.
+             Switched to line transect for DAPU at M-RABB.
+May        Updated phenology methodology.
+             Conversation with Laura:
+                        When counting seedlings, seedlings may be added to the
+                        individual phenology column counts once plants are of
+                        reproductive size.
+June       Added XANT to species list at C-CALI.
+             Switched from line counting to counting all in 1 m width for MUAR
+                at G-BASN.
+July       No phenological activity at the playa sites (P-TOBO, P-COLL &
+              P-SMAL).  Used data from previous month to minimize disturbance
+              to transects.
+August     Switched from line counting to counting all in 1 m width for MUAR
+                at T-EAST.
+           No phenological activity at the playa sites (P-TOBO, P-COLL &
+              P-SMAL).  Used data from previous month to minimize disturbance
+              to transects.
+September  Corrected seedling numbers in previous years where seedlings may
+                have been added to total phenology counts (see conversation with
+                Laura in May 2001).
+           Verified methodology notes in history log.  Additional entries
+                were made in previous years history log but all changes and
+notes
+                were initialized (MB).  Note:  Not all methodology changes are
+                documented here.  I did my best to reconstruct changes but that
+was not
+                possible in all cases.
+           Switched from line counting to counting all in 1 m width for DAPU
+                at C-GRAV.
+           At T-TAYL the number for PLMU increased due to confusion regarding
+                a patch of formally non-reproductive grass I was told was PAOB.
+                In fact, it is PLMU.
+October    Switched from line counting to counting all in 1 m width for DAPU
+                at C-SAND.
+           Gave copy of updated creosote data sheet to John Anderson.
+November   Major disturbance to transects at P-SMAL in November due to cow
+                activity inside exclosure.  Grasses virtually mowed; almost all
+                flowering stalks gone (old and new).  Disturbance documented by
+                LTER.
+December   No phenological activity at the playa sites (P-TOBO & P-SMAL).
+Assumed all
+                meters to be dormant to minimize disturbance to transects.
+======================================================================
+2002
+January    No phenological activity at the playa sites (P-TOBO, P-COLL &
+P-SMAL); all
+                grass is dormant.
+February   No phenological activity at the playa sites (P-TOBO, P-COLL &
+P-SMAL); all
+                grass is dormant.
+March      Some grazing of Xanthocephalum at G-IBPE and M-RABB.
+           Conversation with Laura:  We are most interested in "reproductive
+phenolgy"
+                        not leaf out or photosynthetic phenology; record
+fruiting of plants
+                        if plants still have fruits even after they have become
+dormant or have
+                        "greened up".  Note dormancy/green up in comments.
+May        Switched to line transect for MUAR at T-TAYL.
+           Removed DAPU from transect at G-BASN and G-SUMM; there were too few
+individuals
+                to determine phenology. Sent updated data sheets to John
+Anderson.
+June       No phenological activity at P-COLL. Assumed all meters to be
+                dormant to minimize disturbance to transects.
+August     Counted all DAPU seedlings at C-SAND and included in total
+                individuals b/c DAPU reaches reproductive size quickly.
+           P-COLL flooded so transect counts were not made.
+September  Switched to line transect for DAPU at C-SAND.
+October    Removed ZIAC from transect at C-SAND; there were too few individuals
+                to determine phenology. Sent updated data sheet to John
+Anderson.
+December   Playas: did not walk transects in order to minimize disturbance;
+                grass dormant and fruits still present; used numbers from
+                previous month.
+======================================================================
+2003
+January    Playas: did not walk transects in order to minimize disturbance;
+                grass dormant and fruits still present; used numbers from
+                previous month.
+February   P-COLL and P-SMAL: did not walk transects in order to minimize
+                disturbance; grass dormant and fruits still present; used
+                numbers from previous month.
+April      Corrected Julian dates on excel files from 2000-2003.
+May        In January 2001 there was an accidental switch in methodology at
+                P-TOBO.  The EASTERN and southern boundaries were walked instead
+                of western and southern.  P-TOBO will continue to be sampled in
+                this manner- E and S boundaries will be walked.
+           At G-SUMM all grass non-reprod; used number from last month to
+                minimize disturbance.  At P-COLL and P-SMAL all grass non-reprod
+                with old fruits; used numbers from last month.
+June          Measurements for G-BASN and G-SUMM were not made along the correct
+                transects. At G-SUMM, SW and NW sides were walked instead of SE
+                and SW sides, at GBASN N and W instead of S and W.
+August     It rained on 08/15/03 before I could do sites C-SAND and C-GRAV.
+                These sites were done on 08/18/03.  I think that the DAPU at
+                C-SAND responded to the rain and greened up, therefore
+                individuals that may have been measured as dormant on 8/15/03
+                were measured as non-reproductive on 8/18/03.  It did not
+                appear that the rain immediately affected the other species
+                being measured at these two sites.
+September  P-TOBO:  did not walk transects in order to minimize disturbance;
+                confirmed that grasses still dormant while doing NPP on 9/10/2003,
+                used numbers from previous month.
+October    P-TOBO:  did not walk transects in order to minimize disturbance;
+                confirmed that grasses still dormant by checking the playa on
+                10/16/03, used numbers from previous month.
+November   P-TOBO:  did not walk transects in order to minimize disturbance;
+                confirmed that grasses still dormant by checking the playa on
+                11/18/03, used numbers from previous month.
+December   No phenological activity at playa sites (P-COLL, P-SMAL, P-TOBO), all
+                grass is dormant. Transects not walked, used numbers from last
+                month.
+
+=======================================================================================
+
+2004
+January    No phenological activity at playa sites (P-COLL, P-SMAL, P-TOBO)or
+                at site G-SUMM, all grass is dormant.  Transects not walked,
+                used numbers from last month.
+
+           At M-RABB, observed a XANT1 between 5 and 10 cm in diameter which had
+                old fruit.  Previously, XANT1 smaller than 10cm in diameter was counted as being
+                of non-reproductive size.  From now on, XANT1 must be 5cm or less in diameter to
+                be counted as non-reproductive size.
+
+February   No phenological activity at playa sites (P-COLL, P-SMAL, P-TOBO)or
+                at site G-SUMM, all grass is dormant.  Transects not walked,
+                used numbers from last month (LJL).
+
+April      The values for XANT at M-NORT are 3 Dormant and 1
+                Non-Reproductive, instead of 0 Dormant and 4 Non-reproductive.
+                I changed the values in the spread sheet on May 5, 2004  and
+                emailed the updated spreadsheet and history log to John
+                Anderson (LJL).
+
+May        At P-TOBO a few PLMU were fruiting. I didn't realize they
+           were fruiting, so I counted them as flowering.  There were very few
+           plants in the fruiting stage so it shouldn't affect the data much
+           (LJL).
+
+June       On 6/3/04 an intense storm hit the South end of the Jornada.  P-COll
+           was fooded and remained so during phenology.  Therefore, phenology
+           was not done for P-COLL in June. The transects at G-BASN, G-SUMM and
+           C-SAND were also affected by considerable erosion and sand/litter
+           deposition (LJL).
+
+July       Because of low numbers for DAPU at M-RABB, C-CALI and C-SAND, I
+                used a belt transect instead of a line transect at these sites.
+                John Anderson said this is OK.  I will use a belt transect for
+                now on at these sites (LJL).
+
+           P-COLL still had some water left in it from the June 3rd flooding.  I
+                did not do phenology at this site. However, by 6/26/04 the
+                water dried and the grass turned green again (LJL).
+
+August     P-COLL was flooded again when I did phenology this month. It looked
+                about a foot deep and was centered around the area
+                encompassing the NPP plot (LJL).
+
+           T-TAYL was incredibly green.  The vegetation was overgrown.
+                Grass individuals and other plants were hard to single out.
+                LYBE numbers seem low for this month.  This is probably because
+                smaller shoots, previously counted as individuals, grew
+                together and looked like one big bush. No non-reproductive MUAR
+                was counted, because it was also hard to see individuals.  There
+                probably where a few non-reproductive MUAR but I did not see
+                them (LJL).
+
+September  T-TAYL The vegetation was overgrown like this previous August.
+                Grass individuals and other plants were hard to single out.
+                LYBE numbers seem low for this month.  This is probably because
+                smaller shoots, previously counted as individuals, grew
+                together and looked like one big bush.  The tarbush at this
+                site is being heavily herbivorized by some sort of ladybug-sized
+                beetle.  It may be Calligrapha scalaris but the ID is not
+                certain. The robust bushes seem to be eaten the most (LJL).
+
+           G-BASN and all Tarbush sites have SCBR that is both dioecious and
+                monoecious. At first I thought the monoecious ones where just
+                male and female plants growing close together and would count
+                them as seperate individuals. But, there is a voucher specimen
+                in our collection of a monoecious plant. Now I count the plants
+                as a monoecious individual and keep a tally in the comments
+                column. They should probably be counted in the fruiting column
+                but I will check with the P.I. before doing this and will write
+                another entry when things are decided apoun. [After contacting
+                the project's PI, I have decided to split up monoecious
+                individuals and count them in both the flowering and fruiting
+                column. In the past, the plants were always assumed to be
+                dioecious, so monoecious individuals were split into
+                two plants by default. I'm keeping with this method to keep the
+                data standardized. However, I am recording the number of
+                monoecious individuals that where split up, in the comments
+                column. (Notes in square brackets added by LJL on 11/15/2004)].
+                See Jan 2005 notes on SCBR answer from Laura Huenneke.
+
+October    G-BASN and all Tarbush sites have some monoecious individuals. See
+               notes on SCBR from September 2004. (LJL)
+
+           All sites with MUPO, PLMU, and SPAI.  These grasses are going through
+               another reproductive stage.  Old fruit is from the previous
+               cycle this summer and new reproductive parts are from the
+               current reproductive cycle.This may have begun last month. (LJL)
+
+           P-COLL and P-SMAL were flooded again on 09/29/2004.  They were still
+               wet when phenology was being done in October so they could not
+               be measured. See entries in the history file, FLOODING.HIS. (LJL)
+
+November   G-BASN and all Tarbush sites. See notes for SCBR from September.(LJL)
+
+December   G-BASN and all Tarbush sites. See notes for SCBR from September.(LJL)
+
+           P-COLL, P-SMAL, P-TOBO and G-SUMM. No phenological activity, all
+               grass is dormant.(LJL)
+
+           G-BASN and all Tarbush sites. I have realized, that what I have been
+               considering a flowering SCBR (male) has probably not been
+               reproductively active for at least a month or two.  The male
+               inflorecenses are still on the plants but the filament and
+               anthers have probably shriveled long ago and pollen not produced
+               for months.  I don't know what to say, except maybe to move the
+               plants in the Flower column to the veg column for the last couple
+               months (atleast Dec and Nov). (LJL)
+
+======================================================================================
+
+2005
+January    No phenological activity at playa sites (P-COLL, P-SMAL, P-TOBO) or
+                at site G-SUMM, all grass is dormant.  Transects not walked,
+                use numbers from last month. (LJL)
+
+           G-BASN and all Tarbush sites.  The following was written by Laura Huenneke on 10/25/04 in response to my
+                concerns about monoecious SCBR during this last summer and fall.
+
+                "2) Hmm, the monoecious Scleropogon is an interesting question!  I had not
+                 really thought carefully about the fact that true male
+                 individuals can never really get past the flowering stage -
+                 they won't have fruits on them ever.  If
+                 the difference is between keeping all males separate (as was
+                 typical in the past), or now 'lumping' some of those males in
+                 with their female parts, then we will be decreasing the sample
+                 or count size and probably slightly decreasing the proportion
+                 recorded as flowering only (not yet fruiting).  I
+                 would lean toward continuing to treat them mainly as dioecious
+                 (consistent with past practice and with the majority of the
+                 cases); only worry about it if you have a really obvious case
+                 of monoecy.  Then in any analysis we should
+                 note that there is room for some discussion of true
+                 percentages in this species because of the behavior of males
+                 (never moving to 'fruiting') and ofthe occasional monoecious individuals.
+                 Again, the goal is a community level,
+                 broad brush picture of how quickly (and how synchronously) a
+                 species in a given site moves through the reproductive stages.  It is not quite like the
+                 very detailed study one could do on a single species with lots
+                 of marked individuals, much more frequent sampling, etc."
+
+February   No phenological activity at playa sites (P-COLL, P-SMAL, P-TOBO) or
+                at site G-SUMM, all grass is dormant.  Transects not walked,
+                use numbers from last month. (LJL)
+
+March      P-COLL and P-SMALL. No phenological activity, all grass is dormant.
+                Transects not walked, use numbers from last month. (LJL)
+
+April      M-RABB Forgot to record the number of XANT seedlings in the comments
+                column (seedlings can't reproduce so they are not counted in
+                regular columns). Instead, they are just lumped with the
+                Non-Reproductive plants. This shouldn't be a problem because
+                they are all doing to the same thing.
+
+May        M-RABB, M-Well, M-Nort, G-IBPE. Forgot to record the number of XANT
+                seedlings in the comments column (seedlings can't reproduce so
+                they are not counted in regular columns). Instead, they are just lumped with the
+                Non-Reproductive plants. This shouldn't be a problem because
+                they are all doing the same thing, except at M-North where there
+                is only one adult plant and some of the seedlings are larger
+                that our artificially dictated 5cm diameter lower limit of adult
+                size.
+
+
+======================================================================
+DATE
+mm/dd/yyyy   INIT  COMMENT
+----------   ----  -------
+11/26/1997   JPA   Initiation of interactive history log for NPP
+                   phenology study. Includes data book notes, field
+                   observations, and QA/QC comments.
+06/11/2001   MAB   Added history log information for years 1994-96 and
+additional history
+                   log entries for previous years found in hardcopy version of
+history
+                   log (computer file lost).  Entries for 2001 (Jan-June)added.
+07/17/2001   MAB   Added data book notes for July 2001.
+09/12/2001   MAB   See notes for September.  Added data book notes for August
+2001.
+                   Added ALL entries for 1999.
+10/17/2001   MAB   Added data book notes for October 2001.
+11/16/2001   MAB   Added data book notes for November 2001.
+01/16/2002   MAB   Added data book notes for January 2002.
+02/15/2002   MAB   Added data book notes for February 2002.
+03/19/2002   MAB   Added data book notes for March 2002.
+04/05/2002   MAB   Added protocol related notes for March 2002.
+05/16/2002   MAB   Added data book notes for May 2002.
+06/21/2002   MAB   Added data book notes for June 2002.
+08/19/2002   MAB   Added data book notes for August 2002.
+09/26/2002   MAB   Added data book notes for September 2002.
+10/16/2002   MAB   Added data book notes for October 2002.
+12/10/2002   MAB   Added data book notes for December 2002.
+01/15/2003   MAB   Added data book notes for January 2003.
+02/11/2003   MAB   Added data book notes for June 2000.
+02/17/2003   MAB   Added data book notes for February 2003.
+02/21/2003   MAB   Added correction to September-December 1999 data.
+04/24/2003   MAB   Data corrections noted.
+05/14/2003   MAB   Included methology change info in May record.
+05/15/2003   MAB   Added data book notes for May 2003.
+
+============ END of FIELD HISTORY LOG ================================

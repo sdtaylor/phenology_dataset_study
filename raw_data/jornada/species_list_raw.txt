@@ -1,0 +1,1164 @@
+SPECIES
+                         PLANT CHECKLIST FOR THE NSF/LTER JORNADA SITES *
+                                  LIST UPDATED December 4, 2014
+
+Scientific/Common_Names @             Code$Habit%Form& Hbtat#   Phnlgy?Path+STAT<  REFER!Voucher=
+------------------------------------- ----- --- -----  -----    ------ ---- -----  ------ ------
+Abutilon malacum Wats. (Malv.)        ABMA   P   FORB  BF          SU   C3    NAT  CJ1040 S-1950
+    Indian-Mallow
+Acacia constricta Benth. (Fabac.)     ACCO   P  SHRUB  BF          SP   C3    NAT  CJ 772
+    White thorn
+Acacia neovernicosa Isley (Fabac.)    ACNE   P  SHRUB  BF          SP   C3    NAT  CJ 772
+    Resin-leaf white thorn
+Acalypha neomexicana Muell. Arg.      ACNM   A   FORB  BS          SU   .     NAT  CJ 945
+    (Euph.) Three-seeded mercury
+Acanthochiton wrightii Torr.          ACWR   A   FORB  MR          SU   .     .    CJ 562
+    (Amaranth.) Green stripe
+Allionia choisyi Standley             ALCH   P   FORB  GB          SU   .     NAT
+Allionia incarnata L (Nyct.)          ALIN   P   FORB  BF          SU   C4    NAT  CJ 577
+    Umbrella-wort
+Allium macropetalum Rydb. (Lil.)      ALMA   P   FORB  BF          SP   C3    NAT  CJ 389 S-2220
+    Wild onion
+Aloysia wrightii (Gray) Heller        ALWR   P  SHRUB  MS          SP   C3    NAT  CJ1334
+    (Verbenac.) Oreganillo Bee-Brush
+Amaranthus blitoides Wats.            AMBL   A   FORB  PC          SU   C4    NAT  CJ 560 S-2371
+    (Amaranth.) Prostrate pigweed
+Amaranthus crassipes Schlect.         AMCR   A   FORB  PS          SU   .     .
+Amaranthus fimbriatus (Torr.) Wats.   AMFI   A   FORB  BS          SU   C4    NAT  CJ 558
+    (Amaranth.) Fringed amaranth
+Amaranthus palmeri Wats. (Amaranth.)  AMPA   A   FORB  PC          SU   C4    NAT  CJ 555 S-2370
+    Pigweed
+Amaranthus pubescens (Uline & Bray)   AMPU   A   FORB  PC          SU   C4    NAT  CJ 560 S-2365
+    Rydb. (Amaranth.) Pigweed
+Ambrosia acanthicarpa Hook. (Aster.)  AMAC   A   FORB  MW,PT       SU   .     NAT  CJ1632 P-315
+    Bur ragweed
+Ammocodon chenopodioides (Gray)       AMCH   P   FORB  BS          SU   C4    NAT  CJ 587 S-2156
+    Standl. (Nyct.) Goosefoot moonpod
+Amsonia arenaria Standl. (Apocyn.)    AMAR   P   FORB  .           SP   .     NAT  CJ1214
+    Sand bluestar
+Anoda cristata (L.) Schlecht (Malv.)  ANCR   A   FORB  GS          SU   .     NAT  CJ1054
+    Spurred anoda
+Aphanostephus ramosissimus DC         APRA   A   FORB  BF          SP   C3    NAT  CJ1613
+    (Aster.) Lazy daisy
+Apodanthera undulata Gray. (Cucurb.)  APUN   P   FORB  BF          SU   .     NAT  CJ1510
+Aristida adscensionis L (Poac.)       ARAD   A  GRASS  BF          SU   C4    NAT  KA  51 S-2358
+    Six-weeks Three-awn
+Aristida glauca (Nees) Walp.          ARNE
+   (= A. purpurea var. nealleyi)
+Aristida hamulosa Henr.               ARHA
+   (= A. ternipes var. hamulosa)
+Aristida havardii Vasey (Poac.)       ARVA   P  GRASS  .           SU   C4    NAT  KA  53
+Aristida longiseta Steud.             ARLO
+   (= A. purpurea var. Longiseta)
+Aristida pansa Woot. & Standl. var.   ARDI   P  GRASS  .           SU   C4    NAT  KA  55
+   dissita (I.M. Johnston) Beetle
+   (Poac.)
+Aristida pansa Woot. & Standl. var.   ARPA   P  GRASS  .        SP-SU   C4    NAT  KA  55
+   pansa (I.M. Johnston) Beetle
+   (Poac.) Wootonís Threeawn
+Aristida purpurea Nutt. var.          ARLO   P  GRASS  BF       SP-SU   C4    NAT  KA  56 S-2252
+    longiseta (Steud.) Vasey
+    (=Aristida longiseta)
+    (Poac.) Red threeawn  (may
+    include some A. purpurea Nutt.)
+Aristida purpurea Nutt. var.          ARNE   P  GRASS  BF       SP-SU   C4    NAT  KA  56
+    nealleyi (Vasey) Allred
+    (=Aristida glauca)
+    (Poac.) Reverchon threeawn
+    (lumped with A. wrightii for
+    analysis)
+Aristida purpurea Nutt. Var. perplexa ARPE   P  GRASS  GX       SP-SU   C4    NAT  KA
+    Allread & Valdes (Poac.) Jornada
+    threeawn
+Aristida purpurea Nutt. var. purpurea ARPU   P  GRASS  BF          SP   C4    NAT  KA  55
+    (Poac.) Purple threeawn  (lumped
+    with A. longiseta for analysis)
+Aristida purpurea Nutt. var. wrightii ARWR   P  GRASS  BF          SU   C4    NAT  KA  57
+    (Nash) Allred
+    (=Aristida wrightii) (Poac.)
+    Wright's threeawn  (may include
+    some A. glauca (Ness) Walp.)
+Aristida ternipes Cav. var. hamulosa  ARHA   P  GRASS  BF          SU   C4    NAT  KA  54
+    (Herrard) Trent
+    (=Aristida hamulosa) (Poac.)
+    Poverty threeawn
+Aristida ternipes Cav. var. ternipes  ARTE   P  GRASS  BF          SU   C4    NAT  KA  52
+    (Poac.) Spider grass
+Aristida wrightii Nash. (Poac.)       ARWR
+   (= A. purpurea var. wrightii)
+Artemisia glauca Pall. (Aster.)       ARGA   P   FORB              SU   C3    NAT  CJ1707
+Artemisia ludoviciana Nutt. (Aster.)  ARLU   P  S-SHR  MS          SU   C3    NAT  CJ1706
+    Louisiana White Sage
+Asclepias brachystephana Engelm.      ASBR   P   FORB  BS       SP-SU   C3    NAT  CJ1232 S-2289
+    (Asclep.) Milkweed
+Asclepias nyctaginifolia Gray.        ASNY   P   FORB  TW       SP-SU   .     NAT  KP662  P-376
+Asclepias subverticillata (Gray)      ASSU   P   FORB  PS       SP-SU   C3    NAT  CJ1231
+    Vail. (Asclep.)
+Astragalus allochrous Gray (Fabac.)   ASAL   B   FORB  BF          SP   C3    NAT  CJ 847 S-2210
+    Locoweed
+Astragalus crassicarpus Nutt.         ASCR   P   FORB  GI          SP   .     NAT  CT 845
+    (Fabac.) Ground plum
+Astragalus mollissimus Torr. var.     ASMO   P   FORB  BF          SP   C3    NAT  CJ 844
+    Bigelovii (Gray) B.L. Turner
+    (Fabac.) Woolly locoweed
+Astragalus nuttallianus A. DC var.    ASNU   A   FORB  BF          SP   C3    NAT  CJ 849 S-2224
+    austrinus (Small) Rydb. (Fabac.)
+Astragalus tephrodes Gray var.        ASTE   P   FORB  BF       SP-SU   C3    NAT  KP 459 S-2231
+    tephrodes (Fabac.)
+Astragalus wootonii Sheld. (Fabac.)   ASWO   A   FORB  BF          SP   C3    NAT  CJ 847
+    Locoweed, garbancillo
+Atriplex canescens (Pursh) Nutt.      ATCA   P  SHRUB  BS       SP-SU   C4    NAT  CJ 543
+    (Cheno.) Four-wing saltbush
+Avena fatua L. (Gramin.)              AVFA   A  GRASS  .           .    .   INTRO  KA  59
+Bahia absinthifolia Benth. (Aster.)   BAAB   P   FORB  BF          SU   C3    NAT  CJ1699 S-2151
+Bahia biternata Gray (Aster.)         BABI   A   FORB  BF          SU   C3    NAT  CJ1699 S-2391
+Bahia pedata Gray (Aster.)            BAPE   A   FORB  BF          SU   C3    NAT  CJ1698 S-2390
+Baileya multiradiata Harv. & Gray     BAMU   P   FORB  BF          SU   C3    NAT  CJ1701 S-2253
+    (Aster.) Desert marigold
+Berlandiera lyrata Torr. (Aster.)     BELY   P   FORB  BS          SP   C3    NAT  CJ1624 W-s.n.
+    Greeneyes
+Bidens heterosperma Gray. (Aster.)    BIHE   A   FORB  BS          SU   .     NAT  KP 911
+    Rocky Mountain beggarticks
+Boerhavia coccinea Mill. (Nyct.)      BOCO   P   FORB  BF          SU   C4    NAT  CJ 595 S-1943
+    Scarlet spiderling
+Boerhavia gracillima Heimerl.         BOGL   P   FORB  BF          SU   C4    NAT  CJ 595 S-1949
+    (Nyct.) Bush-Spiderling
+Boerhavia intermedia M.E. Jones       BOIN   A   FORB  BF          SU   C4    NAT  CJ 596 S-2366
+    (Nyct.) Umbel-Spiderling
+Boerhavia spicata Choisy (Nyct.)      BOSP   A   FORB  BF          SU   C4    NAT  CJ 597 S-1947
+    Spiked-Spiderling
+Boerhavia wrightii Gray  (Nyct.)      BOWR   A   FORB  BF          SU   C4    NAT  CJ 597
+    Spiked-Spiderling
+Bothriochloa barbinodis (Lag.) Herter BOBR   P  GRASS  CC          SU   .     NAT  KA  90
+    (Gramin.) Cane bluestem
+Bothriochloa ischaemum (L.) Keng      BOIS   P  GRASS  .           SU   .   INTRO  KA  61
+    (Gramin.) Yellow bluestem
+Bothriochloa saccaroides (Sw.) Rydb.  BOTO
+   (= B. laguroides var. torreyana)
+Bothriochloa laguroides (DC.) Herter  BOTO   P  GRASS  MS          SU   C4    NAT  KA  61
+    subsp. torreyana (Steud.) Allred
+    & Gould
+    (=Bothriochloa saccaroides)
+    (Gramin.) Silver bluestem
+Bothriochloa springfieldii (Gould)    BOSR   P  GRASS  .           SU   C4    NAT  KA  62
+    Parodi (Poac.) Springfieldís
+    bluestem
+Bouteloua aristidoides (H.B.K.)       BOAR   A  GRASS  BS          SU   C4    NAT  KA  65
+    Griseb. (Poac.) Needle grama
+Bouteloua barbata Lag. (Poac.)        BOBA   A  GRASS  BF          SU   C4    NAT  KA  68 S-2357
+    Six-weeks grama
+Bouteloua curtipendula (Michx.) Torr. BOCU   P  GRASS  BF          SU   C4    NAT  KA  65 S-2364
+    (Poac.) Side-oats grama
+Bouteloua eriopoda (Torr.) Torr.      BOER   P  GRASS  BS          SU   C4    NAT  KA  63 S-2385
+    (Poac.) Black grama
+Brachiaria arizonica (Scribn.&Merr.)  BRAR   A  GRASS  GI          SU   C4    NAT  KA  70
+    S.T. Blake (Poac.) Arizona
+    signalgrass
+Brachiaria fasciculata (S.W.) Parodi  BRFA   A  GRASS  GS          SU   C4    NAT  KA  70
+    (=Panicum fasciculatum) (Poac.)
+    Browntop Panic panic grass
+Brickellia californica (T.&G.) Gray   BRCA   P  SHRUB  MS          SU   C3    NAT  CJ1546
+    (Comp.) California brickellbush
+Brickellia laciniata Gray (Aster.)    BRLA   P  SHRUB  BA          SU   C3    NAT  CJ1546
+    Cutleaf brickellbush
+Caesalpinia jamesii (T.&G.) Fisher    CAJA   P   FORB  .        SP-SU   .     NAT  CJ 796
+    (Fabac.) Caesalpinia
+Calliandra humilis Benth (Fabac.)     CAHU   P   FORB  PC       SP-SU   C3    NAT  CJ 770 S-2372
+    False mesquite
+    Early data coded as CAHA          CAHA   P  S-SHR  PC       SP-SU   C3    NAT  CJ 770 S-2372
+Calycoseris Wrightii Gray (Aster.)    CAWR   A   FORB  BF          SP   C3    NAT  CJ1729 S&W-2806
+    White cup-fruit
+Camissonia chamaenerioides (Gray)     CACH   A   FORB  BF          SP   C3    NAT  CJ1121
+    Raven (Onagr.) = (Oenothera ch.)
+Carlowrightia linearifolia (Torr.)    CALI   P  S-SHR  BF          SU   C3    NAT  CJ1468 S-1945
+    Gray (Acanth.)
+Cassia bauhinioides A. Gray (Fabac.)  CABA   P   FORB  BF       SP-SU   C3    NAT  CJ 787 L-1227
+    Twin-leaf, two-leaved senna
+Cenchrus incertus M.A. Curtis (Poac.) CEIN   A  GRASS  .        SP-SU   .     NAT  KA  81
+    Sandbur
+Ceratoides lanata (Pursh) J.T. Howell CELA   P  SHRUB  BF          SU   C3    NAT  CJ 545
+    (Cheno.) Winterfat (= Eurotia lanata)
+Cevallia sinuata Lab. (Loasaceae)     CESI   P  S-SHR  .           SU   .     NAT  CJ1063
+    Stinging cevallia
+Chaenactis stevioides Hook. & Arn.    CHST   A   FORB  BF          SP   C3    NAT  KP 922 S-2255
+    (Aster.) Desert false yarrow
+Chamaesaracha coronopus (Dun.) Gray   CHCO   P   FORB  GS          SU   C3    NAT  CJ1741
+    (Solan.) Crowfoot chamaesaracha
+Chamaesaracha sordida (Dun.) Gray     CHSO   P   FORB  BF          SU   C3    NAT  CJ1393
+    (Solan.) Dingy chamaesaracha
+Cheilanthes tomentosa Link.           CHTO   P   FERN  MS               C3    NAT  CJ  57
+    (Polypod.) Woolly lipfern
+Chenopodium incanum (Wats.) Heller    CHIN   A   FORB  PC          SU   C3    NAT  CJ 535 S-2363
+    (Cheno.) Mealy goosefoot
+Chenopodium leptophyllum Nutt.        CHLE   A   FORB  PC          SU   C3    NAT  CJ 534
+    (Cheno.) Narrowleaf goosefoot
+Chilopsis linearis (Cav.) Sweet.      CHLI   P  SHRUB  BA       SP-SU   C3    NAT  CJ1444
+    (Bign.) Desert willow, mimbre
+Chloris virgata Swartz. (Poac.)       CHVI   A  GRASS  BS          SU   C4    NAT  KA  82 S-2369
+    Feather fingergrass
+Chrysothamnus pulchellus (Gray)       CHPU   P  SHRUB  .           SU   .     NAT  CJ1577
+    Greene. (Poac.) Southwestern
+    rabbitbrush
+Cirsium ochrocentrum Gray (Aster.)    CIOC   A   FORB  PC          SU   C3    NAT  CJ1717 S-2378
+    Yellow-spine thistle
+Commelina erecta L. (Comm.)           COER   P   FORB  MS          SU   C3    NAT  CJ 358
+    Dayflower
+Condalia Warnockii M.C. Johnst.       COWA   P  SHRUB  BF          SU   C3    NAT  CJ1014
+    (Rham.) Crucillo
+Convolvulus equitans Benth. (Convol.) COEQ   P   FORB  GB       SP-SU   .     NAT  CJ1246
+    (=C. incanus) Texas bindweed
+Conyza canadensis (L.)Cronq. (Aster.) COCA   A   FORB  PC          SU   C3    NAT  CJ1608
+    Horseweed (=Erigeron Canadensis)
+Conyza Coulteri Gray. (Aster.)        COCO   A   FORB  PC          SU   C3    NAT  CJ1609
+    Marestail
+Corispermum nitidum Schult.           CONI   A   FORB  MW          SU    .  INTRO  CJ 547
+    (Chenop.) Tickseed
+Corydalis aurea Willd. (Fumar.)       COAU   A   FORB  PC          SP   C3    NAT  CJ 670 S&W-2804
+    Golden-smoke
+Coryphantha macromeris (Engelm.)      COMA   P  ST-SU  BF          SP  CAM    NAT  CJ1110
+    Britt. & Rose (Cact.)
+    Needle cactus
+Coryphantha scheeri (O. Ktze.) L.     COSC   P  ST-SU  GB TW       .   CAM    NAT  CJ1110
+    Benson (Cact.) Pineapple cactus
+Coryphantha vivipara (Engelm.)        COVI   P  ST-SU  BF          SP  CAM    NAT  CJ1110
+    (Nutt.) Britt. & Rose (Cact.)
+    Spinystar
+Croton Pottsii (Kl.) Muell. Arg. var. CRPO   P   FORB  BS       SP-SU   C3    NAT  CJ 936 S-2286
+    Pottsii (=C. corymbulosus) (Euph.)
+    Leatherweed
+Cryptantha angustifolia (Torr.)       CRAN   A   FORB  BF          SP   C3    NAT  CJ1299 S-2258
+    Greene (Borag.)(may include CRCR)
+    Narrow-leaf catís-eye
+Cryptantha barbigera (Gray) Greene.   CRBA   A   FORB  TT          SP   .     NAT  CJ1299
+    (Borag.) Bearded catís-eye
+Cryptantha crassisepala (Torr. &      CRCR   A   FORB  BF          SP   C3    NAT  CJ1298 S-2219
+    Gray) Greene (Borag.) (early
+    years may have called CRAN)
+    Thick-sepal catís eye
+Cryptantha Jamesii (Torr.) Pays.      CRJA   P   FORB  BF          SP   C3    NAT  CJ1299 S-2260
+    var. setosa (M.E. Jones) Shinners
+    (Borag.) Jameís popcorn
+Cryptantha micrantha (Nutt.) Johnst.  CRMI   A   FORB  BF          SP   C3    NAT  CJ1296 S-2233
+    (Borag.)
+Cryptantha pterocarya (Torr.) Greene  CRPT   A   FORB  BF          SP   C3    NAT  CJ1298
+    (Borag.)
+Cryptantha pusilla (T.&G.) Greene     CRPU   A   FORB  TW          SP   .     NAT  CJ1298
+    (Borag.)
+Cucurbita foetidissima HBK (Cucurb.)  CUFO   P   VINE  BS          SU   C3    NAT  CJ1510 S-2290
+    Buffalo gourd
+Cuscuta umbellata HBK (Cuscut.)       CUUM   P   VINE  PC          SU  PAR    NAT  CJ1261 S-2379
+    Dodder
+Cyperus esculentus L. (Cyper.) Yellow CYES   P  GRASS  PC          SU   C4    NAT  CJ 291
+    Nut-grass
+Cyphomeris gypsophiloides (Mart.      CYGY   P   FORB  CG          SU   .     NAT  CJ 591
+    & Gal.) Standl. (Nyctag.)
+    Red Cyphomeris
+Dalea formosa Torr. (Fabac.)          DAFO   P  SHRUB  BF          SP   C3    NAT  CJ 826 S-2223
+    Feather indigobush, feather plume
+Dalea nana Torr. (Fabac.)             DANA   P   FORB  GI       SP-SU   C3    NAT  CJ 825
+    Dwarf dalea
+Dalea scoparia Gray (Fabac.)          DASC   P  SHRUB  .           SU   .     NAT  CJ 821
+    (=Psorothamnus scoparius (Gray)
+    Rydb.) Broom pea
+Dasylirion Wheeleri Wats. (Lilia.)    DAWH   P  SHRUB  MS       SP-SU   C3    NAT  CJ 405
+    Sotol
+Dasyochloa pulchella (HBK) Hitchc.    DAPU   P  GRASS  BF          SU   C4    NAT  KA  87
+    (Poac.) Fluffgrass (= Tridens p.;
+     =Erioneuron pulchellum)
+Datura Wrightii Regel. (Solan.)       DAWR   P   FORB  BS       SP-SU   C3    NAT  CJ1405
+    (=Datura meteloides DC)
+    Jimson. weed.
+Delphinium virescens Nutt. (Ranun.)   DEVI   P   FORB  BS          SU   .     NAT  CJ 639
+Descurainia pinnata (Walt.) Britton   DEPI   A   FORB  BF          SP   C3    NAT  CJ 683 S-2216
+    ssp. ochroleuca (Woot.) Detling
+    (Cruc.) Tansy-mustard
+Desmanthus cooleyi (Eat.) Trel.       DECO   P   FORB  GI          SU   .     NAT  CJ 781
+    (Fabac.) Cooley's bundleflower
+Digitaria californica (Benth.) Henr.  DICA   P  GRASS  BS       SP-SU   C4    NAT  KA  91
+    (Poac.)  Arizona Cottontop
+    (see Trichachne californica)
+Distichlis spicata (L.) Greene var.   DISP   P  GRASS  BF          SU   C4    NAT  KA  92
+    stricta (Torr.) Beetle
+    (Poac.) Desert saltgrass
+Dithyrea Wislizenii Engelm. (Cruc.)   DIWI   B   FORB  BF          SP   C3    NAT  CJ 706 S-2218
+    Spectacle pod
+Draba cuneifolia Nutt. var.           DRCU   A   FORB  BF          SP   C3    NAT  CJ 694 S-2226
+    cuneifolia (Cruc.)
+Dyssodia acerosa DC (Aster.)          DYAC   P  SHRUB  BF       SP-SU   C3    NAT  CJ1681 S-2225
+Dyssodia papposa (Vent.) Hitchc.      DYPA   A   FORB  TE          SU   .     NAT  CJ1680
+Dyssodia pentachaeta (DC.) Robins.    DYPE   P   FORB  BD       SP-SU   .     NAT
+Echinocactus horizonthalonius Lem.    ECHO   P  ST-SU  BF          SP  CAM    NAT  CJ1104
+    (Cact.) Turk's head, devil's head
+Echinocereus Fendleri Engelm. var.    ECFE   P  ST-SU  BF          SP  CAM    NAT  CJ1097
+    fendleri (Cact.)
+Echinocereus pectinatus (Scheidw.)    ECPE   P  ST-SU  BF          SP  CAM    NAT  CJ1098
+    Engelm. var. neomexicanus (Coult.)
+    L. Benson (Cact.)
+Echinocereus triglochidiatus Engelm.  ECTR   P  ST-SU  BF          SP  CAM    NAT  CJ1096
+    var. Guerneyi L. Benson (Cact.)
+    Claret-cup
+Echinochloa colonum (L.) Link         ECCO   A  GRASS  PC          SU   .   INTRO  KA  93
+Enneapogon desvauxii Beauv. (Poac.)   ENDE   P  GRASS  BF          SU   C4    NAT  KA 105 S-1951
+    Spike pappus-grass
+Ephedra trifurca Torr. (Ephed.)       EPTR   P  SHRUB  BF          SP   C3    NAT  CJ  81 S-2256
+    Mormon-tea, canatilla
+    (includes some EPTO)
+Ephedra torreyana Wats. (Ephed.)      EPTO   P  SHRUB  BS          SP   C3    NAT  CJ  82 S&W-2807
+    Mormon Tea, Torrey joint-fir
+    (not differentiated from EPTR)
+Eragrostis arida Hitchc.              ERMI
+   (= E. pectinacea var. miserrima)
+Eragrostis cilianensis (All.) E.      ERCI   A  GRASS  PC          SU   C4  INTRO  KA 106 S-2356
+    Mosher (Poac.) Stinkgrass
+Eragrostis Lehmanniana Ness.          ERLE   P  GRASS  BF          SU   C4  INTRO  KA 109 S-2389
+    (Poac.) Lehman's Love Grass
+Eragrostis pectinacea (Michx.) Nees   ERMI   A  GRASS  PC          SU   C4    NAT  KA 108 S-2374
+    var. miserrima (Fourn.) J.Reeder
+    (=Eragrostis arida) (Poac.)
+    Desert lovegrass
+Eragrostis pectinacea (Michx.) Nees   ERPE   A  GRASS  PC          SU   C4    NAT  KA 107
+    var. pectinacea  (Poac.)
+    Carolina lovegrass
+Eriastrum diffusum (Gray) Mason       ERDI   A   FORB  BF          SP   C3    NAT  CJ1267 S-2207
+    (Polem.)
+Ericameria laricifolia (Turpentine    ERLA   P  SHRUB  MS          SU   C3    NAT  CJ1578
+    bush) (Gray) Shinners (Aster.)
+Erigeron Bellidiastrum Nutt. (Aster.) ERBE   A   FORB  BS       SP-SU   C3    NAT  CJ1607
+    Western Fleabane
+Erigeron divergens T. & G. (Aster.)   ERDV   P   FORB  BF          SP   C3    NAT  CJ1606 S-2232
+    Spreading fleabane
+Eriogonum abertianum Torr. (Polyg.)   ERAB   A   FORB  BF       SP-SU   C3    NAT  CJ 516
+    Abert's desert wild buckwheat
+Eriogonum annuum Nutt. (Polyg.)       ERAN   A   FORB  GI       SP-SU   .     .    CJ 515
+    Annual buckwheat
+Eriogonum rotundifolium Benth.        ERRO   A   FORB  BS       SP-SU   C3    NAT  CJ 516
+    (Polyg.) white wild buchwheat
+Eriogonum trichopes Torr. (Polyg.)    ERTR   A   FORB  BS       SP-SU   C3    NAT  KP 238
+    yellow desert wild buckwheat
+Eriogonum Wrightii Torr. (Polyg.)     ERWR   P   FORB  BF          SU   C3    NAT  CJ 514
+    Wright's wild buckwheat
+Erioneuron pulchellum (HBK) Takeoka   DAPU
+   (= Dasyochloa pulchella)
+Erodium cicutarium (L.) L'Her (Geran.)ERCC   A   FORB  BS          SP   C3  INTRO  CJ 892
+Erodium texanum Gray. (Geran.)        ERTE   A   FORB  BS          SP   C3    NAT  CJ 892
+    Storks-bill
+Erysimum capitatum (Dougl.) Greene.   ERCA   P   FORB  CG,GS    SP-SU   .     NAT  CJ 688
+    (Cruc.) Douglas's wallflower
+Eschscholzia mexicana                 ESME   A   FORB  BF          SP   C3    NAT  CJ 662 S-2209
+    (Papav.) Mexican golden poppy
+Eucrypta micrantha (Torr.) Heller     EUMC   A   FORB  MS          SP   C3    NAT  CJ1274
+    (Hydro.)
+Euphorbia albomarginata T. & G.       EUAL   P   FORB  BS       SP-SU   C4    NAT  CJ 980 S-2352
+    (Euph.) Rattlesnake weed
+Euphorbia dentata Michx. (Euph.)      EUDE   A   FORB  GS       SP-SU   C4    NAT  CJ 970
+Euphorbia glyptosperma Engelm.        EUGL   A   FORB  BS          SU   C4    NAT  CJ 977 S-2354
+    (Euph.) Ridgeseed spurge
+Euphorbia micromera Engelm. (Euph.)   EUMI   A   FORB  BF          SU   C4    NAT  CJ 978 S-2349
+    Small-leaf desert spurge
+Euphorbia parryi Engelm. (Euph.)      EUPA   A   FORB              SU   .     NAT  CJ 973
+    Parryís spurge
+Euphorbia revoluta Engelm. (Euph.)    EURE   A   FORB  BF          SU   C4    NAT  CJ 974
+    Round-leaf desert spurge
+Euphorbia serpyllifolia Pers. (Euph.) EUSR   A   FORB  BS          SU   C4    NAT  CJ 976 S-2375
+    Thymeleaf spurge
+Euphorbia serrula Engelm. (Euph.)     EUSE   A   FORB  BS          SU   C4    NAT  CJ 983 S-2350
+    Serrate-leaf desert spurge
+Euphorbia setiloba Engelm. (Euph.)    EUST   A   FORB  BS          SU   C4    NAT  CJ 981
+    Yuma spurge
+Eurotia lanata (see Ceratoides)
+Evolvulus Nuttallianus R. & S.        EVNU   P   FORB  GI       SP-SU   .     NAT  CJ1244
+    (Convolv.)
+Fallugia paradoxa (D. Don) Endl.      FAPA   P  SHRUB  BA       SP-SU   C3    NAT  CJ 750
+    (Rose) Apache plume
+Ferocactus Wislizenii (Engelm.)       FEWI   P  ST-SU  BF          SU  CAM    NAT  CJ1103
+    Britt. & Rose (Cact.) Barrel
+    cactus
+Flourensia cernua DC (Aster.)         FLCE   P  SHRUB  BS          SU   C3    NAT  CJ1653
+    Tarbush
+Fouquieria splendens Engelm. (Fouq.)  FOSP   P  SHRUB  MS       SP-SU   C3    NAT  CJ1070
+    Ocotillo
+Froelichia arizonica Thornb.          FRAR   P   FORB  .           SU   .     NAT  CJ 570
+    (Amaran.) Arizona snakecotton
+Gaillardia pinnatifida Torr. (Aster.) GAPI   P   FORB  GI       SP-SU   .     NAT  CJ1673
+Galium microphyllum Gray (Euphor)     GAMI   P   FORB  MS       SP-SU   .     NAT  CJ1482
+Gaura parviflora Dougl. (Onag.)       GAPA   A   FORB  PC       SP-SU   C3    NAT  CJ1124
+Garrya wrightii Torr. (Cornaceae)     GAWR   P  SHRUB  .           SU   .     NAT  CJ1171
+    Wrightís silktassle
+Gilia flavocincta A. Nels. ssp. 	     GIFL   A   FORB  BF          SP   C3    NAT  CJ1266 S-2213
+    australis V. Grant (Polemon.)
+Gilia mexicana A.&V. Grant            GIME   A   FORB  BF          SP   C3    NAT  CJ1266
+    (Polemon.)
+Gilia sinuata Dougl. (Polemon.)       GISI   A   FORB  BF          SP   C3    NAT  KP 691
+    (Polemon.)
+Grindelia squarrosa (Pursh) Dun.      GRSQ   A   FORB  PC          SU   C3    NAT  CJ1571
+    (Aster.)Curly-cup gumweed
+Haplopappus laricifolius              ERLA
+    (see Ericameria laricifolius)
+Haplopappus gracilis (Nutt.) Gray.    HAGR   A   FORB  BF          SU   C3    NAT  CJ1583
+    (Aster.) = Machaeranthera gr.
+Hedyotis humifusa Gray. (Rubiaceae)   HEHU   A   FORB  UP13     SP-SU   .     NAT  CJ1489
+    Bluet
+Helianthus annuus L. (Aster.)         HEAN   A   FORB  GS          SU   .     NAT  CJ1641
+    Common sunflower
+Helianthus ciliaris DC (Aster.)       HECI   P   FORB  PC          SU   C3    NAT  CJ1651 L-1223
+    Blue-weed
+Helianthus petiolaris Nutt. (Aster.)  HEPE   A   FORB  GI          SU   .     .    CJ1652
+    Plains sunflower
+Heliotropium convolvulaceum (Nutt.)   HECO   A   FORB  GI          SU   .     NAT  CJ1290
+    Gray. (Borag.) Bindweed
+    heliotrope
+Heliotropium greggii Torr. (Borag.)   HEGR   P   FORB  .        SP-SU   .     NAT  CJ1289
+    Fragrant heliotrope
+Heterotheca fulcrata (Greene)         HEFU   P   FORB  MS       SP-SU   C3    NAT  CJ1568 S-1941
+    Shinners (Aster.)
+Hilaria mutica (Buckl.) Benth.        PLMU
+   (= Pleuraphis mutica)
+Hoffmanseggia drepanocarpa Gray.      HODR   P   FORB  GI       SP-SU   C3    NAT  CJ 798
+   (Fabac.) Sicklepod rush-pea
+Hoffmanseggia glauca (Ort.) Eifert    HOGL   P   FORB  PC       SP-SU   C3    NAT  CJ 797
+    (Fabac.) (=H. densiflora Benth.)
+    Hog potato
+Hordeum murinum L. subsp. glaucum     HOMU   A  GRASS  CG       WI-SP   C3    INTR  KA 124
+    (Steud.) Tsvelev (Poac.) Wall
+    barley
+Hybanthus verticillatus (Ort.) Baill. HYVE   P   FORB  BS       SP-SU   C3    NAT  CJ1078 S-2288
+    (Viol.) Green-violet
+Hymenopappus flavescens Gray. var.    HYFL   B   FORB  GI       SP-SU   .     .    CJ1703
+    cano-tomentosus Gray. (Comp.)
+    Wooly-white
+Hymenoxys odorata (DC) Kuntz (Aster.) HYOD   A   FORB  PC          SU   C3    NAT  CJ1678 L-1224
+    Bitterweed
+Ibervillea tenuisecta (Gray) Small    IBTE   P   VINE  BF          SU   C3    NAT  CJ1511 S-2387
+    (Cucurb.) Globe-berry
+Ipomoea costellata Torr. (Convol.)    IPCO   A   VINE  GB          SU   C3    NAT  CJ1252
+    Crested morning-glory
+Ipomoea cristulata Hallier f.         IPCR   P   VINE  MS          SU   C3    NAT  CJ1250 S-1952
+    (Convol.) Scarlet creeper
+Ipomopsis longiflora (Torr.) V.       IPLO   A   FORB  BF          SU   C3    NAT  CJ1264
+    Grant (Polemon.) Pale trumpets
+Ipomopsis pumila Nutt. V. Grant.      IPPU   A   FORB  MW          SP   .     NAT  CJ1264
+    (Polemon.) Dwarf gilia
+Iva ambrosiaefolia (Gray)             IVAM   A   FORB  BF          SU   C3    NAT  CJ1629 S-2910
+    Gray (Aster.)
+Iva dealbata Gray (Aster.)            IVDE   P   FORB  .           SU   .     NAT    CJ1629
+    Wooly sump-weed
+Janusia gracilis Gray (Malpig.)       JAGR   P   FORB  MS          SU   C4    NAT  CJ 913 S-1953
+Juniperus monosperma (Engelm.) Sarg.  JUMO   P   TREE  MS          .    C3    NAT  CJ  78
+    (Cuppres.) One-seeded juniper
+Kallstroemia hirsutissima Vail        KAHI   A   FORB  BS          SU   C4    NAT  CJ 905
+    (Zygo.)  Carpetweed
+Kallstroemia parviflora Nort.         KAPA   A   FORB  BS          SU   C4    NAT  CJ 904 S-2348
+    (Zygo.) Mexican poppy
+Koeberlinia spinosa Zucc. (Koeber.)   KOSP   P  SHRUB  TWTE      SP-SU  .     NAT  CJ1074
+Krameria glandulosa Rose & Painter    KRPA   P  SHRUB  BF          SP   C3    NAT  CJ 890
+    (Kram.) Range ratany
+Krameria lanceolata Torr. (Kram.)     KRLA   P  S-SHR  BS          SU   C3    NAT  CJ 889 S-2347
+    Prostrate ratany
+Kuhnia chlorolepis Woot. & Standl.    KUCH   P   FORB  RS          SU   .     NAT  CJ1548
+    (Aster.)Prairie boneset
+Lappula Redowskii (Hornem.) Greene    LARE   A   FORB  BS          SU   C3    NAT  CJ1293 S-2221
+    (Borag.) Stickseed
+Larrea tridentata (DC) Cov. (Zygo.)   LATR   P  SHRUB  BF       SP-SU   C3    NAT  CJ 901
+    Creosote bush, hediondilla
+Lepidium lasiocarpum Nutt. (Cruc.)    LELA   A   FORB  BF          SP   C3    NAT  CJ 696 S-2208
+Lepidium montanum Nutl. var.          LEMO   P   FORB  BF          SP   C3    NAT  CJ 695 P-6
+    angustifolium C.L. Hitchc. (Cruc.)
+    Mountain peppergrass
+Lepidium virginicum L. var. medium    LEVI   A   FORB  BF          SP   C3    NAT  CJ 697 S-2217
+    (Greene) C.L. Hitchc. (Cruc.)
+Leptochloa dubia (HBR) Nees. (Poac.)  LEDU   P  GRASS  MS          SU   C4    NAT  KA 126
+    Green Sprangle-Top
+Leptochloa viscida (Scribn.) Beal.    LEVS   A  GRASS  PC          SU   C4    NAT  KP 123
+    (Poac.) Gum sprangle-top
+Lesquerella Fendleri (Gray) Wats.     LEFE   P   FORB  BF          SP   C3    NAT  CJ 704 S-2222
+    (Cruc.) Bladderpod
+Lesquerella Gordonii (Gray) Wats.     LEGO   A   FORB  BF          SP   C3    NAT  CJ 702 S-2230
+    (Cruc.) Bladderpod
+Leucelene ericoides (Torr.) Greene    LEER   P   FORB  BF          SP   C3    NAT  CJ1600 S-2257
+    (Aster.)
+Linanthus Bigelovii (Gray) Greene     LIBI   A   FORB  BF          SP   C3    NAT  CJ1267
+    (Polemon.)
+Linaria texana Scheele. (Scroph.)     LITE   A   FORB  GS          SP   .     NAT  CJ1426
+    (= Nuttalanthus texanus Scheel)
+    D.A. Sutton) Texas toadflax
+Linum aristatum Engelm. var. australe LIAU   A   FORM  MW,EN3   SP-SU   .     .    KP 489
+    (Heller) Kearney & Peebles (Lin.)
+    Southern flax
+Linum vernale (Woot.) Small. (Lin.)   LIVE   A   FORB  GI,MW    SP-SU   .     .    CJ 900
+    Spring flax
+Lotus neomexicanus Greene (Fabac.)    LONE   P   FORB  BF          SP   C3    NAT  KP 428 S-2211
+    New Mexico lotus
+Lupinus concinnus Agardh. var.        LUCO   A   FORB  BF          SP   C3    NAT  CJ 803 S-2206
+    orcuttii (Wats.) C. P. Smith
+    (Fabac.) Lupine
+Lycium berlandieri Dun (Solan.)       LYBE   P  SHRUB  TA          SP   .     NAT  CJ1402
+ Berlandieriís wolfberry
+
+Lycium pallidum Miers. (Solan.)       LYPA   P  SHRUB  TA          SP   .     NAT  CJ1401
+    Pale wolfberry
+Machaeranthera gracilis (Nutt.)       HAGR   A   FORB  BF          SU   C3    NAT  CJ1583 S-2388
+    Shinners (Aster.)
+    (syn. Haplopappus gracilis)
+Machaeranthera linearis Greene        MALI   A   FORB  MW          SU   .     NAT  CJ1584
+    Sand daisy (Comp.)
+Machaeranthera pinnatifida (Hook.)    MAPI   P   FORB  BS       SP-SU   .     .    CJ1582
+    Shinners. (Aster.)
+    Strapleaf spineaster
+Machaeranthera tanacetifolia          MATA   A   FORB  BS          SU   C3    NAT  CJ1585 S-2903
+    (HBK) Nees (Aster.) Tahoka daisy
+Malacothrix Fendleri Gray (Aster.)    MAFE   A   FORB  BF          SP   C3    NAT  CJ1728 S-2214
+    Desert dandelion
+Mammillaria grahamii Engelm. (Cact.)  MAGR   P  ST-SU  GS           .  CAM    NAT  CJ1102
+Mammillaria gummifera Engelm. var.    MAGU   P  ST-SU  BF          SP  CAM    NAT  CJ1101
+    applanata (Engelm.) L. Benson
+    (Cact.)
+Mammillaria wrightii Engelm.          MAWR   P  ST-SU  MS          SP  CAM    NAT  CJ1102
+    (Cact.) Pincushion cactus
+Melampodium leucanthum T. & G.        MELE   P   FORB  BF       SP-SU   C3    NAT  CJ1621
+    (Aster.) Blackfoot
+Menodora scabra Gray (Olea.)          MESC   P  S-SHR  BF          SU   C3    NAT  CJ1196 S-1948
+    Scabrous lime-shrub
+Mentzelia albicaulis Dougl. (Loas.)   MEAL   A   FORB  BF          SP   C3    NAT  CJ1084 S-2234
+    Stickleaf
+Mentzelia pumila (Nutt.) Gray (Loas.) MEPU   A   FORB  BF       SP-SU   C3    NAT  CJ1083 S-2254
+    Stickleaf
+Microseris linearifolia (DC)          MILI   A   FORB  BF          SP   C3    NAT  CJ1725
+    Sch. Bip.  (Aster.)
+Mirabilis linearis (Pursh) Heimerl.   MILN   P   FORB  PC          SU    .    NAT  CJ 583
+    (Nyct.)
+Mollugo Cerviana (L.) Ser. (Aizo.)    MOCE   A   FORB  BF          SU   C4    NAT  CJ 602 S-2650
+    Threadstem carpetweed
+Mollugo verticillata L. (Aizo.)       MOVE   A   FORB  GS       SP-SU   C4    NAT  CJ 602
+    Indian chickweed
+Morus microphylla Buckl. (Moraceae)   MOMI   P  SHRUB  MS          SP   .     NAT  CJ 497
+    Mountain mulberry
+Muhlenbergia arenacea (Buckl.)        MUAR   P  GRASS  BS          SU   C4    NAT  KA 138 W-s.n.
+    Hitchc. (Poac.) Ear muhly
+Muhlenbergia arenicola Buckl.         MUAN   P  GRASS  .           SU   C4    NAT  KA 145
+Muhlenbergia Porteri Scribn. (Poac.)  MUPO   P  GRASS  BF          SU   C4    NAT  KA 136 S-2361
+    Bush muhly
+Munroa squarrosa (Nutt.) Torr.        MUSQ   A  GRASS  MW          SU   C4    NAT  KA 150
+    (Poac.) False buffalo grass                        MR
+Nama hispidum Gray (Hydro.)           NAHI   A   FORB  BF          SP   C3    NAT  CJ1279 S-2215
+Neolloydia intertexta (Engelm.) L.    NEIN   P  ST-SU  BF          SP  CAM    NAT  CJ1107
+    Bens. var. intertexta and also
+    var. dasyacantha (Engelm.) L. Bens.
+    (Cact.) White viznagita
+Nicotiana trigonophylla Dunal         NITR   B   FORB  BF          SP   C3    NAT  CJ1407
+    (Solan.) Desert tobacco,
+    tabaquillo
+None - plants absent from segment     NONE
+Notholaena sinuata (Lag.) Kaulf.      NOSI   P   FERN  MS          .    C3    NAT  CJ  59
+    (Polyp.) Wavy cloakfern
+Notholaena Standleyi Maxon (Polyp.)   NOST   P   FERN  MS          .    C3    NAT  CJ  60
+    Star cloakfern
+Oenothera albicaulis Pursh (Onag.)    OEAL   A   FORB  BS       SP-SU   C3    NAT  CJ1131
+    Prairie evening primrose
+Oenothera caespitosa Nutt. var.       OECA   P   FORB  BS          SP   C3    NAT  CJ1130
+    australis (Woot. & Standl.) Munz
+    (Onag.) Tufted evening primrose
+Oenothera primiveris Gray (Onag.)     OEPR   A   FORB  BS          SP   C3    NAT  CJ1130 S&W-2805
+    Large yellow desert primrose
+Opuntia imbricata (Haw.) DC (Cact.)   OPIM   P  ST-SU  BF       SP-SU  CAM    NAT  CJ1091
+    Tree cholla, coyonostle
+Opuntia leptocaulis DC (Cact.)        OPLE   P  ST-SU  BF       SP-SU  CAM    NAT  CJ1091
+    Desert Christmas cactus, tasajillo
+Opuntia phaeacantha Engelm. var.      OPPH   P  ST-SU  BF       SP-SU  CAM    NAT  CJ1093 S&M-2530
+    discata (Engelm.) L. Bens. &
+    Walk., & var. major Engelm.
+    (Cact.)
+Opuntia violacea Engelm. var.         OPVI   P  ST-SU  BF       SP-SU  CAM    NAT  CJ1093 S&M-2531
+    Castetteri L. Bens., & var.
+    macrocentra (Engelm.) L. Bens., &
+    var. santa-rita (Griff. & Hare)
+    L. Bens. (Cact.)
+    Purple prickly pear
+Palafoxia sphacelata (Torr.) Cory     PASP   A  FORB   GI       SP-SU    .    NAT  CJ1697 P-310
+Panicum fasciculatum SW.              BRFA
+   (= Brachiaria fasciculata)
+Panicum hallii Vasey var. hallii      PAHA   P  GRASS  MS          SP   C4    NAT  KA 156
+    Hall's panic grass
+Panicum hirticaule Presl. (Poac.)     PAHI   A  GRASS  BS          SU   C4    NAT  KA 153 S-2383
+Panicum obtusum HBK (Poac.)           PAOB   P  GRASS  PC          SU   C4    NAT  KA 153
+    Vine-mesquite
+Parthenium incanum HBK (Aster.)       PAIN   P  SHRUB  BF          SU   C3    NAT  CJ1626 S-2910
+    Mariola
+Pectis angustifolia Torr. (Aster.)    PEAN   A   FORB  BS          SU   C4    NAT  CJ1685 S-2380
+     Lemmonweed (may include some
+     P. papposa Gray)
+Pectis papposa Gray (Aster.)          PEPA   A   FORB  BS          SU   C4    NAT  CJ1685 S-2149
+    Chinchweed (lumped with P.
+    angustifolia for analysis)
+Pectis prostrata Cav. (Aster.)        PEPR   A   FORB  PS          SU    .    NAT  CJ1684
+    Dwarf chinchweed
+Pellaea longimucronata Hook. (Poly.)  PELO   P   FERN  MS          .    C3    NAT  CJ  54
+Penstemon ambiguus Torr. (Scroph.)    PEAM   P  SHRUB  .           SU   .     NAT  CJ1422
+Perezia nana Gray (Aster.)            PENA   P   FORB  BS       SP-SU   C3    NAT  CJ1721 S-2285
+    Desert holly
+Perezia Wrightii Gray (Aster.)        PEWR   P   FORB  MS          SU   C3    NAT  CJ1721
+    Brownfoot
+Petalostemum compactum (Spreng.)      PECO   P   FORB  GI          SU   .     NAT  CJ 830
+    Swezey (Fabac.) Prairie clover
+Phacelia coerulea Greene (Hydro.)     PHCO   A   FORB  BS          SP   C3    NAT  CJ1276 S-2259
+    Blue phacelia
+Phacelia integrifolia Torr. (Hydro.)  PHIT   A   FORB  BD          SP   .     NAT  CJ1276
+    Sand phacelia
+Phacelia intermedia Woot. (Hydro.)    PHIN   A   FORB  BS          SP   C3    NAT  CJ1276
+    Wootonís phacelia
+Phacelia popei T.&G. (Hydro.)         PHPO   A   FORB  TW          SP   .     NAT  CJ1276
+    Popeís phacelia
+Phaseolus acutifolius Gray. var.      PHAC   P   FORB  GS          SU   .     NAT  CJ 888 P-378
+    acutifolius (Fabac.)
+    Tepary bean
+Phaseolus wrightii Gray. (Fabac.)     PHWR   P   FORB  .           SU   .     NAT  CJ 887
+Phyla incisa Small. (Verb.)           PHIC   P   FORB  .        SP-SU   .     NAT  CJ1332
+Physalis hederaefolia Gray (Solan.)   PHHE   P   FORB  MS          SU   C3    NAT  CJ1390
+    Ground-Cherry
+Plantago patagonica Jacq. (Plantag.)  PLPA   A   FORB  BF          SP   C3    NAT  CJ1478
+    Patagonia plantain
+Pleuraphis mutica Buckley             PLMU   P  GRASS  BS          SU   C4    NAT  KA 165
+    (=Hilaria mutica) (Poac.)
+    Tobosa grass
+Poa fendleriana (Steud.) Vasey subsp. POFE   P  GRASS  BF       SP-SU   C3    NAT  KA 172
+    fendleriana (Poac.) Fendler's
+    Muttongrass
+Polanisia uniglandulosa (Cav.) DC     POUN   A   FORB  BF          SU   C3    NAT  CJ 707
+    (Capp.) Clammyweed
+Porophyllum scoparium Gray (Aster.)   POSC   P  SHRUB  MS       SP-SU   C3    NAT  CJ1686 S-2292
+Portulaca mundula I.M. Johnst         POMU   A   FORB  BS          SU   C4    NAT  CJ 607 S-2906
+    (Port.) Chisme
+Portulaca parvula Gray (Port.)        POPA   A   FORB  BS          SU   C4    NAT  CJ 607
+Portulaca oleracea L (Port.)          POOL   A   FORB  PC          SU   C4    NAT  CJ 607 S-2386A
+    Purslane
+Portulaca retusa Engelm. (Port.)      PORE   A   FORB  PS          SU   C4    NAT  CJ 607
+Portulaca suffrutescens Engelm.       POSU   P   FORB  BS       SP-SU    .    NAT  CJ 607
+    (Port.)
+Proboscidea parviflora (Woot.) Woot.  PRPA   A   FORB  BF          SU   C3    NAT  CJ1447
+    & Standl. (Martyn.) Devil's claw
+Prosopis glandulosa Torr. var.        PRGL   P  SHRUB  BF       SP-SU   C3    NAT  CJ 783
+    Torreyana (L. Benson) M.C. Johnston
+    (Fabac.) (=P. juliflora) Mesquite
+Psilostrophe tagetina (Nutt.) Greene. PSTA   P   FORB  GI       SP-SU   .     NAT  CJ1701
+    (Aster.)
+Rafinesquia neomexicana Gray (Aster.) RANE   A   FORB  BF          SP   C3    NAT  CJ1728
+Ratibida columnaris (Sims) D. Don.    RACO   P   FORB  PC       SP-SU   .     NAT  CJ1644
+   (Aster.)
+Ratibida Tagetes (James) Barnh.       RATA   P   FORB  PC          SU   .     NAT  CJ1644
+   (Aster.) Prairie cone-flower
+Rhamnus betulaefolia Greene (Rhamn.)  RHBE   P  SHRUB  MS               C3    NAT  CJ1012
+Rumex hymenosepalus Torr. (Polygon.)  RUHY   P   FORB  BD          SP   .     NAT  CJ 518
+Rhus microphylla Engelm. (Anacard.)   RHMI   P  SHRUB  BF          SP   C3    NAT  CJ 991
+    Little leaf sumac
+Road                                  ROAD
+Salsola Kali L (Chen.)                SAKA   A   FORB  BF       SP-SU   C4  INTRO  CJ 551
+    Russian thistle, tumbleweed
+Sanvitalia Abertii Gray. (Aster.)     SAAB   A   FORB  BF          SU   .     NAT  CJ1635
+Sarcostemma cynanchoides Dcne.        SACY   P   FORB  BS          SU   C3    NAT  CJ1237
+    Schlecht. (Asclep.)
+Sarcostemma cynanchoides Dcne. var.   SAHA   P   FORB  GS       SP-SU   C3    NAT  CJ1237
+    Hartwegii (Vail) Shinners
+    (=S. heterophyllum) (Ascelp.)
+Schismus arabicus Nees (Poac.)        SCAR   A  GRASS  .           SP   .   INTRO  KA 179
+    Mediterraneangrass
+Scleropogon brevifolius Phil. (Poac.) SCBR   P  GRASS  BF          SU   C4    NAT  KA 182
+    Burro grass
+Selenia dissecta T.&G. (Cruc.)        SEDS   A   FORB  .        SP-SU   .     NAT  CJ 692
+    Texas selenia
+Selinocarpus diffusus Gray (Nyct.)    SEDI   P  SHRUB  .        SP-SU   .     NAT  CJ 589
+    Spreading moonpod
+Senecio longilobus Benth. (Aster.)    SELO   P   FORB  BF          SU   C3    NAT  CJ1712
+    Thread-leaf groundsel
+Senecio spartioides var. fremontii    SEFR   P   FORB  BF          SU   .     NAT  CJ1711
+    (Torr. & A. Gray) Greenm. (Comp.)
+    Riddellís groundsel
+Setaria leucopila (Scribn. & Merr.)   SELE   P  GRASS  BF          SU   C4    NAT  KA 187 S-2381
+    K. Schum. (Poac.)
+Sida filicaulis T. & G. (Malv.)       SIFI   P   FORB  BS          SU   C3    NAT  CJ1052 S-1939
+Sida leprosa (Ort.) K. Schum. var.    SILE   P   FORB  PC          SU   C3    NAT  CJ1051 S-2376
+    sagittaefolia (Gray) I. Clem.
+    (=S. lepidota) (Malv.)
+Sida physocalyx Gray (Malv.)          SIPH   P   FORB  BS          SU   C3    NAT  CJ1052 S-2367
+Sisymbrium Irio L.                    SIIR   A   FORB  BF          SP   C3  INTRO  CJ 681
+Soil pit (disturbed soil)             SOIL
+    also listed as                    SOPI
+Solanum elaeagnifolium Cav. (Solan.)  SOEL   P   FORB  BS          SU   C3    NAT  CJ1396
+    Bull-nettle
+Sonchus oleraceus L. (Aster.)         SOOL   A   FORB  PS       SP-SU   .   INTRO  CJ1731
+Sophora nuttalliana B.L. Turner       SONU   P   FORB  PC,PS       SP   C3    NAT  CJ 798
+    (Fabac.) White loco
+Sphaeralcea angustifolia (Cav.)       SPAN   P   FORB  BS          SU   C3    NAT  CJ1046
+    D. Don. (Malv.) Globe mallow
+Sphaeralcea coccinea (Pursh) Rydb.    SPCC   P   FORB  GI       SP-SU   C3    NAT  CJ1044
+    (Malv.) Scarlet globe mallow
+Sphaeralcea incana Torr.              SPIN   P   FORB  MS       SP-SU   C3    NAT  CJ1047
+    (Malv.) Globe mallow
+Sphaeralcea subhastata Coult. ssp.    SPSU   P   FORB  BS       SP-SU   C3    NAT  CJ1045 S-2294
+    Martii (Cock.) Kearn. (Malv.)
+    Globe mallow
+Sphaerophysa salsula (Pall.) DC       SPSA   P   FORB  PC       SP-SU   C3  INTRO  CJ 837
+    (Fabac.) (=Swainsona salsula)
+Sporobolus airoides (Torr.) Torr.     SPAI   P  GRASS  PTTE     SP-SU   C4    NAT  KA 194
+    (Poac.) Alkali sacaton
+Sporobolus contractus Hitchc. (Poac.) SPCO   P  GRASS  BS          SU   C4    NAT  KA 192
+    Spike dropseed
+Sporobolus cryptandrus (Torr.) Gray   SPCR   P  GRASS  BS          SU   C4    NAT  KA 193 S-2382
+    (Poac.) Sand dropseed
+Sporobolus flexuosus (Thurb.) Rydb.   SPFL   P  GRASS  BF          SU   C4    NAT  KA 193
+    (Poac.) Mesa dropseed
+Sporobolus giganteus Nash             SPGI   P  GRASS              SU    .    NAT  KA 195
+Sporobolus pulvinatus Swallen (Poac.) SPPU   A  GRASS  PT          SU    .    NAT  KA 190
+Stephanomeria exigua Nutt. (Aster.)   STEX   A   FORB  BS       SP-SU   C3    NAT  CJ1744
+Stephanomeria pauciflora (Torr.) A.   STPA   P   FORB  BS          SU   C3    NAT  CJ1744 L-1234
+    Nels (Aster.)
+Streptanthus arizonicus Wats. Cory    STAR   A   FORB  BF          SP   C3    NAT  KP 331 S-2229
+    (Cruc.) Twistflower
+Talinum angustissimum (Gray) Woot. &  TAAN   P   FORB  BA       SP-SU   C3    NAT  CJ 609 L-1231
+    Standl. (Port.) Flame-flower
+Talinum aurantiacum Engelm. (Port.)   TAAU   P   FORB  GI       SP-SU   C3    NAT  CJ 609
+Tecoma stans (L) HBK (Bignon.)        TEST   P  SHRUB  MS          SU   C3    NAT  CJ1444
+    Trumpet flower
+Tetraclea Coulteri Gray. (Verb.)      TECO   P   FORB  BS          SU   C3    NAT  CJ1342
+Thelesperma megapotamicum (Spreng.)   THME   P   FORB  .           SU   .     NAT  CJ1667
+    O. Ktze. (Comp.)
+Tidestromia lanuginosa (Nutt.)        TILA   A   FORB  BS          SU   C4    NAT  CJ 571 S-2353
+    Standl. (Amar.) Espanta vaqueros
+Townsendia annua Beaman (Aster.)      TOAN   A   FORB  CSx         SP    .    NAT  CJ1610
+Tragia ramosa Torr. (Euph.)           TRRA   P   FORB  BF       SP-SU   C3    NAT  CJ 950 S-2287
+    Noseburn
+Tragopogon dubius Scop. (Aster.)      TRDU   B   FORB  PC          SU    .  INTRO  CJ1729 P-582
+    Goatís-beard
+Tragus Berteronianus Schult. (Poac.)  TRBE   A  GRASS  BS          SU   C4    NAT  KA 202 S-2368
+    Spike bur-grass
+Tribulus terrestris L (Zygo.)         TRTE   A   FORB  BS          SU   C4  INTRO  CJ 905
+    Puncture vine
+Trichachne californica (see Digitaria)
+Tridens muticus (Torr.) Nash. var.    TRMU   P  GRASS  BD          SU   C4    NAT  KA 203
+    muticus (Poac.) Slim tridens
+Trixis californica Kell. (Aster.)     TRCL   P  SHRUB  MS       SP-SU   C3    NAT  CJ1721 S-2293
+Ungnadia speciosa Endl. (Sapin.)      UGSP   P  SHRUB  MS          SP   C3    NAT  CJ1006
+    New Mexican buckeye
+Verbena ambrosifolia Rydb. (Verb.)    VEAM   P   FORB  BF       SP-SU   C3    NAT  CJ1324
+    Western pink verbena
+Verbena bracteata Lab. & Rodr.        VEBR   .   FORB  .        SP-SU   .   INTRO  CJ1322
+    (Verb.)
+Verbena wrightii Gray (Verb.)         VEWR   P   FORB  BS       SP-SU   C3    NAT  CJ1325 S-2250
+    Desert verbena
+Verbesina encelioides (Cav.) Gray     VEEN   A   FORB  BF          SU   C3    NAT  CJ1657 S-2150
+    (Aster.) Coropen daisy
+Vicia ludoviciana Nutt. (Fabaceae)    VILU   A   FORB  BD          SP   .     NAT  CJ874
+    Slim vetch
+Viguiera annua (M. E. Jones) Blake    VIAN   A   FORB  RS          SU   .     NAT  CJ1646
+Viguiera dentata (Cav.) Spreng.       VIDE   P   FORB  .           SU   .     NAT  CJ1645
+    (Aster.) Golden-eye
+Vulpia octoflora (Walt.) Rydb.        VUOC   A  GRASS  BF          SP   C3    NAT  KA 208
+    (Poac.) Common Sixweeksgrass
+Xanthium strumarium L (Aster.)        XAST   A   FORB  PC          SU   C3    NAT  CJ1634
+    Cocklebur
+Xanthocephalum microcephalum (DC)     XAMI   P  S-SHR  BS          SU   C3    NAT  CJ1574 S-2904
+    Shinners Snakeweed (Aster.)
+Xanthocephalum Sarothrae (Pursh)      XASA   P  S-SHR  BF          SU   C3    NAT  CJ1574 S-2148
+    Shinners (Aster.) Snakeweed
+Xanthocephalum sphaerocephalum (Gray) XASP   A   FORB  PC          SU   C3    NAT  CJ1575 S-1938
+    Shinners Broomweed (Aster.)
+Xanthocephalum texanum (DC.)          XATE   A   FORB  .           SU   .     NAT  CJ1575
+    Shinners (Comp.)
+Yucca baccata Torr. (Agav.)           YUBA   P  LF-SU  BA          SP  CAM    NAT  CJ 397
+    Banana yucca
+Yucca elata Engelm. (Agav.)           YUEL   P  LF-SU  BS          SP   C3    NAT  CJ 400
+    Soap-tree, palmella
+Zephyranthes longifolia Hemsl.        ZELO   P  LF-SU  BS          SU   C3    NAT  CJ 418 L-1244
+    (Amaryl) Zephyr lily
+Zinnia acerosa (DC) Gray (Aster.)     ZIAC   P  S-SHR  BS          SU   C3    NAT  CJ1634
+    (=Z. pumila)
+Zinnia grandiflora Nutt. (Aster.)     ZIGR   P  S-SHR  BS          SU   C3    NAT  CJ1634
+Ziziphus obtusifolia (T&G)Gray (Rham) ZIOB   P  SHRUB  BF       SP-SU   C3    NAT  CJ1013 L-1239
+    Lotebush (=Condalia lycioides)
+
+____________________
+*/  Expanded  from  a  checklist  for the former  NSF/IBP  JORNADA  SITE
+        (compiled by R. Spellenberg) and one for NSF/LTERI JORNADA SITE
+        (compiled by J. Ludwig and S. Wondzell). Additions by J. Anderson.
+@/  Nomenclature, where possible (and except for grasses), follows Correll,
+        D.S. and M.C. Johnston. 1970.  Manual of The Vascular Plants of
+        Texas.   Texas Research Foundation,  Renner, TX.  1881 p.
+    Grass nomenclature follows Allred, K. W. 1993. A Field Guide to the Grasses
+        of New Mexico. Department of Agricultural Communications, NMSU,
+        Las Cruces, NM.  259p.
+$/  Field  Abbreviation  -  usually first 2 letters of genus  and  first  2
+        letters of specific epithet.
+%/  A = Annual; B = Biennial; P = Perennial
+&/  FERN = fern; FORB =broad-leaved herb; GRASS = Grass or Graminoid;
+        S-SHR = Sub-Shrub; ST-SU = Stem Succulent; LF-SU = Leaf Succulent;
+#/  Habitat of greatest abundance:
+    BA, BF, BS, & MS refer to area from Mt. Summerford and College playa
+       to the northeast.
+    Other habitats refer to specific LTER sites.
+
+    BD=Biodiversity study area
+    BA=Bajada Arroyos           CA=CC,CG,CS sites    GA=GB,GI,GS sites
+    BF=Bajada Alluvial Fans     CC=Creosote-Caliche  GB=Grassland-Basin
+    BS=Basin Swales and Slopes  CG=Creosote-Gravel   GI=Grassland-IBPE
+                                CS=Creosote-Sand     GS=Grassland-Summerford
+                                CSx=Creosote-Small   GX=Grassland-Small Mammal Exclosure
+                                    Mammal Exclosure
+                                EN3=Study262-past.3
+
+    MA=MN,MR,MW sites             PA=PC,PS,PT sites     TA=TE,TT,TW sites
+    MN=Mesquite-North             PC=Playa-College      TE=Tarbush-East
+    MR=Mesquite-Rabbit Rain Gage  PS=Playa-Small        TT=Tarbush-Taylor Well
+    MS=Mountain Slopes            PT=Playa-Tobosa Tank  TW=Tarbush-West
+    MW=Mesquite-West Well         RS=road sides
+
+?/  Period of most active growth/flowering ñ WI = Winter; SP = Spring; SU = Summer
++/  Carbon reduction pathway - PAR = parasite
+#/  Status: NAT = native species; INTRO = introduced species.
+!/  Nomenclature source:
+    CJ(pg#) = Correll, D.S. and M.C. Johnston.  1970.  Manual of The Vascular
+              Plants of Texas. Texas Research Foundation, Renner, TX. 1881 p.;
+    KA(pg#) = Allred, K. W. 1993. A Field Guide to the Grasses of New Mexico.
+              Department of Agricultural Communications, NMSU, Las Cruces, NM.
+              259p.
+    KP(pg#) = Kearney, T.H. and R.H. Peebles. 1964. Arizona flora. Univ. of
+              California Press, Berkely, CA. 1085 p.
+
+=/  Collectors and Collection Numbers - L = John Ludwig;
+    P = LTER Project collection; S = Richard Spellenberg; W = Paul Whitson
+
+********************  BEGIN CHANGE LOG ********************
+[all changes by John Anderson unless otherwise noted]
+
+DATE       CHANGE
+02/13/91   ADDED    Chenopodium atrovirens
+                    Talinum aurantiacum
+
+09/26/91   ADDED    Acanthochiton wrightii
+                    Chamaesaracha coronopus
+                    Hymenopappus flavescens var. cano-tomentosus
+                    Lepidium montanum var. angustifolium
+                    Leptochloa viscida
+                    Linum vernale
+                    Panicum fasciculatum
+                    Portulaca retusa
+                    Sphaeralcea coccinea
+
+10/18/94   ADDED    Astragalus crassicarpus
+                    Caesalpinia jamesii
+                    Desmanthus cooleyi
+                    Eriogonum annuum
+                    Erysimum capitatum
+                    Helianthus petiolaris
+                    Machaeranthera pinnatifida
+           CHANGED  Perennial to Annual
+                       Chloris virgata
+                       Proboscidea parviflora
+                    Annual to Perennial
+                       Enneapogon desvauxii
+
+11/14/94   CHANGED  Coryphantha macromeris (Engelm.) Lem.
+                TO  Coryphantha macromeris (Engelm.) Britt. & Rose
+           CHANGED  Coryphantha vivipara (Engelm.) L. Benson
+                TO  Coryphantha vivipara (Nutt.) Britt. & Rose
+           CHANGED  Mammillaria wrightii (Engelm.) Britt. & Rose
+                TO  Mammillaria wrightii Engelm.
+           CHANGED  Opuntia imbricata (How.) DC
+                TO  Opuntia imbricata (Haw.) DC
+           These changes as per Correll & Johnston.
+
+12/07/94   Due to changes in grass systematics, the source for grass
+           nomenclature is
+     CHANGED FROM
+              Correll, D.S. and M.C. Johnston. 1970. Manual of the
+               Vascular Plants of Texas. Texas Research Foundation,
+               Renner, TX.  1881 p.
+          TO
+                Allred, Kelly W.  A Field Guide to the Grasses of
+               New Mexico.  NMSU, Department of Agricultural
+               Communications, Las Cruces, NM. 259 p.
+
+           This has resulted in the following changes being made:
+
+              code  species
+     CHANGED  ARGL  Aristida glauca (Nees) Walp.
+          TO  ARNE  A. purpurea Nutt. var. nealleyi (Vasey) Allred
+     CHANGED  ARHA  Aristida hamulosa Henr.
+          TO  ARHA  A. ternipes Cav.var. hamulosa (Herrard) Trent
+     CHANGED  ARLO  Aristida longiseta Steud.
+          TO  ARLO  A. purpurea Nutt. var. longiseta (Steud) Vasey
+     CHANGED  ARPU  Aristida purpurea Nutt.
+          TO  ARPU  A. purpurea Nutt. var. purpurea
+     CHANGED  ARTE  Aristida ternipes Cav.
+          TO  ARTE  A. ternipes Cav. var. ternipes
+     CHANGED  ARWR  Aristida wrightii Nash.
+          TO  ARWR  A. purpurea Nutt. var. wrightii (Nash) Allred
+     CHANGED  BOSA  Bothriochloa saccaroides (Sw.) Rydb.
+          TO  BOTO  B. laguroides (DC.) Herter subsp. Torreyana (Steud.)
+                    Allred & Gould
+
+12/07/94 (Continued)
+     CHANGED  ERAR  Eragrostis arida Hitchc.
+          TO  ERMI  E. pectinacea (Michx.) Nees var. miserrima
+                    (Fourn.) J.Reeder
+     CHANGED  ERPU  Erioneuron pulchellum (HBK) Takeoka
+          TO  DAPU  Dasyochloa pulchella (H.B.K.) A.S. Hitchc.
+     CHANGED  HIMU  Hilaria mutica (Buckl.) Benth.
+          TO  PLMU  Pleuraphis mutica Buckley
+     CHANGED  PAFA  Panicum fasciculatum SW.
+          TO  BRFA  Brachiaria fasciculata (S.W.) Parodi
+     CHANGED  PAHI  Panicum hallii Vasey
+          TO  PAHI  Panicum hallii Vasey var. hallii
+     CHANGED  POFE  Poa fendleriana Vasey
+          TO  POFE  Poa fendleriana (Steud.) Vasey subsp. fendleriana
+     DELETED  SEMA  Setaria macrostachya HBK
+                       This species deleted from species list as it does
+                       not occur in Dona Ana county as per Allred.
+
+05/04/95   ADDED    Sophora nuttalliana
+                       Historically misidentified as Sphaerophysa salsula
+                    Townsendia annua
+
+05/29/95   ADDED    Hoffmanseggia drepanocarpa
+                       Identified as H. glauca previously.
+
+11/05/95   ADDED    Brachiaria arizonica
+
+12/05/96   ADDED    Corispermum nitidum
+                    Iva dealbata
+                    Machaeranthera linearis
+
+06/04/96   ADDED   Aristida pansa var. dissita
+                   Aristida pansa var. pansa
+
+08/29/96   ADDED   Eragrostis pectinacea var. pectinacea
+
+09/13/96   ADDED   Palafoxia sphacelata
+
+10/28/96   ADDED   Allionia choisyi
+                   Amaranthus crassipes
+                   Coryphantha scheeri
+                   Dyssodia pentachaeta
+
+01/24/97   ADDED   Ambrosia acanthicarpa
+                   Asclepias nyctaginifolia (A. nyctaginifolia if found in western states.
+                      A. oenotheroides is found in Great Plains.  These two meet in N.M.; may be
+                      same species as suggested by Kelly Allred.  More characteristics match
+                      A. nyctaginifolia than for A. oenotheroides.)
+
+07/13/97   ADDED   Boerhavia wrightii
+
+10/08/97   ADDED   Mammillaria grahamii (I.d. by Paul Hyder for Chris McGlone in spring 1997;
+                   = M. microcarpa in Allredís A Field Guide to the Flora of the Jornada Plain)
+
+10/10/97   ADDED   Phacelia intermedia
+
+03/31/98  1COMMENT According to Dr. Richard Spellenberg the distinction between Gilia mexicana, G.
+                   flavocincta (also called G. opthalmoides), and G. sinuata is not easily made with
+                   the references we have available to us.  Characters such as (1)stems clasping vs.
+                   not, (2)leaves reduces above rosette immediately or gradually, and (3)the extent
+                   to which the corolla tube is exerted beyond the calyx are highly variable and do
+                   not distinguish the species.  A taxonomic review needs to be done on this group,
+                   and until then, Dr. Spellenberg suggests we just refer to them as the Gilia
+                   sinuata group, which includes these 3 potential species.  Based on this
+                   recommendation, Gilia spp. will in the future be identified as Gilia sinuate
+                   with the understanding that it refers to the G. sinuata group. [See Comment of
+                   01/24/07 below.(JPA)]
+
+
+04/09/98   ADDED   Aristida havardii
+                   Bothriochloa springfieldii
+                   Dalea scoparia
+                   Phaseolus atropurpureus [12/11/09: corrected to P. acutifolius per i.d. by K. Allred.]
+                   Muhlenbergia arenicola
+                   Oenothera scapoidea
+                   Petalostemum compactum
+                   Selinocarpus diffusus
+
+04/23/99   ADDED   Hedyotis humifusa.  This is very common right now in USDA JER Pasture 13.
+                   Voucher specimens have been collected by Chris McGlone.
+
+08/02/99   ADDED   As per voucher collections compiled by Chris McGlone
+                   Chenopodium cycloides
+                   Mirabilis linearis
+                   Portulaca suffrutescens
+                   Tragopogon dubius
+
+08/28/99   ADDED   As per voucher collections compiled by Chris McGlone
+                   Amsonia arenaria
+                   Avena fatua
+                   Bothriochloa ischaemum
+                   Cenchrus incertus
+                   Cevallia sinuata
+                   Euphorbia parryi
+                   Froelichia arizonica
+                   Garrya wrightii
+                   Heliotropium greggii
+                   Morus microphylla
+                   Penstemon ambiguus
+                   Phyla incisa
+                   Schismus arabicus
+                   Selenia dissecta
+                   Sporobolus giganteus
+                   Sporobolus pulvinatus
+                   Thelesperma megapotamicum
+                   Verbena bracteata
+                   Viguiera dentata
+                   Xanthocephalum texanum
+
+09/01/99   ADDED   As per extensive field and herbarium work by Chris McGlone with verification by
+      Rich Spellenberg:
+      Lycium berlandieri
+
+09/09/99   ADDED   Gilia sinuata Dougl. As per comment above dated 03/31/98.
+
+09/09/99           See Comment of 03/31/98 above. [See Comment of 01/24/07 below.(JPA)]
+     CHANGED  GIME  Gilia mexicana A.&V. Grant
+          TO  GISI  G. sinuata Dougl.
+     CHANGED  GIFL  Gilia flavocincta A. Nels. ssp. australis V. Grant
+          TO  GISI  G. sinuata Dougl.
+
+09/17/99   ADDED   As per voucher collected by Stephanie Richmond:
+                   Tridens muticus
+
+09/27/99   ADDED   As per voucher collected by Chris McGlone:
+                   Heliotropium convolvulaceum
+
+12/14/99   DELETED OESC (Oenothera scapoidea Nutt.) as per annotation of voucher specimen by
+                   Kelly Allred.  Allred thinks specimen was browsed by animal which
+                   resulted in abnormal growth form similar to O. scapoidea.  Voucher is
+                   Camissonia chamaenerioides (Gray) Raven.
+
+12/22/99   ADDED   Kuhnia chlorolepis (as per voucher collected by Chris McGlone)
+                   Viguiera annua (as per voucher collected by Chris McGlone)
+
+02/16/00   CHANGED SEDI to SEDS for Selenia dissecta T.&G. (Cruc.) because of conflict with
+                   existing code. (John Anderson)
+04/01/02   ADDED   Helianthus annuus (based on one observation by David & Karen Lightfoot during
+                   Spring 1990 NPP measurements at LTER NPP site, G-SUMM. Individual was not
+                         flowering.)
+06/13/02   ADDED   Chrysothamnus pulchellus (John Anderson as per Mary Lucero of Jornada
+                   Experimental Range)
+09/23/02   ADDED   Pectis prostrata (Collected at P-SMAL by Michelle Buonopane.
+                   I.d. by Justin Van Zee.
+                   I.d. confirmed by John Anderson using Biology Herbarium vouchers.
+11/27/02   DELETED Oenothera species  (Onag.) coded as OESP.  Unknown genus have been
+                   standardized to first four letters of genus followed by sequence number
+                   (usually 1) to identify it as an unknown.  These codes are no longer embedded
+                   in the plant species list.
+04/15/03   ADDED   Phacelia integrifolia (Voucher collected in channel by Biodiversity study
+                      parking lot by Michelle Buonopane.
+                   Vicia ludoviciana (Voucher collected in channel by Biodiversity study
+                      parking lot by Michelle Buonopane.
+05/08/03   ADDED   Rumex hymenosepalus as per Michelle Buonopane. Identified during Biodiversity
+                   Vegetation Transects, Spring 2003. Unable to collect voucher as there was only
+                   one plant found and it was in a quad. I.d. based on flowering stage as well as
+                   later fruiting stage. A digital photo was taken also.
+03/16/04   CHANGED Carbon pathway from C4 to C3 for Vulpia octoflora (Walt.) Rydb. as noted on page
+                   69 of Cornelius, Joe M., Paul R. Kemp, John A. Ludwig, and Gary L. Cunningham.
+                   1991. The distribution of vascular plant species and guilds in space and time
+                   along a desert gradient. Journal of Vegetation Science 2: 59-72.
+11/04/04   ADDED   Aristida purpurea Nutt. var. perplexa as per Jaime Lamit. Voucher in LTER
+                   herbarium. Not uncommon at grassland Small Mammal Exclosure Study area in Jornada
+                   Experimental Range, Pasture 9.
+05/10/05   ADDED   Phacelia popei T.&G. (Hydro.). Common at T-WEST in Spring 2005. I.D. confirmed by
+                   Kelly Allred of NMSU, Animal & Range Sciences Dept. Voucher provided to Allred.
+                   Voucher to be placed in LTER herbarium.
+06/16/06   ADDED   Ipomopsis pumila Nutt. V. Grant. (Polemon.). Occurred at T-WELL in Spring 2005.
+                   I.D. by Dr. Kelly Allred of NMSU, Animal & Range Sciences Dept.
+10/26/06   ADDED   Echinochloa colonum (L.) Link. Collected at P-COLL between NPP quads 15 and 16 on
+                   Oct 16, 2006, by Clayton Crowder and identified by Kelly Allred of NMSU, Animal &
+                   Range Sciences Dept. The specimen collected on which i.d. is based will be placed
+                   in the LTER herbarium.
+01/22/07   ADDED   Cryptantha pusilla (T.&G.) Greene (Borag.). Occurred at T-WEST in Spring 2005.
+                   Voucher collected 5/19/05 by Jamie Lamit and placed in LTER herbarium.
+                   Identification by Richard Spellenberg of NMSU, Biology Dept.
+01/23/07           Corrected page formatting. [JPA]
+01/24/07   CHANGE  The 3 species of Gilia (G. sinuate, G. Mexicana, G. flavocincta) were all lumped
+                   as G. sinuate beginning in 1998. See change entries above dated 03/31/98 and
+                   09/09/99. However, the field key to these 3 species is now thorough enough to
+                   identify the 3 individual species. This has been verified with Dr. Richard
+                   Spellenber. As a result, the GISI code used for the 3 species is now changed to
+                   represent the individual species as given below. The expanded field key used is
+                   that found in Kelly Allredís ìA Field Guide to the Flora of the Jornada Plainî,
+                   Fifth Edition, June 2005.
+           CHANGED  GISI  G. sinuata Dougl.
+                TO  GIME  Gilia mexicana A.&V. Grant
+           CHANGED  GISI  G. sinuata Dougl.
+                TO  GIFL  Gilia flavocincta A. Nels. ssp. australis V. Grant
+02/08/07   ADDED    Hordeum murinum L. subsp. glaucum (Steud.) Tsvelev. Identified by Kelly Allred
+                    of NMSU, Animal & Range Sciences Dept. Very common in Rio Grande valley but not
+                    previously listed for the Jornada Basin. Noted to occur at NPP site C-GRAV,
+                    Quad 15 on February 6, 2007.
+02/11/07   CHANGED  Hordeum murinum: Updated information per Kelly Allred. This is a cool season
+                    grass (C3) typically flowering February-April, but sometimes as early as
+                    December as as late as May, depending on temperature and precipitation. [JPA]
+03/26/07   CHANGED  Poa fendleriana (Steud.) Vasey subsp. Changed carbon pathway from C4 to C3 per
+                    Kelly Allred. All Poa genera are C3. The error was identified by Karen Brown of
+                    LANL on 3/26/07.
+04/03/07   ADDED    Linaria texana Scheele. Collected 3/29/07 by Chandra Tucker-Britt next to LTER-I
+                    Control Transect path between stations C81 & C 84 adjacent to LTER NPP G-SUMM
+                    site. Identification by Kelly Allred of NMSU, Animal & Range Sciences Dept.
+04/03/07   ADDED    Cryptantha barbigera (Gray) Greene. Collected outside LTER T-TAYL NPP site by
+                    Louis Lamit in May 2005. Identification by Kelly Allred of NMSU, Animal & Range
+                    Sciences Dept.
+11/19/07   CHANGED  Changed spelling of Solanum elaegnifolium to Solanum elaeagnifolium
+12/14/07   ADDED    Anoda cristata (L.) Schlecht. Collected 9/1/06 by Dara Parker at G-SUMM site. ID
+                    verified by Kelly Allred.
+04/10/08   CHANGED  Changed spelling of Oenothera primaveris to Oenothera primiveris
+03/25/09   ADDED    Dyssodia papposa (Vent.) Hitchc. Collected by Stephanie Baker between T-EAST
+                    exclosure and Jornada Road from fall 2008.
+12/08/09   ADDED    Phaseolus wrightii Gray. Photographed and vegetative segment with fruit
+                    collected (for later i.d.) 10/27/2009 on LTER-I Transect Station T87 plant line
+                    transect in EPTR. No voucher collected. Identification by Kelly Allred on
+                    12/7/09. Newer authority makes it P. filiformis, but retaining nomenclature by
+                    Correll & Johnston, it remains P. wrightii.
+12/11/09   CHANGED  Changed Phaseolus atropurpureus DC. to P. acutifolius Gray var. acutifolius
+                    based on identification by Kelly Allred on 12/11/09.
+09/11/10   DELETED  Chenopodium atrovirens Rydb. (Cheno.) CHAT  A  FORB  PC  SP-SU  C3  NAT  CJ 535
+                    From Key to the Flora of the Jornada Basin by Kelly Allred: ìEarlier reports of
+                    Chenopodium atrovirens from the plains area were in error; that is a species of
+                    middle- to upper elevations in the mountains.î
+09/11/10   CHANGED	Changed spelling of Descurainea pinnata to Descurainia pinnata.
+09/12/10   DELETED  Euphorbia species  EUSP   A   FORB  BS       SU   C4    NAT  CJ 955
+                    This is no longer a valid code for an unknown Euphorbia species.
+09/12/10   CHANGED  Changed spelling from Gallium microphyllum to Galium microphyllum.
+09/13/10   DELETED  Chenopodium cycloides A. Nels.   CHCY   A   FORB  MR     SU    .    NAT  CJ 534
+                    Per Kelly Allred (9/13/10), this species should not be here. It ìis found in a
+                    few localities in the northeastern plains.î
+09/13/10   DELETED  Condalia spathulata Gray (Rham.) COSP   P  SHRUB  BF     SU   C3    NAT  CJ1014
+                    Per Kelly Allred (9/13/10), this species does not occur in NM. Previously
+                    identified C. spathulata should be C. warnockii.
+08/18/11   CHANGED  Changed ìformî from from FORB to S-SHR for Carlowrightia linearifolia (CALI)
+09/19/12   ADDED    Senecio spartioides var. fremontii (SEFR) per Correll & Johnston. Newer
+                    authority makes it S. riddellii Torrey & Gray, but retaining nomenclature by
+                    Correll & Johnston, it remains Senecio spartioides var. fremontii. Collected in
+                    deep sand berm at edge of road and arroyo on Summerford bajada (lat 32 30
+                    58.29N, long 106 47 33.12W NAD83). Photos taken. ID by John Anderson.
+09/20/12   ADDED    Bothriochloa barbinodis (BOBR). Flowering on LTER NPP site C-CALI Quad 2 in Sep
+                    2012. Identification verified independently by John Anderson and Kirsten Romig.
+10/22/12   CHANGED  Changed ìTragia stylaris Muell. Arg.î to ìTragia ramosa Torr.î per Correll &
+                    Johnston. T. stylaris is listed by C&J as a synonym.
+10/22/12   CHANGED  Changed status of Verbena bracteata from ìINTROî to ìNATî.
+10/22/12   DELETED  Deleted synonym placeholder ìSwainsona salsula SPSA (see Sphaerophysa salsula)î.
+10/22/12   ADDED    Added page number within authority to Echinochloa colonum.
+10/22/12   CHANGED  Changed form from S-SHR to FORB for Calliandra humilis.
+10/22/12   CHANGED  Changed from from FORB to S-SHR for Carlowrightia linearifolia.
+10/31/14   ADDED    Linum aristatum Engelm. var. australe (Heller) Kearney & Peebles. This species
+                    may have been confused with Linum vernale in the past.
+12/04/14   ADDED    Bidens heterosperma (BIHE). Specimen collected 9/17/14 in the upper
+                    grassland area below the powerline road on Summerford Mountain bajada near
+                    LTER-I Transect station C76. Dominant vegetation is Bouteloua eriopoda.
+                    Kelly Allred confirmed i.d. on 12/4/14.
+11/04/14   ADDED    Added common name to Euphorbia parryi
+                    Added common name to Ipomoea costellata
+                    Added common name to Brickellia californica
+                    Added common name to Brickellia laciniata
+                    Added common name to Chenopodium incanum
+                    Added common name to Chenopodium leptophyllum
+                    Added common name to Condalia Warnockii
+                    Added common name to Convolvulus equitans
+                    Added common name to Corydalis aurea
+                    Added common name to Coryphantha macromeris
+                    Added common name to Coryphantha scheeri
+                    Added common name to Coryphantha vivipara
+                    Added common name to several Cryptantha spp
+12/04/14   CHANGED  Family abbreviations:  Legum. to Fabac.; Comp. to Aster.; Gram. to Poac.
+********************  END CHANGE LOG ********************
