@@ -2,7 +2,8 @@ library(tidyverse)
 
 rmbl = readxl::read_excel('./raw_data/rmbl/phenology data_1973_2012 from Amy Iler.xlsx', sheet='All DATA') %>%
   select(-HABITAT, plot=PLOT, species=SPECIES, year=YEAR, flower_count=FLOWER_COUNT, doy=DOY) %>%
-  filter(year>=1974)
+  filter(year>=1974) %>%
+  mutate(species = tolower(species))
 
 
 #Counting flowers means that observations of 0 flowers go unrecorded. Here I infer those
@@ -69,12 +70,41 @@ first_flowering$prior_threshold_doy = sapply(first_flowering$prior_threshold_doy
 
 first_flowering$first_flowing_doy = with(first_flowering, round(prior_threshold_doy + (past_threshold_doy - prior_threshold_doy)/2))
 
+#Species from iler et al. 2013 which had sig (> 2 d_aic) better fit with temperature models than snowmelt models
+#iler_species = c('arenaria congesta','delphinium barbeyi','dugaldia hoopesii','erythronium grandiflorum','gentiana parryi','geranium richardsonii',
+#                 'helianthella quinquenervis','heliomeris multiflora','hydrophyllum fendleri','noccaea montana','oreochrysum parryi',
+#                 'pedicularis bracteosa','potentilla gracilis v. pulcherrima','potentilla hippiana','pseudocymopterus montanus',
+#                 'pyrrocoma crocea','sedum rosea','taraxacum officinale','valeriana capitata')
 
-first_flowering2 = first_flowering %>%
+#I looked thru the npn species list manually and matched which ones match this dataset
+npn_species_matches = c('fragaria virginiana','achillea millefolium','taraxacum officinale','rosa woodsii','heracleum maximum')
+
+first_flowering = first_flowering %>%
   filter(!is.na(first_flowing_doy)) %>%
-  select(species, year, doy=first_flowing_doy)
+  select(species, year, doy=first_flowing_doy) %>%
+  filter(species %in% npn_species_matches)
 
 
-species_counts = first_flowering2 %>%
+species_counts = first_flowering %>%
   group_by(species) %>%
   tally()
+
+
+write_csv(first_flowering, './cleaned_data/rmbl_observations.csv')
+
+#Record the species present to use in NPN data filter
+species = first_flowering %>% 
+  select(species) %>%
+  distinct() %>%
+  mutate(dataset='rmbl')
+
+#Append to the same file written by other scripts
+non_npn_species_file = './cleaned_data/non_npn_species_list.csv'
+if(file.exists(non_npn_species_file)){
+  read_csv(non_npn_species_file) %>%
+    bind_rows(species) %>%
+    distinct() %>%
+    write_csv(non_npn_species_file)
+} else {
+  write_csv(species, non_npn_species_file)
+}
