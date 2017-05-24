@@ -61,25 +61,3 @@ if(file.exists(non_npn_species_file)){
 } else {
   write_csv(species, non_npn_species_file)
 }
-
-#########################################################
-#Downloaded from the PRISM website. tmean for 1990-01-01 - 2016-12-32 for Latitude: 42.5429   Longitude: -72.2011
-temperature_data = read_csv(paste0(data_dir, 'PRISM_Harvard_forest_tmean.csv'), skip = 10)
-colnames(temperature_data) = c('date','temp')
-temperature_data = temperature_data %>%
-  mutate(year=year(date), doy=yday(date)) 
-
-#Limit temp data to fall and mid summer
-temperature_data = temperature_data %>%
-  filter(doy <=180 | doy >= 240)
-
-#Assigne fall temp to the next years growing season
-#Set jan 1 as doy 0, anything before that as negative doy's
-temperature_data = temperature_data %>%
-  mutate(year = ifelse(doy>=240, year+1, year)) %>%
-  mutate(base_date = as_date(paste0(year,'-01-01'))) %>%
-  mutate(doy = date - base_date) %>%
-  select(-date, -base_date)
-
-write_csv(temperature_data, './cleaned_data/harvard_temp.csv')
-
