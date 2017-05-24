@@ -62,10 +62,10 @@ observations_per_species = processed_data %>%
   tally()
 
 #Minimum 40 observations for each species after all prior filtering
-observations = observations %>%
+processed_data = processed_data %>%
   group_by(species) %>%
   filter(n() > 40) %>%
   ungroup()
 
-write_csv(observations, './cleaned_data/npn_observations.csv')
+write_csv(processed_data, './cleaned_data/npn_observations.csv')
 
