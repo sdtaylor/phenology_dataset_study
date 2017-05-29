@@ -7,6 +7,19 @@ dataset_configs:
       observations_data_file: ./cleaned_data/harvard_observations.csv
       temp_data_file: ./cleaned_data/harvard_temp.csv
       add_site_dummy_var: True
+    - dataset_name: jornada
+      observations_data_file: ./cleaned_data/jornada_observations.csv
+      temp_data_file: ./cleaned_data/jornada_temp.csv
+      add_site_dummy_var: False
+    - dataset_name: hubbard
+      observations_data_file: ./cleaned_data/hubbardbrook_observations.csv
+      temp_data_file: ./cleaned_data/hubbard_temp.csv
+      add_site_dummy_var: False
+#rmbl not quit ready yet
+#    - dataset_name: rmbl
+#      observations_data_file: ./cleaned_data/rmbl_observations.csv
+#      temp_data_file: ./cleaned_data/rmbl_temp.csv
+#      add_site_dummy_var: True
 
 models_to_use:
     - uniforc
