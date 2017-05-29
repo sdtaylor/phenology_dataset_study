@@ -86,7 +86,7 @@ processed_data = processed_data %>%
   select(-Site)
 
 
-write_csv(observations, './cleaned_data/jornada_observations.csv')
+write_csv(processed_data, './cleaned_data/jornada_observations.csv')
 
 #Append to the same file written by other scripts
 species$dataset='jornada'
