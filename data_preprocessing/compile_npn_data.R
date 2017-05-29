@@ -1,12 +1,14 @@
 library(tidyverse)
 library(lubridate)
 
-
-
-
+####################################################################
+#From the NPN dataset extract the doy observations for an
+#select species and specied phenophase (ie flowering vs leafout)
 get_species_phenophase_observations = function(this_species, this_phenophase){
   obs_subset = all_observations %>%
     filter(species==this_species, Phenophase_ID == this_phenophase)
+  
+  if(nrow(obs_subset)==0){return(data.frame())}
   
   #site,year where a phenophase==0 was the first observation in a year
   phenophase_0 = obs_subset %>%
@@ -27,6 +29,7 @@ get_species_phenophase_observations = function(this_species, this_phenophase){
     filter(keep=='yes') %>%
     select(-keep, -Phenophase_Status, -Observation_Date)
   
+  obs_subset$Phenophase_ID=this_phenophase
   return(obs_subset)
 }
 
@@ -68,3 +71,4 @@ processed_data = processed_data %>%
   ungroup()
 
 write_csv(processed_data, './cleaned_data/npn_observations.csv') 
+
