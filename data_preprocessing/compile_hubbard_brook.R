@@ -1,7 +1,8 @@
 library(tidyverse)
 library(lubridate)
+source('./data_preprocessing/processing_utils.R')
 
-data_dir = '~/data/phenology/hubbard_brook/'
+data_dir = './raw_data/hubbard_brook/'
 
 #Tidy data to one site observation per line
 observations = read_csv(paste0(data_dir, 'phn.txt')) %>%
@@ -18,6 +19,14 @@ Yellow_Birch,betula alleghaniensis')
 observations = observations %>%
   left_join(species_names, by='common_name') %>%
   select(-common_name)
+
+#Switch site identifer to a number so it works in my python numpy code models
+sites = unique(observations$site)
+new_site_ids = data.frame(site = sites,
+                          Site_ID = 1:length(sites))
+
+observations = observations %>%
+  left_join(new_site_ids, by='site')
 
 #Get year of observation
 observations = observations %>%
@@ -38,24 +47,10 @@ observations = observations %>%
 #I define budbreak as status >=1.6. This is where the most likely values for the 3 trees are c(1,2,2)
 #TODO: make budbreak the midpoint of first obs >=1.6 and the prior obs.
 observations = observations %>%
-  filter(status >= 1.6) %>%
-  group_by(species, year, site) %>%
-  top_n(1, -doy) %>%
-  ungroup()
-
-
-#Switch site identifer to a number so it works in my python numpy code models
-sites = unique(observations$site)
-new_site_ids = data.frame(site = sites,
-                          Site_ID = 1:length(sites))
-
-observations = observations %>%
-  left_join(new_site_ids, by='site')
-
-
-#formatted for my python model code
-observations = observations %>%
-  select(Site_ID, species, year, doy)
+  mutate(status = (status >= 1.6)*1) %>%
+  select(species, year, Site_ID, doy, status) %>%
+  mutate(individual_id=1) %>% #Dummy variable for individual_id
+  process_phenology_observations()
 
 #Check to ensure there are no duplicates
 there_are_duplicates = nrow(observations) != nrow(distinct(select(observations, Site_ID, species, year)))
@@ -70,14 +65,4 @@ species = observations %>%
   distinct() %>%
   mutate(dataset='hubbard', Phenophase_ID=371)
 
-#Append to the same file written by other scripts
-non_npn_species_file = './cleaned_data/non_npn_species_list.csv'
-if(file.exists(non_npn_species_file)){
-  read_csv(non_npn_species_file) %>%
-    bind_rows(species) %>%
-    distinct() %>%
-    write_csv(non_npn_species_file)
-} else {
-  write_csv(species, non_npn_species_file)
-}
-
+append_species_file(species)
