@@ -48,10 +48,11 @@ process_phenology_observations = function(df){
     mutate(doy_difference = doy-doy_prior)
   
   #Sanity check. No negative numbers, which would happen if doy_prior was larger than doy
-  if(any(df_subset$doy_difference < 0)){stop('doy_prior larger than doy')}
+  if(any(df_subset$doy_difference < 0, na.rm=T)){stop('doy_prior larger than doy')}
   
   #Final calc and select columns used in the python modeling code
   df_subset = df_subset %>%
+    filter(!is.na(doy_difference)) %>%
     mutate(doy = round(doy_difference/2 + doy_prior)) %>%
     select(species, Site_ID,year,doy)
   

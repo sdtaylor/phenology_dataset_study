@@ -1,35 +1,16 @@
 library(tidyverse)
 library(lubridate)
+source('./data_preprocessing/processing_utils.R')
 
 ####################################################################
 #From the NPN dataset extract the doy observations for an
 #select species and specied phenophase (ie flowering vs leafout)
-get_species_phenophase_observations = function(this_species, this_phenophase){
+subset_npn_data = function(this_species, this_phenophase){
   obs_subset = all_observations %>%
     filter(species==this_species, Phenophase_ID == this_phenophase)
   
   if(nrow(obs_subset)==0){return(data.frame())}
-  
-  #site,year where a phenophase==0 was the first observation in a year
-  phenophase_0 = obs_subset %>%
-    group_by(Site_ID, year, Individual_ID) %>%
-    top_n(1, -doy) %>%
-    ungroup() %>%
-    filter(Phenophase_Status==0) %>%
-    select(Site_ID, year, Individual_ID) %>%
-    mutate(keep='yes')
-  
-  #Keep only observations that were preceded by an observation of phenophase_status=0
-  obs_subset = obs_subset %>%
-    filter(Phenophase_Status==1) %>%
-    group_by(Site_ID, year, Individual_ID) %>%
-    top_n(1, -doy) %>%
-    ungroup() %>%
-    left_join(phenophase_0, by=c('Site_ID','year','Individual_ID')) %>%
-    filter(keep=='yes') %>%
-    select(-keep, -Phenophase_Status, -Observation_Date)
-  
-  obs_subset$Phenophase_ID=this_phenophase
+
   return(obs_subset)
 }
 
@@ -43,7 +24,7 @@ non_npn_species = read_csv('./cleaned_data/non_npn_species_list.csv') %>%
 
 #The raw npn data
 all_observations = read_csv(paste0(data_dir,'status_intensity_observation_data.csv')) %>%
-  select(Site_ID, Individual_ID, Phenophase_ID, Observation_Date, Phenophase_Status, Genus, Species) %>%
+  select(Site_ID, individual_id = Individual_ID, Phenophase_ID, Observation_Date, status = Phenophase_Status, Genus, Species) %>%
   mutate(species= tolower(paste(Genus,Species,sep=' ')), 
          year   = lubridate::year(Observation_Date),
          doy    = lubridate::yday(Observation_Date))
@@ -51,9 +32,11 @@ all_observations = read_csv(paste0(data_dir,'status_intensity_observation_data.c
 #pull out data for each species, each with a specific phenological event (pine needles, decid leaves, flowers, etc)
 processed_data = non_npn_species %>%
   rowwise() %>%
-  do(get_species_phenophase_observations(this_species = .$species, this_phenophase = .$Phenophase_ID)) %>%
+  do(subset_npn_data(this_species = .$species, this_phenophase = .$Phenophase_ID)) %>%
   ungroup() %>%
-  select(Site_ID, species, year, doy)
+  filter(status>=0) %>%
+  select(Site_ID, species, individual_id, year, doy, status) %>%
+  process_phenology_observations()
 
 #At the moment climate data starts in 2009
 #TODO: get more climate data
