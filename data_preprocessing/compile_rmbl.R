@@ -1,4 +1,5 @@
 library(tidyverse)
+source('./data_preprocessing/processing_utils.R')
 
 rmbl = readxl::read_excel('./raw_data/rmbl/phenology data_1973_2012 from Amy Iler.xlsx', sheet='All DATA') %>%
   select(-HABITAT, plot=PLOT, species=SPECIES, year=YEAR, flower_count=FLOWER_COUNT, doy=DOY) %>%
@@ -52,7 +53,9 @@ get_prior_past_threshold_doy = function(doy, thresholds){
 
 
 #First flowering date is the  midpoint between the 2 dats it passes the threshold
-#again from Iler et al. 2013
+#again from Iler et al. 2013.
+#This dataset is a organized differently than the others because it has flower counts,
+#so I'm not using the common code in processing_utils.R
 first_flowering = rmbl %>%
   right_join(all_plot_species_year_observations, by=c('species','plot','year','doy')) %>%
   mutate(flower_count = ifelse(is.na(flower_count), 0, flower_count)) %>%
@@ -84,11 +87,16 @@ first_flowering = first_flowering %>%
   select(species, year, doy=first_flowing_doy) %>%
   filter(species %in% npn_species_matches)
 
+#limit to 1983 to present to match available PRISM data
+first_flowering = first_flowering %>%
+  filter(year >= 1983)
 
 species_counts = first_flowering %>%
   group_by(species) %>%
   tally()
 
+#Dummy site_id because the python models use it
+first_flowering$Site_ID=1
 
 write_csv(first_flowering, './cleaned_data/rmbl_observations.csv')
 
@@ -98,13 +106,4 @@ species = first_flowering %>%
   distinct() %>%
   mutate(dataset='rmbl', Phenophase_ID=501)
 
-#Append to the same file written by other scripts
-non_npn_species_file = './cleaned_data/non_npn_species_list.csv'
-if(file.exists(non_npn_species_file)){
-  read_csv(non_npn_species_file) %>%
-    bind_rows(species) %>%
-    distinct() %>%
-    write_csv(non_npn_species_file)
-} else {
-  write_csv(species, non_npn_species_file)
-}
+append_species_file(species)
