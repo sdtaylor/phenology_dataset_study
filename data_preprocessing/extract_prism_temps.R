@@ -37,7 +37,7 @@ extracted = as.data.frame(raster::extract(prism_stacked, site_info_spatial)) %>%
   bind_cols(site_info)
 
 extracted = extracted %>%
-  tidyr::gather(filename, value, -Site_ID, -dataset) %>%
+  tidyr::gather(filename, temp, -Site_ID, -dataset) %>%
   dplyr::mutate(date=stringr::word(filename, 5, 5, sep='_')) %>%
   dplyr::select(-filename)
 
@@ -73,5 +73,8 @@ datasets = unique(site_info$dataset)
 
 for(this_dataset in datasets){
   temp_filename = paste0('./cleaned_data/',this_dataset,'_temp.csv')
-  write_csv(filter(temperature_data, dataset==this_dataset), temp_filename)
+  temp_subset = temperature_data %>%
+    filter(dataset==this_dataset) %>%
+    select(-dataset)
+  write_csv(temp_subset, temp_filename)
 }
