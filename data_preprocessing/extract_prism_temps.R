@@ -31,6 +31,9 @@ process_extracted_prism_data = function(extracted){
     mutate(doy = date - base_date) %>%
     select(-date, -base_date, -dataset)
   
+  #Cuttoff to 2 decimals to save space in the csv files
+  temperature_data$temp = round(temperature_data$temp, 2)
+  
   return(temperature_data)
 }
 
