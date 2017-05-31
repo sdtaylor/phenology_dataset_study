@@ -42,7 +42,7 @@ class data_store:
         job_info=self.job_list.pop()
 
         print(job_info)
-        #A bootsrapped sample with replacment of this species observations
+        #A bootstrapped sample with replacment of this species observations
         data_sample = self.observation_data[self.observation_data.species==job_info['species']].sample(frac=1, replace=True).copy()
         #Temperature data at sites where this species occures
         sp_temp_data = self.temp_data[self.temp_data.Site_ID.isin(data_sample.Site_ID.unique())].copy()
@@ -86,7 +86,7 @@ def master():
     results_file = config['model_parameter_file']
 
     job_queue = data_store(all_dataset_configs = config['dataset_configs'],
-                           num_bootstrap =       config['num_bootsrap'],
+                           num_bootstrap =       config['num_bootstrap'],
                            models =              config['models_to_use'])
 
     total_jobs=job_queue.jobs_left()
