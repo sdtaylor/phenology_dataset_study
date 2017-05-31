@@ -149,13 +149,15 @@ class phenology_model:
         return np.array(doy_estimates)
 
     #upper and lower bounds used in scipy.optimize.differential_evolution
+    #ranges of possible values taken from Roberts et al. 2015 and Chuine 2000 with some buffer added
+    #Values are constrained to either + or - when biologically relevent, see manuscript text. 
     def get_scipy_parameter_bounds(self):
         if self.model_name=='uniforc':
             #           t1         b         c       F*
-            return [(-126,180), (-20,0), (-50,50), (0,100)]
+            return [(-126,180), (-20,0), (-100,100), (0,200)]
         elif self.model_name=='unichill':
             #           t0         a_c     b_c     c_c        C        b_f      c_f       F
-            return [(-126,180), (-20,0), (0,20), (-50,50), (0,100), (-20,0), (-50,50), (0,100)]
+            return [(-126,180), (0,10), (-50,50), (-50,50), (0,300), (-20,0), (-100,100), (0,200)]
         elif self.model_name=='gdd':
             #           t1         T         F*
             return [(-126,180), (-20,20), (0,500)]
