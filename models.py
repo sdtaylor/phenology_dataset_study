@@ -40,6 +40,8 @@ class phenology_model:
             self.model = self.uniforc
         elif self.model_name=='gdd':
             self.model = self.gdd
+        elif self.model_name=='unichill':
+            self.model = self.unichill
         else:
             print('unknown model type: ' + model_name)
 
@@ -97,6 +99,33 @@ class phenology_model:
 
         return self.doy_estimator(all_site_daily_gdd, self.temp_doy, F)
 
+    #unichill model from Chuine 2000 (8 parameters total)
+    #t0: day chilling accumulation begins
+    #a_c, b_c, c_c: fitting paramters for chilling sigmoid function
+    #C: total chilling units requied
+    #b_c, c_c: fitting paramters for heating sigmoid function
+    #F: total forcing required
+    def unichill(self, t0, a_c, b_c, c_c, C, b_f, c_f, F):
+        all_site_temps_chill = self.temp_temp.copy()
+        all_site_temps_heat = self.temp_temp.copy()
+
+        all_site_temps_chill = 1 / (1 + np.exp(a_c*((all_site_temps_chill - c_c)**2) + b_c*(all_site_temps_chill-c_c)))
+        all_site_temps_heat = 1 / (1 + np.exp(b_f*(all_site_temps_heat-c_f)))
+
+        #Only accumulate chilling after t0
+        all_site_temps_chill[:,self.temp_doy<t0]=0
+
+        all_site_accumulated_chill=self.gdd_calculator(all_site_temps_chill)
+
+        #Forcing accumulation starts when the chilling requirement, C, has been met
+        F_begin = self.doy_estimator(all_site_accumulated_chill, self.temp_doy, C)
+        for row in range(F_begin.shape[0]):
+            all_site_temps_heat[row, self.temp_doy<F_begin[row]]=0
+
+        all_site_accumulated_heat=self.gdd_calculator(all_site_temps_heat)
+
+        return self.doy_estimator(all_site_accumulated_heat, self.temp_doy, F)
+
     #RMSE of the estimated budburst doy of all sites
     def get_error(self, **kargs):
         doy_estimates=self.calculate_doy_estimates(**kargs)
@@ -124,6 +153,9 @@ class phenology_model:
         if self.model_name=='uniforc':
             #           t1         b         c       F*
             return [(-126,180), (-20,0), (-50,50), (0,100)]
+        elif self.model_name=='unichill':
+            #           t0         a_c     b_c     c_c        C        b_f      c_f       F
+            return [(-126,180), (-20,0), (0,20), (-50,50), (0,100), (-20,0), (-50,50), (0,100)]
         elif self.model_name=='gdd':
             #           t1         T         F*
             return [(-126,180), (-20,20), (0,500)]
@@ -133,6 +165,8 @@ class phenology_model:
         o={}
         if self.model_name=='uniforc':
             o['t1'], o['b'], o['c'], o['F'] = x[0], x[1], x[2], x[3]
+        elif self.model_name=='unichill':
+            o['t0'], o['a_c'], o['b_c'], o['c_c'], o['C'], o['b_f'], o['c_f'], o['F'] = x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7]
         elif self.model_name=='gdd':
             o['t1'], o['T'], o['F'] = x[0], x[1], x[2]
 
@@ -143,6 +177,8 @@ class phenology_model:
     def scipy_error(self,x):
         if self.model_name=='uniforc':
             kargs={'t1':x[0], 'b':x[1], 'c':x[2], 'F':x[3]}
+        elif self.model_name=='unichill':
+            kargs={'t0':x[0], 'a_c':x[1], 'b_c':x[2], 'c_c':x[3], 'C':x[4], 'b_f':x[5], 'c_f':x[6], 'F':x[7]}
         elif self.model_name=='gdd':
             kargs={'t1':x[0], 'T':x[1], 'F':x[2]}
 
