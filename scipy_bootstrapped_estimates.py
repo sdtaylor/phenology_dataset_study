@@ -39,9 +39,12 @@ class data_store:
             self.temp_data['Site_ID']=1
 
         self.current_dataset_job_list=[]
-        for species in self.observation_data.species.unique():
-            for bootstrap_i in range(self.num_bootstrap):
-                self.current_dataset_job_list.append({'species':species, 'bootstrap_i':bootstrap_i})
+        for model in self.models:
+            for species in self.observation_data.species.unique():
+                for bootstrap_i in range(self.num_bootstrap):
+                    self.current_dataset_job_list.append({'species' : species,
+                                                          'bootstrap_i' : bootstrap_i,
+                                                          'model': model})
 
 
     #Return a model to optimize and info about the model as a single tuple
@@ -58,7 +61,7 @@ class data_store:
         #Temperature data at sites where this species occures
         sp_temp_data = self.temp_data[self.temp_data.Site_ID.isin(data_sample.Site_ID.unique())].copy()
 
-        model=phenology_model(temp_data=sp_temp_data, plant_data=data_sample, model_name='uniforc')
+        model=phenology_model(temp_data=sp_temp_data, plant_data=data_sample, model_name=job_info['model'])
         model_bounds = model.get_scipy_parameter_bounds()
 
         #all model components to be recieved the by the work process
@@ -79,6 +82,24 @@ class data_store:
 
     def jobs_available(self):
         return self.datasets_available() or self.jobs_available_in_current_dataset()
+
+#Each job outputs parameter values which may be different depending on model.
+#This puts everything into a common format so a data.frame can be made like:
+#model, parameter_name, paramter_value, species, dataset, bootstrap_num
+def cleanup_results(all_job_results):
+    cleaned_results=[]
+    for job_result in all_job_results:
+        dataset = job_result.pop('dataset')
+        species = job_result.pop('species')
+        bootstrap_num = job_result.pop('bootstrap_num')
+        model = job_result.pop('model')
+
+        #Only parameter values are left in the dictionary
+        for parameter_name, parameter_value in job_result.items():
+            cleaned_results.append({'parameter_name':parameter_name, 'value':parameter_value,
+                                   'dataset':dataset, 'species':species,
+                                   'bootstrap_num':bootstrap_num, 'model':model})
+    return cleaned_results
 
 #######################################################
 
@@ -119,7 +140,10 @@ def master():
         results.append(job_result)
         num_jobs_completed = len(results)
         print('Completed job '+str(num_jobs_completed)+' of '+str(job_queue.total_jobs))
-        print('Bootstrap: '+str(job_result['bootstrap_num'])+' - '+job_result['species'] + ' - ' + job_result['dataset'])
+        print('Bootstrap: '+str(job_result['bootstrap_num']) + ' - ' +
+              job_result['dataset'] + ' - ' +
+              job_result['model']   + ' - ' + 
+              job_result['species'])
 
         comm.send(obj=next_job, dest=status.Get_source(), tag=work_tag)
 
@@ -131,7 +155,7 @@ def master():
     for i in range(1, num_workers):
         comm.send(obj=None, dest=i, tag=stop_tag)
 
-    results=pd.DataFrame(results)
+    results=pd.DataFrame(cleanup_results(results))
     results.to_csv(results_file, index=False)
 
 def worker():
@@ -147,9 +171,10 @@ def worker():
         #optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True, maxiter=100, popsize=10)
         return_data = model.translate_scipy_parameter_output(optimize_output['x'])
         #return_data['final_score']=optimize_output['fun']
-        return_data['species']    = species
-        return_data['bootstrap_num']=bootstrap_i
-        return_data['dataset']      =dataset
+        return_data['species']      = species
+        return_data['bootstrap_num']= bootstrap_i
+        return_data['dataset']      = dataset
+        return_data['model']        = model.model_name
 
         comm.send(obj=return_data, dest=0)
 
