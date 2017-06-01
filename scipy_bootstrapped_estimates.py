@@ -53,7 +53,6 @@ class data_store:
 
         job_info=self.current_dataset_job_list.pop()
 
-        print(job_info)
         #A bootstrapped sample with replacment of this species observations
         data_sample = self.observation_data[self.observation_data.species==job_info['species']].sample(frac=1, replace=True).copy()
         #Temperature data at sites where this species occures
@@ -115,9 +114,11 @@ def master():
         next_job = job_queue.get_next_job()
         job_result = comm.recv(source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG, status=status)
         results.append(job_result)
+        num_jobs_completed = len(results)
+        print('Completed job '+str(num_jobs_completed)+' of '+str(job_queue.total_jobs))
+        print('Bootstrap: '+str(job_result['bootstrap_num'])+' - '+job_result['species'] + ' - ' + job_result['dataset'])
+
         comm.send(obj=next_job, dest=status.Get_source(), tag=work_tag)
-        job_progress = job_queue.total_jobs - job_queue.num_jobs_left
-        print('Completed job '+str(job_progress)+' of '+str(job_queue.total_jobs))
 
     #Collect last jobs
     for i in range(1, num_workers):
