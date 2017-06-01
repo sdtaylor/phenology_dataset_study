@@ -4,6 +4,7 @@ from scipy import optimize
 from mpi4py import MPI
 import yaml
 from models import *
+import time
 
 
 class data_store:
@@ -141,6 +142,7 @@ def master():
         num_jobs_completed = len(results)
         print('Completed job '+str(num_jobs_completed)+' of '+str(job_queue.total_jobs))
         print('Bootstrap: '+str(job_result['bootstrap_num']) + ' - ' +
+              str(job_result['run_time']) + ' hrs - ' +
               job_result['dataset'] + ' - ' +
               job_result['model']   + ' - ' + 
               job_result['species'])
@@ -166,15 +168,20 @@ def worker():
         if status.Get_tag() == 1: break
 
         model, bounds, species, bootstrap_i, dataset = model_package
+        start_time=time.time()
         optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=None, popsize=100, mutation=1.5, recombination=0.25)
         #quicker testing optimizer
-        #optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=True, maxiter=100, popsize=10)
+        #optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=5, popsize=10)
+        #Save the optimizer run time in hours
+        total_time=round((time.time() - start_time)/60/60, 2)
+
         return_data = model.translate_scipy_parameter_output(optimize_output['x'])
         #return_data['final_score']=optimize_output['fun']
         return_data['species']      = species
         return_data['bootstrap_num']= bootstrap_i
         return_data['dataset']      = dataset
         return_data['model']        = model.model_name
+        return_data['run_time']     = total_time
 
         comm.send(obj=return_data, dest=0)
 
