@@ -10,8 +10,20 @@ class data_store:
     def __init__(self, all_dataset_configs, num_bootstrap, models=['uniforc','gdd']):
         self.num_bootstrap=num_bootstrap
         self.all_dataset_configs=all_dataset_configs
-        self.load_next_dataset()
         self.models=models
+        self.calculate_total_jobs()
+        self.load_next_dataset()
+
+
+    #total jobs = sum(species in each dataset) * number of bootstraps * number of models
+    #for progress information only
+    def calculate_total_jobs(self):
+        total_species=0
+        for dataset_config in self.all_dataset_configs:
+            observation_data = pd.read_csv(dataset_config['observations_data_file'])
+            total_species+=observation_data.species.unique().shape[0]
+        self.total_jobs = total_species * self.num_bootstrap * len(self.models)
+        self.num_jobs_left = self.total_jobs
 
     def load_next_dataset(self):
         dataset_config = self.all_dataset_configs.pop()
@@ -26,10 +38,10 @@ class data_store:
             self.observation_data['Site_ID']=1
             self.temp_data['Site_ID']=1
 
-        self.job_list=[]
+        self.current_dataset_job_list=[]
         for species in self.observation_data.species.unique():
             for bootstrap_i in range(self.num_bootstrap):
-                self.job_list.append({'species':species, 'bootstrap_i':bootstrap_i})
+                self.current_dataset_job_list.append({'species':species, 'bootstrap_i':bootstrap_i})
 
 
     #Return a model to optimize and info about the model as a single tuple
@@ -39,9 +51,8 @@ class data_store:
             print('no jobs left in dataset')
             return None
 
-        job_info=self.job_list.pop()
+        job_info=self.current_dataset_job_list.pop()
 
-        print(job_info)
         #A bootstrapped sample with replacment of this species observations
         data_sample = self.observation_data[self.observation_data.species==job_info['species']].sample(frac=1, replace=True).copy()
         #Temperature data at sites where this species occures
@@ -53,19 +64,18 @@ class data_store:
         if (not self.jobs_available_in_current_dataset()) and self.datasets_available():
             self.load_next_dataset()
 
+        self.num_jobs_left-=1
+
         return (model, model_bounds, job_info['species'], job_info['bootstrap_i'], self.dataset_name)
 
     def datasets_available(self):
         return len(self.all_dataset_configs)>0
 
     def jobs_available_in_current_dataset(self):
-        return len(self.job_list)>0
+        return len(self.current_dataset_job_list)>0
 
     def jobs_available(self):
         return self.datasets_available() or self.jobs_available_in_current_dataset()
-
-    def jobs_left(self):
-        return len(self.job_list)
 
 #######################################################
 
@@ -89,7 +99,6 @@ def master():
                            num_bootstrap =       config['num_bootstrap'],
                            models =              config['models_to_use'])
 
-    total_jobs=job_queue.jobs_left()
     #Dole out the first round of jobs to all workers
     for i in range(1, num_workers):
         if job_queue.jobs_available():
@@ -105,9 +114,11 @@ def master():
         next_job = job_queue.get_next_job()
         job_result = comm.recv(source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG, status=status)
         results.append(job_result)
+        num_jobs_completed = len(results)
+        print('Completed job '+str(num_jobs_completed)+' of '+str(job_queue.total_jobs))
+        print('Bootstrap: '+str(job_result['bootstrap_num'])+' - '+job_result['species'] + ' - ' + job_result['dataset'])
+
         comm.send(obj=next_job, dest=status.Get_source(), tag=work_tag)
-        num_jobs_left=job_queue.jobs_left()
-        print('Completed job '+str(total_jobs-num_jobs_left)+' of '+str(total_jobs))
 
     #Collect last jobs
     for i in range(1, num_workers):
