@@ -1,8 +1,4 @@
 dataset_configs:
-    - dataset_name: npn
-      observations_data_file: ./cleaned_data/npn_observations.csv
-      temp_data_file: ./cleaned_data/npn_temp.csv
-      add_site_dummy_var: False
     - dataset_name: harvard
       observations_data_file: ./cleaned_data/harvard_observations.csv
       temp_data_file: ./cleaned_data/harvard_temp.csv
@@ -18,6 +14,10 @@ dataset_configs:
     - dataset_name: rmbl
       observations_data_file: ./cleaned_data/rmbl_observations.csv
       temp_data_file: ./cleaned_data/rmbl_temp.csv
+      add_site_dummy_var: False
+    - dataset_name: npn
+      observations_data_file: ./cleaned_data/npn_observations.csv
+      temp_data_file: ./cleaned_data/npn_temp.csv
       add_site_dummy_var: False
 
 models_to_use:
