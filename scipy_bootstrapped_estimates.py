@@ -61,12 +61,15 @@ class data_store:
         model=phenology_model(temp_data=sp_temp_data, plant_data=data_sample, model_name='uniforc')
         model_bounds = model.get_scipy_parameter_bounds()
 
+        #all model components to be recieved the by the work process
+        package =  (model, model_bounds, job_info['species'], job_info['bootstrap_i'], self.dataset_name)
+
         if (not self.jobs_available_in_current_dataset()) and self.datasets_available():
             self.load_next_dataset()
 
         self.num_jobs_left-=1
 
-        return (model, model_bounds, job_info['species'], job_info['bootstrap_i'], self.dataset_name)
+        return package
 
     def datasets_available(self):
         return len(self.all_dataset_configs)>0
