@@ -51,7 +51,7 @@ class phenology_model:
     def calculate_doy_estimates(self, **kwargs):
         return self.model(**kwargs)
 
-    #gdd has site/year observarionts by rows, and doy in columns.
+    #gdd has unique site/year observarionts by rows, and doy in columns.
     #returns the first doy which meets forcing requirement F for each observation
     #if it's not met then return a very large doy estimate to produce a large error
     def doy_estimator(self, gdd, doy_index, F):
@@ -117,7 +117,8 @@ class phenology_model:
 
         all_site_accumulated_chill=self.gdd_calculator(all_site_temps_chill)
 
-        #Forcing accumulation starts when the chilling requirement, C, has been met
+        #Heat forcing accumulation starts when the chilling requirement, C, has been met
+        #Enforce this by setting everything prior to that date to 0
         F_begin = self.doy_estimator(all_site_accumulated_chill, self.temp_doy, C)
         for row in range(F_begin.shape[0]):
             all_site_temps_heat[row, self.temp_doy<F_begin[row]]=0
