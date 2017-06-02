@@ -12,21 +12,28 @@ class phenology_model:
         #This is done to calculate the GDD info for all sites/years at once
         temp_data = temp_data.pivot_table(index=['Site_ID','year'], columns='doy', values='temp').reset_index()
 
+        #Get associated temperature data for each observation
+        plant_data = plant_data.merge(temp_data, on=['Site_ID','year'], how='left')
+
         #doy are the columns here from -127 to 180
-        self.temp_temp =temp_data.drop(['Site_ID','year'], axis=1).values
+        self.temp_observations = plant_data.drop(['species','Site_ID','year','doy'], axis=1).values
+        #actual day of year values where 1 = Jan 1
+        self.temp_doy =temp_data.drop(['Site_ID','year'], axis=1).columns.values.astype(np.int)
+
+        self.doy_observations = plant_data['doy'].values
+
+        self.num_replicates=plant_data.shape[0]
 
         #Indexes to find the temp infor for each site and year
-        self.temp_year=temp_data['year'].values
-        self.temp_site=temp_data['Site_ID'].values
-        self.temp_doy =temp_data.drop(['Site_ID','year'], axis=1).columns.values.astype(np.int)
-        self.num_doy  = self.temp_doy.shape[0]
+        #self.temp_year=temp_data['year'].values
+        #self.temp_site=temp_data['Site_ID'].values
+        #self.num_doy  = self.temp_doy.shape[0]
 
 
         #Plant data
-        self.plant_site=plant_data['Site_ID'].values
-        self.plant_year=plant_data['year'].values
-        self.plant_doy =plant_data['doy'].values
-        self.num_replicates=plant_data.shape[0]
+        #self.plant_site=plant_data['Site_ID'].values
+        #self.plant_year=plant_data['year'].values
+        #self.plant_doy =plant_data['doy'].values
 
         #A helper array for calculating GDD.
         #WIP 
@@ -48,18 +55,22 @@ class phenology_model:
     #Get a site/year x doy boolean array of the days meeting the F* requirement
     #This is for all site/year combinations, which needs to match up exactly
     #with all entires in plant_data
-    def calculate_doy_estimates(self, **kwargs):
+    def get_doy_estimates(self, **kwargs):
         return self.model(**kwargs)
 
-    #gdd has unique site/year observarionts by rows, and doy in columns.
-    #returns the first doy which meets forcing requirement F for each observation
-    #if it's not met then return a very large doy estimate to produce a large error
     def doy_estimator(self, gdd, doy_index, F):
-        doy_estimates = np.zeros(gdd.shape[0])
-        for site_year in range(gdd.shape[0]):
-            this_estimate=doy_index[gdd[site_year]>=F]
-            doy_estimates[site_year]=this_estimate[0] if this_estimate.shape[0]>0 else 1000
-        return doy_estimates
+        #If F is not met for a particular row, ensure that a large doy
+        #gets (1000) returned so it produces a large error
+        gdd = np.column_stack((gdd, np.repeat(100000, gdd.shape[0])))
+        doy_index = np.append(doy_index, 1000)
+
+        #Repeating the full doy index for each row in gdd
+        doy_index = np.tile(doy_index, (gdd.shape[0],1))
+
+        #The doy for each row where F was met
+        doy_indexes = np.argmax(gdd>=F, axis=1)
+
+        return doy_index[np.arange(len(doy_index)), doy_indexes]
 
     #temps has site/year observations by rows, and doy in columns.
     #return the accumulated forcing/gdd for each doy for each observation
@@ -71,7 +82,7 @@ class phenology_model:
     #T: temperature cutoff for GDD
     #F: total gdd required
     def gdd(self, t1,T,F):
-        all_site_temps = self.temp_temp.copy()
+        all_site_temps = self.temp_observations.copy()
 
         #Temperature cutoff
         all_site_temps[all_site_temps<T]=0
@@ -88,7 +99,7 @@ class phenology_model:
     #b,c: daily temp fitting paramters
     #F: total forcing required
     def uniforc(self, t1, b, c, F):
-        all_site_temps = self.temp_temp.copy()
+        all_site_temps = self.temp_observations.copy()
 
         all_site_temps = 1 / (1 + np.exp(b*(all_site_temps-c)))
 
@@ -106,8 +117,8 @@ class phenology_model:
     #b_c, c_c: fitting paramters for heating sigmoid function
     #F: total forcing required
     def unichill(self, t0, a_c, b_c, c_c, C, b_f, c_f, F):
-        all_site_temps_chill = self.temp_temp.copy()
-        all_site_temps_heat = self.temp_temp.copy()
+        all_site_temps_chill = self.temp_observations.copy()
+        all_site_temps_heat = self.temp_observations.copy()
 
         all_site_temps_chill = 1 / (1 + np.exp(a_c*((all_site_temps_chill - c_c)**2) + b_c*(all_site_temps_chill-c_c)))
         all_site_temps_heat = 1 / (1 + np.exp(b_f*(all_site_temps_heat-c_f)))
@@ -129,25 +140,8 @@ class phenology_model:
 
     #RMSE of the estimated budburst doy of all sites
     def get_error(self, **kargs):
-        doy_estimates=self.calculate_doy_estimates(**kargs)
-        errors = []
-        for row in range(self.num_replicates):
-            estimated_doy = doy_estimates[(self.temp_site == self.plant_site[row]) & (self.temp_year == self.plant_year[row])]
-            if len(estimated_doy)>1: print('>1 estimated doy')
-            errors.append(estimated_doy[0] - self.plant_doy[row])
-
-        errors = np.array(errors)
-        return np.sqrt(np.mean(errors**2))
-
-    #Estimated doy for all entries in self.plant_data given parameters
-    def get_all_estimates(self, **kargs):
-        site_year_doy_estimates=self.calculate_doy_estimates(**kargs)
-        doy_estimates=[]
-        for row in range(self.num_replicates):
-            estimated_doy = site_year_doy_estimates[(self.temp_site == self.plant_site[row]) & (self.temp_year == self.plant_year[row])]
-            doy_estimates.append(estimated_doy[0])
-
-        return np.array(doy_estimates)
+        doy_estimates=self.get_doy_estimates(**kargs)
+        return np.sqrt(np.mean((doy_estimates - self.doy_observations)**2))
 
     #upper and lower bounds used in scipy.optimize.differential_evolution
     #ranges of possible values taken from Roberts et al. 2015 and Chuine 2000 with some buffer added
