@@ -24,24 +24,6 @@ class phenology_model:
 
         self.num_replicates=plant_data.shape[0]
 
-        #Indexes to find the temp infor for each site and year
-        #self.temp_year=temp_data['year'].values
-        #self.temp_site=temp_data['Site_ID'].values
-        #self.num_doy  = self.temp_doy.shape[0]
-
-
-        #Plant data
-        #self.plant_site=plant_data['Site_ID'].values
-        #self.plant_year=plant_data['year'].values
-        #self.plant_doy =plant_data['doy'].values
-
-        #A helper array for calculating GDD.
-        #WIP 
-        #self.doy_sum_matrix = np.ones((self.num_doy, self.num_doy)).astype(bool)
-        #for i in range(self.num_doy):
-        #    self.doy_sum_matrix[(i+1):self.num_doy,i] = False
-        #self.doy_sum_matrix = np.tile(self.doy_sum_rules, (self.num_replicates, 1,1))
-
         self.model_name=model_name
         if self.model_name=='uniforc':
             self.model = self.uniforc
