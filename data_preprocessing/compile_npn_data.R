@@ -5,9 +5,11 @@ source('./data_preprocessing/processing_utils.R')
 ####################################################################
 #From the NPN dataset extract the doy observations for an
 #select species and specied phenophase (ie flowering vs leafout)
+#distinct() to compact down multiple observations on the same day
 subset_npn_data = function(this_species, this_phenophase){
   obs_subset = all_observations %>%
-    filter(species==this_species, Phenophase_ID == this_phenophase)
+    filter(species==this_species, Phenophase_ID == this_phenophase) %>%
+    distinct()
   
   if(nrow(obs_subset)==0){return(data.frame())}
 
