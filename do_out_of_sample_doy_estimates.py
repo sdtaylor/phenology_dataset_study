@@ -9,7 +9,7 @@ import yaml
 with open('config.yaml', 'r') as f:
     config = yaml.load(f)
 
-all_model_parameters=pd.read_csv('model_parameters.csv')
+all_model_parameters=pd.read_csv(config['model_parameter_file'])
 
 results=[]
 
@@ -35,31 +35,26 @@ for dataset in config['dataset_configs']:
 
             for parameter_source in all_model_parameters.dataset.unique():
                 #Parameters for a specific model, species, and dataset source
-                parameter_values = all_model_parameters.query('model_name == @model_name & dataset == @parameter_source & species    == @species')
+                parameter_values = all_model_parameters.query('model == @model_name & dataset == @parameter_source & species == @species')
 
                 #Datasets do not have all species in common
                 if parameter_values.empty:
                     continue
 
-                #Some dupes of bootsrap_num=0 here. Possibly related to the below issue.
-                #TODO: figure that out
-                parameter_values = parameter_values[parameter_values.bootstrap_num>0]
-
-                #Each line will be parameters from a single bootsrapped run
-                parameter_values = parameter_values.pivot(index='bootstrap_num', columns='parameter', values='value').reset_index()
+                #Spread the parameters out to columns. Number of columns is different for each model
+                parameter_values = parameter_values.pivot_table(index=['bootstrap_num'], columns='parameter_name', values='value').reset_index()
 
                 #sanity check, bootstrap numbers are sometimes low. possibly due to the optimizer erroring out?
+                #Should be fixed with the latest updates
                 #TODO: figure that out
-                print(parameter_values.shape)
-                print(parameter_values.head())
-                assert parameter_values.shape[0] >= (config['num_bootstrap']-10), 'number of bootstraps too low'
+                assert parameter_values.shape[0] == (config['num_bootstrap']), 'number of bootstraps too low'
 
                 for bootstrap_iteration in parameter_values.to_dict('records'):
                     bootstrap_num=bootstrap_iteration.pop('bootstrap_num')
-                    doy_estimated = model_estimator.get_all_estimates(**bootstrap_iteration)
-                    doy_observed  = model_estimator.plant_doy
-                    year_observed = model_estimator.plant_year
-                    site_observed = model_estimator.plant_site
+                    doy_estimated = model_estimator.get_doy_estimates(**bootstrap_iteration)
+                    doy_observed  = model_estimator.doy_observations
+                    year_observed = model_estimator.year_observations
+                    site_observed = model_estimator.site_observations
 
                     print(dataset['dataset_name']+', '+species+', '+parameter_source+', '+str(bootstrap_num))
                     for i in range(doy_observed.shape[0]):
@@ -75,4 +70,4 @@ for dataset in config['dataset_configs']:
 
 
 results = pd.DataFrame(results)
-results.to_csv('out_of_sample_doy_estimates.csv', index=False)
+results.to_csv('results/out_of_sample_doy_estimates.csv', index=False)

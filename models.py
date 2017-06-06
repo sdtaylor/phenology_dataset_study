@@ -21,6 +21,8 @@ class phenology_model:
         self.temp_doy =temp_data.drop(['Site_ID','year'], axis=1).columns.values.astype(np.int)
 
         self.doy_observations = plant_data['doy'].values
+        self.year_observations = plant_data['year'].values
+        self.site_observations = plant_data['Site_ID'].values
 
         self.num_replicates=plant_data.shape[0]
 
@@ -63,7 +65,7 @@ class phenology_model:
     #t1: day gdd accumulation begins
     #T: temperature cutoff for GDD
     #F: total gdd required
-    def gdd(self, t1,T,F):
+    def gdd(self, t1, T, F, **kwargs):
         all_site_temps = self.temp_observations.copy()
 
         #Temperature cutoff
@@ -80,7 +82,7 @@ class phenology_model:
     #t1: day forcing accumulation begins
     #b,c: daily temp fitting paramters
     #F: total forcing required
-    def uniforc(self, t1, b, c, F):
+    def uniforc(self, t1, b, c, F, **kwargs):
         all_site_temps = self.temp_observations.copy()
 
         all_site_temps = 1 / (1 + np.exp(b*(all_site_temps-c)))
@@ -98,7 +100,7 @@ class phenology_model:
     #C: total chilling units requied
     #b_c, c_c: fitting paramters for heating sigmoid function
     #F: total forcing required
-    def unichill(self, t0, a_c, b_c, c_c, C, b_f, c_f, F):
+    def unichill(self, t0, a_c, b_c, c_c, C, b_f, c_f, F, **kwargs):
         all_site_temps_chill = self.temp_observations.copy()
         all_site_temps_heat = self.temp_observations.copy()
 
