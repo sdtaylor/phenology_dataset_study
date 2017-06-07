@@ -40,10 +40,10 @@ processed_data = non_npn_species %>%
   select(Site_ID, species, individual_id, year, doy, status) %>%
   process_phenology_observations()
 
-#At the moment climate data starts in 2009
-#TODO: get more climate data
+#Core NPN collection started in 2009.
+#2017 does not have climate data available yet
 processed_data = processed_data %>%
-  filter(year>=2009)
+  filter(year>=2009, year<2017)
 
 observations_per_species = processed_data %>%
   group_by(species) %>%
