@@ -7,7 +7,7 @@ import numpy as np
 #accepts a set of temperature data and observations of phenological event
 #as the doy. 
 class phenology_model:
-    def __init__(self, temp_data, plant_data, model_name):
+    def __init__(self, temp_data, plant_data, model_name, error_type='rmse'):
         #Create a ['Site_ID','year'] x 'doy' matrix with daily temp as the value
         #This is done to calculate the GDD info for all sites/years at once
         temp_data = temp_data.pivot_table(index=['Site_ID','year'], columns='doy', values='temp').reset_index()
@@ -26,6 +26,7 @@ class phenology_model:
 
         self.num_replicates=plant_data.shape[0]
 
+        self.error_type=error_type
         self.model_name=model_name
         if self.model_name=='uniforc':
             self.model = self.uniforc
@@ -122,10 +123,17 @@ class phenology_model:
 
         return self.doy_estimator(all_site_accumulated_heat, self.temp_doy, F)
 
-    #RMSE of the estimated budburst doy of all sites
+    #Total error of the estimates given the parameters
+    #r2 is R^2 from the 1:1 line. It is not subtracted from 1 because the scipy
+    #optimizer does minimization
     def get_error(self, **kargs):
         doy_estimates=self.get_doy_estimates(**kargs)
-        return np.sqrt(np.mean((doy_estimates - self.doy_observations)**2))
+        if self.error_type=='rmse':
+            error = np.sqrt(np.mean((doy_estimates - self.doy_observations)**2))
+        elif self.error_type=='r2':
+            error = np.sum((self.doy_observations - doy_estimates)**2) / np.sum((self.doy_observations - np.mean(self.doy_observations))**2)
+
+        return error
 
     #upper and lower bounds used in scipy.optimize.differential_evolution
     #ranges of possible values taken from Roberts et al. 2015 and Chuine 2000 with some buffer added
