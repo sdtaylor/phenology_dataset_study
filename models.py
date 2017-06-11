@@ -12,11 +12,19 @@ class phenology_model:
         #This is done to calculate the GDD info for all sites/years at once
         temp_data = temp_data.pivot_table(index=['Site_ID','year'], columns='doy', values='temp').reset_index()
 
+        #This first day of temperature data causes NA issues because of leap years
+        temp_data.drop(-127, axis=1, inplace=True)
+
         #Get associated temperature data for each observation
         plant_data = plant_data.merge(temp_data, on=['Site_ID','year'], how='left')
+        #Some observations have NA temperature values, most likely cause their
+        #coordinates end up over water.
+        plant_data.dropna(axis=0, inplace=True)
 
-        #doy are the columns here from -127 to 180
+        #doy are the columns here from -128 to 180
         self.temp_observations = plant_data.drop(['species','Site_ID','year','doy'], axis=1).values
+
+
         #actual day of year values where 1 = Jan 1
         self.temp_doy =temp_data.drop(['Site_ID','year'], axis=1).columns.values.astype(np.int)
 
@@ -141,13 +149,13 @@ class phenology_model:
     def get_scipy_parameter_bounds(self):
         if self.model_name=='uniforc':
             #           t1         b         c       F*
-            return [(-126,180), (-20,0), (-100,100), (0,200)]
+            return [(-127,180), (-20,0), (-100,100), (0,200)]
         elif self.model_name=='unichill':
             #           t0         a_c     b_c     c_c        C        b_f      c_f       F
-            return [(-126,180), (0,10), (-50,50), (-50,50), (0,300), (-20,0), (-100,100), (0,200)]
+            return [(-127,180), (0,10), (-50,50), (-50,50), (0,300), (-20,0), (-100,100), (0,200)]
         elif self.model_name=='gdd':
             #           t1         T         F*
-            return [(-126,180), (-20,20), (0,500)]
+            return [(-127,180), (-20,20), (0,500)]
 
     #Organize the optimized parameter output from scipy.optimize in a nice labeled dictionary
     def translate_scipy_parameter_output(self, x):
