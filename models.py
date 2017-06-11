@@ -42,6 +42,10 @@ class phenology_model:
             self.model = self.gdd
         elif self.model_name=='unichill':
             self.model = self.unichill
+        elif self.model_name=='naive':
+            self.model = self.naive
+        elif self.model_name=='linear_temp':
+            self.model = self.linear_temp
         else:
             print('unknown model type: ' + model_name)
 
@@ -69,6 +73,17 @@ class phenology_model:
     #return the accumulated forcing/gdd for each doy for each observation
     def gdd_calculator(self, temps):
         return temps.cumsum(axis=1)
+
+    #Linear temperature model
+    #A linear regression between mean spring temperature and 
+    #the event doy
+    def linear_temp(self, intercept, slope, **kwargs):
+        pass
+
+    #Naive model
+    #Uses only the mean doy from all observations
+    def naive(self, mean_doy, **kwargs):
+        return np.repeat(mean_doy, self.num_replicates)
 
     #simple gdd model. 
     #t1: day gdd accumulation begins
@@ -156,6 +171,9 @@ class phenology_model:
         elif self.model_name=='gdd':
             #           t1         T         F*
             return [(-127,180), (-20,20), (0,500)]
+        elif self.model_name=='naive':
+            #           mean_doy
+            return [(-127,180)]
 
     #Organize the optimized parameter output from scipy.optimize in a nice labeled dictionary
     def translate_scipy_parameter_output(self, x):
@@ -166,6 +184,8 @@ class phenology_model:
             o['t0'], o['a_c'], o['b_c'], o['c_c'], o['C'], o['b_f'], o['c_f'], o['F'] = x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7]
         elif self.model_name=='gdd':
             o['t1'], o['T'], o['F'] = x[0], x[1], x[2]
+        elif self.model_name=='naive':
+            o['mean_doy'] = x[0]
 
         return o
 
@@ -178,5 +198,7 @@ class phenology_model:
             kargs={'t0':x[0], 'a_c':x[1], 'b_c':x[2], 'c_c':x[3], 'C':x[4], 'b_f':x[5], 'c_f':x[6], 'F':x[7]}
         elif self.model_name=='gdd':
             kargs={'t1':x[0], 'T':x[1], 'F':x[2]}
+        elif self.model_name=='naive':
+            kargs={'mean_doy':x[0]}
 
         return self.get_error(**kargs)
