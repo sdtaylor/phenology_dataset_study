@@ -22,9 +22,11 @@ dataset_configs:
 
 models_to_use:
     - uniforc
-    - unichill
     - gdd
+    - unichill
+    - naive
+    - linear_temp
 
-num_bootstrap: 500
+num_bootstrap: 250
 
 model_parameter_file: ./results/model_parameters.csv
