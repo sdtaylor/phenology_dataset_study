@@ -46,6 +46,10 @@ class phenology_model:
             self.model = self.naive
         elif self.model_name=='linear_temp':
             self.model = self.linear_temp
+            #Do some preprocessing for this one
+            spring_days = np.logical_and(self.temp_doy>=1,self.temp_doy<=90)
+            all_site_temps = self.temp_observations[:,spring_days].copy()
+            self.mean_spring_temps = all_site_temps.mean(axis=1)
         else:
             print('unknown model type: ' + model_name)
 
@@ -75,10 +79,11 @@ class phenology_model:
         return temps.cumsum(axis=1)
 
     #Linear temperature model
-    #A linear regression between mean spring temperature and 
-    #the event doy
+    #A linear regression between mean spring temperature(Jan 1 - March 31)
+    #and the event doy. Mean spring temps don't change with parameters, so
+    #it is calculated in __init__
     def linear_temp(self, intercept, slope, **kwargs):
-        pass
+        return self.mean_spring_temps*slope + intercept
 
     #Naive model
     #Uses only the mean doy from all observations
@@ -174,6 +179,9 @@ class phenology_model:
         elif self.model_name=='naive':
             #           mean_doy
             return [(-127,180)]
+        elif self.model_name=='linear_temp':
+            #           intercept     slope
+            return [(-1000,1000), (-1000,1000)]
 
     #Organize the optimized parameter output from scipy.optimize in a nice labeled dictionary
     def translate_scipy_parameter_output(self, x):
@@ -186,6 +194,8 @@ class phenology_model:
             o['t1'], o['T'], o['F'] = x[0], x[1], x[2]
         elif self.model_name=='naive':
             o['mean_doy'] = x[0]
+        elif self.model_name=='linear_temp':
+            o['intercept'], o['slope'] = x[0], x[1]
 
         return o
 
@@ -200,5 +210,7 @@ class phenology_model:
             kargs={'t1':x[0], 'T':x[1], 'F':x[2]}
         elif self.model_name=='naive':
             kargs={'mean_doy':x[0]}
+        elif self.model_name=='linear_temp':
+            kargs={'intercept':x[0], 'slope':x[1]}
 
         return self.get_error(**kargs)
