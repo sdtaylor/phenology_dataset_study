@@ -93,8 +93,8 @@ is_sig = parameter_means %>%
 #set.seed(1)
 #graph_palette = sample(getPalette(color_count))
 
-unichill=ggplot(filter(parameter_means, model=='unichill'), aes(x=npn, y=param_mean, color=species, group=species)) +
-  geom_point(size=4, aes(shape=dataset)) +
+unichill=ggplot(filter(parameter_means, model=='unichill'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
+  geom_point(size=4) +
   geom_point(data=filter(is_sig, model=='unichill'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
@@ -102,32 +102,32 @@ unichill=ggplot(filter(parameter_means, model=='unichill'), aes(x=npn, y=param_m
   theme_bw() +
   theme(legend.position = "none") +
   labs(y = "Unichill Model", x='')
-uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=species, group=species)) +
-  geom_point(size=4, aes(shape=dataset)) +
+uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
+  geom_point(size=4) +
   geom_point(data=filter(is_sig, model=='uniforc'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
   labs(y = "Uniforc Model", x='')
-gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color=species, group=species)) +
-  geom_point(size=4, aes(shape=dataset)) +
+gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
+  geom_point(size=4) +
   geom_point(data=filter(is_sig, model=='gdd'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
   labs(y = "GDD Model", x='')
-linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=param_mean, color=species, group=species)) +
-  geom_point(size=4, aes(shape=dataset)) +
+linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
+  geom_point(size=4) +
   geom_point(data=filter(is_sig, model=='linear_temp'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
   labs(y = "Linear Model", x='')
-naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=species, group=species)) +
-  geom_point(size=4, aes(shape=dataset)) +
+naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
+  geom_point(size=4) +
   geom_point(data=filter(is_sig, model=='naive'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
@@ -135,23 +135,27 @@ naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, c
   theme(legend.position = "none") +
   labs(y = "Naive Model", x='')
 
-ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=species, group=species)) +
+legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='unichill'), aes(x=npn, y=param_mean, color=dataset, group=dataset))+
+                               geom_point())
+
+empty_space = ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=species, group=species)) +
   #geom_point(size=4, aes(shape=dataset)) +
   #geom_abline(intercept=0, slope=1) +
   #facet_grid(~parameter_name, scales='free') + 
   theme_bw() 
 
 empty_space = grid::textGrob('')
-complex_layout = rbind(c(2,1,1,1,1,1,1,1),
-                       c(3,3,1,1,1,1,1,1),
-                       c(4,4,4,1,1,1,1,1),
+complex_layout = rbind(c(2,1,1,1,7,7,7,1),
+                       c(3,3,1,1,7,7,7,1),
+                       c(4,4,4,1,7,7,7,1),
                        c(5,5,5,5,1,1,1,1),
                        c(6,6,6,6,6,6,6,6))
-#                             1       2(1)     3(2)    4(3)  5(4)      6(8)
-gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, unichill, layout_matrix=complex_layout,
+#                                      1       2(1)     3(2)    4(3)  5(4)      6(8)         7
+whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, unichill, legend, layout_matrix=complex_layout,
                         left = 'Long Term Dataset Derived Parameter Estimates',
                         bottom = 'NPN Derived Parameter Estimates')
 
+ggsave('param_comparison.png', plot=whole_plot, heigh=20, width=40, units = 'cm')
 
 ####################################################33
 #Test for normality among parameters
