@@ -13,7 +13,7 @@ class phenology_model:
         temp_data = temp_data.pivot_table(index=['Site_ID','year'], columns='doy', values='temp').reset_index()
 
         #This first day of temperature data causes NA issues because of leap years
-        temp_data.drop(-127, axis=1, inplace=True)
+        temp_data.drop(-67, axis=1, inplace=True)
 
         #Get associated temperature data for each observation
         plant_data = plant_data.merge(temp_data, on=['Site_ID','year'], how='left')
