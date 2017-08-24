@@ -169,19 +169,19 @@ class phenology_model:
     def get_scipy_parameter_bounds(self):
         if self.model_name=='uniforc':
             #           t1         b         c       F*
-            return [(-127,180), (-20,0), (-100,100), (0,200)]
+            return [(-67,298), (-20,0), (-100,100), (0,200)]
         elif self.model_name=='unichill':
             #           t0         a_c     b_c     c_c        C        b_f      c_f       F
-            return [(-127,180), (0,10), (-50,50), (-50,50), (0,300), (-20,0), (-100,100), (0,200)]
+            return [(-67,298), (0,20), (-100,100), (-50,50), (0,300), (-20,0), (-100,100), (0,200)]
         elif self.model_name=='gdd':
             #           t1         T         F*
-            return [(-127,180), (-20,20), (0,500)]
+            return [(-67,298), (-25,25), (0,1000)]
         elif self.model_name=='naive':
             #           mean_doy
-            return [(-127,180)]
+            return [(-67,298)]
         elif self.model_name=='linear_temp':
             #           intercept     slope
-            return [(-1000,1000), (-1000,1000)]
+            return [(-200,200), (-50,50)]
 
     #Organize the optimized parameter output from scipy.optimize in a nice labeled dictionary
     def translate_scipy_parameter_output(self, x):
