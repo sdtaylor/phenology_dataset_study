@@ -64,6 +64,7 @@ for dataset in config['dataset_configs']:
                                         'parameter_source':parameter_source,
                                         'observation_source': dataset_obs_name,
                                         'doy_observed':       doy_observed[i],
+                                        'observation_id':     i,
                                         'year_observed':       year_observed[i],
                                         'site_observed':       site_observed[i],
                                         'doy_estimated':      doy_estimated[i]})
