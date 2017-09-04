@@ -45,15 +45,14 @@ observations = observations %>%
 #4: fully expanded, canopy in summer conditions
 #At each site the  above observations are made for 3 trees, which are then averaged together.
 #I define budbreak as status >=1.6. This is where the most likely values for the 3 trees are c(1,2,2)
-#TODO: make budbreak the midpoint of first obs >=1.6 and the prior obs.
 observations = observations %>%
   mutate(status = (status >= 1.6)*1) %>%
   select(species, year, Site_ID, doy, status) %>%
-  mutate(individual_id=1) %>% #Dummy variable for individual_id
+  mutate(individual_id=1, Phenophase_ID=371) %>% #Dummy variable for individual_id. All observations here are phenophase 371
   process_phenology_observations()
 
 #Check to ensure there are no duplicates
-there_are_duplicates = nrow(observations) != nrow(distinct(select(observations, Site_ID, species, year)))
+there_are_duplicates = nrow(observations) != nrow(distinct(select(observations, Site_ID, species, year, Phenophase_ID)))
 if(there_are_duplicates) stop('duplicates')
 
 
@@ -61,7 +60,7 @@ write_csv(observations, './cleaned_data/hubbardbrook_observations.csv')
 
 #Record the species present to use in NPN data filter
 species = observations %>% 
-  select(species) %>%
+  select(species, Phenophase_ID) %>%
   distinct() %>%
   mutate(dataset='hubbard', Phenophase_ID=371)
 

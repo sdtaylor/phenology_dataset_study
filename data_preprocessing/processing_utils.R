@@ -11,26 +11,26 @@ process_phenology_observations = function(df){
   #Add an observation ID for each unique series
   df = df %>%
     arrange(doy) %>%
-    group_by(species, Site_ID, year, individual_id) %>%
+    group_by(species, Site_ID, year, individual_id, Phenophase_ID) %>%
     mutate(obs_num = 1:n()) %>%
     ungroup()
   
   #site,year,species where a budbreak==0 was the first observation in a year
   phenophase_0 = df %>%
-    group_by(species, Site_ID, year, individual_id) %>%
+    group_by(species, Site_ID, year, individual_id, Phenophase_ID) %>%
     top_n(1, -doy) %>%
     ungroup() %>%
     filter(status==0) %>%
-    select(species, Site_ID, year, individual_id) %>%
+    select(species, Site_ID, year, individual_id, Phenophase_ID) %>%
     mutate(keep='yes')
   
   #Keep only observations that were preceded by an observation of the phenophase==0
   df_subset = df %>%
     filter(status==1) %>%
-    group_by(species,Site_ID,year, individual_id) %>%
+    group_by(species,Site_ID,year, individual_id, Phenophase_ID) %>%
     top_n(1,-doy) %>%
     ungroup() %>%
-    left_join(phenophase_0, by=c('species','Site_ID','year','individual_id')) %>%
+    left_join(phenophase_0, by=c('species','Site_ID','year','individual_id','Phenophase_ID')) %>%
     filter(keep=='yes') %>% 
     select(-status, -keep)
   
@@ -38,13 +38,13 @@ process_phenology_observations = function(df){
   prior_observations = df_subset %>%
     mutate(obs_num = obs_num-1) %>%
     select(-doy) %>%
-    left_join(df, by=c('species','Site_ID','year','obs_num', 'individual_id')) %>%
-    select(species, Site_ID, year, individual_id, doy_prior = doy)
+    left_join(df, by=c('species','Site_ID','year','obs_num', 'individual_id', 'Phenophase_ID')) %>%
+    select(species, Site_ID, year, individual_id, doy_prior = doy, Phenophase_ID)
   
   #Infer the doy of the phelogical event as the midpoint between the doy it was first
   #observed and the most prior observation
   df_subset = df_subset %>%
-    left_join(prior_observations, by=c('species','Site_ID','year','individual_id')) %>%
+    left_join(prior_observations, by=c('species','Site_ID','year','individual_id','Phenophase_ID')) %>%
     mutate(doy_difference = doy-doy_prior)
   
   #Sanity check. No negative numbers, which would happen if doy_prior was larger than doy
@@ -54,7 +54,7 @@ process_phenology_observations = function(df){
   df_subset = df_subset %>%
     filter(!is.na(doy_difference)) %>%
     mutate(doy = round(doy_difference/2 + doy_prior)) %>%
-    select(species, Site_ID,year,doy)
+    select(species, Site_ID,year,doy, Phenophase_ID)
   
   return(df_subset)
 }

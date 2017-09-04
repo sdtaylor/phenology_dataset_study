@@ -46,10 +46,10 @@ observations = observations %>%
 subset_jornada_data = function(this_species, this_phenophase){
   if(this_phenophase==371){
     obs_subset = observations %>%
-      mutate(status = (PercentDORMANT<75)*1)
+      mutate(status = (PercentDORMANT<75)*1, Phenophase_ID=371)
   } else if(this_phenophase==501){
     obs_subset = observations %>%
-      mutate(status = (PercentFLOWER>25)*1) 
+      mutate(status = (PercentFLOWER>25)*1, Phenophase_ID=371) 
   }
   obs_subset = obs_subset %>%
     filter(species==this_species)
@@ -64,7 +64,7 @@ species = data.frame(species=c('prosopis glandulosa','larrea tridentata'),
 processed_data = species %>%
   rowwise() %>%
   do(subset_jornada_data(this_species = .$species, this_phenophase = .$Phenophase_ID)) %>%
-  select(Site_ID, species, year, doy, status) %>%
+  select(Site_ID, species, year, doy, status, Phenophase_ID) %>%
   mutate(individual_id=1) %>% #Dummy variable for individual_id
   process_phenology_observations()
 

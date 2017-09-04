@@ -26,7 +26,8 @@ non_npn_species = read_csv('./cleaned_data/non_npn_species_list.csv') %>%
 
 #The raw npn data
 all_observations = read_csv(paste0(data_dir,'status_intensity_observation_data.csv')) %>%
-  select(Site_ID, individual_id = Individual_ID, Phenophase_ID, Observation_Date, status = Phenophase_Status, Genus, Species) %>%
+  select(Site_ID, individual_id = Individual_ID, Phenophase_ID, Observation_Date, status = Phenophase_Status,
+         intensity_id = Intensity_Category_ID, intensity = Intensity_Value, Genus, Species) %>%
   mutate(species= tolower(paste(Genus,Species,sep=' ')), 
          year   = lubridate::year(Observation_Date),
          doy    = lubridate::yday(Observation_Date))
@@ -37,7 +38,7 @@ processed_data = non_npn_species %>%
   do(subset_npn_data(this_species = .$species, this_phenophase = .$Phenophase_ID)) %>%
   ungroup() %>%
   filter(status>=0) %>%
-  select(Site_ID, species, individual_id, year, doy, status) %>%
+  select(Site_ID, species, individual_id, year, doy, status, Phenophase_ID) %>%
   process_phenology_observations()
 
 #Core NPN collection started in 2009.
@@ -46,12 +47,12 @@ processed_data = processed_data %>%
   filter(year>=2009, year<2017)
 
 observations_per_species = processed_data %>%
-  group_by(species) %>%
+  group_by(species, Phenophase_ID) %>%
   tally()
 
 #Minimum 40 observations for each species after all prior filtering
 processed_data = processed_data %>%
-  group_by(species) %>%
+  group_by(species, Phenophase_ID) %>%
   filter(n() > 40) %>%
   ungroup()
 
