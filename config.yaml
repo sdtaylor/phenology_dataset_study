@@ -11,6 +11,10 @@ dataset_configs:
       observations_data_file: ./cleaned_data/hubbardbrook_observations.csv
       temp_data_file: ./cleaned_data/hubbard_temp.csv
       add_site_dummy_var: False
+    - dataset_name: hjandrews
+      observations_data_file: ./cleaned_data/hjandrews_observations.csv
+      temp_data_file: ./cleaned_data/hjandrews_temp.csv
+      add_site_dummy_var: False
     - dataset_name: npn
       observations_data_file: ./cleaned_data/npn_observations.csv
       temp_data_file: ./cleaned_data/npn_temp.csv
