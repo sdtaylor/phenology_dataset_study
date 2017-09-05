@@ -16,12 +16,13 @@ class data_store:
         self.load_next_dataset()
 
 
-    #total jobs = sum(species in each dataset) * number of bootstraps * number of models
+    #total jobs = sum(species/phenophase_id in each dataset) * number of bootstraps * number of models
     #for progress information only
     def calculate_total_jobs(self):
         total_species=0
         for dataset_config in self.all_dataset_configs:
             observation_data = pd.read_csv(dataset_config['observations_data_file'])
+            observation_data.species = observation_data.species.map(str) + ' - ' + observation_data.Phenophase_ID.map(str)
             total_species+=observation_data.species.unique().shape[0]
         self.total_jobs = total_species * self.num_bootstrap * len(self.models)
         self.num_jobs_left = self.total_jobs
@@ -30,6 +31,9 @@ class data_store:
         dataset_config = self.all_dataset_configs.pop()
 
         self.observation_data = pd.read_csv(dataset_config['observations_data_file'])
+        #Paste the species and phenophse_id together so different models will be made
+        #when a single species has multiple phases (ie. budburst  vs flowering)
+        observation_data.species = observation_data.species.map(str) + ' - ' + observation_data.Phenophase_ID.map(str)
         self.temp_data = pd.read_csv(dataset_config['temp_data_file'])
         self.dataset_name=dataset_config['dataset_name']
 
