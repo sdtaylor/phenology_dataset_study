@@ -22,8 +22,7 @@ class phenology_model:
         plant_data.dropna(axis=0, inplace=True)
 
         #doy are the columns here from -128 to 180
-        self.temp_observations = plant_data.drop(['species','Site_ID','year','doy'], axis=1).values
-
+        self.temp_observations = plant_data.drop(['species','Site_ID','year','doy','Phenophase_ID'], axis=1).values
 
         #actual day of year values where 1 = Jan 1
         self.temp_doy =temp_data.drop(['Site_ID','year'], axis=1).columns.values.astype(np.int)
