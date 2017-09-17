@@ -18,6 +18,9 @@ for dataset in config['dataset_configs']:
     temperature_data = pd.read_csv(dataset['temp_data_file'])
     dataset_obs_name = dataset['dataset_name']
 
+    #Combine phenophase + species since each has their own models. 
+    observation_data.species = observation_data.species.map(str) + ' - ' + observation_data.Phenophase_ID.map(str)
+
     #The model framework differentiates by site to accomidate the NPN dataset.
     #For datasets that are a single site, add in a column for it
     if dataset['add_site_dummy_var']:
