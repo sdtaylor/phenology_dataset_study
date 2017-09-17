@@ -33,7 +33,7 @@ class data_store:
         self.observation_data = pd.read_csv(dataset_config['observations_data_file'])
         #Paste the species and phenophse_id together so different models will be made
         #when a single species has multiple phases (ie. budburst  vs flowering)
-        observation_data.species = observation_data.species.map(str) + ' - ' + observation_data.Phenophase_ID.map(str)
+        self.observation_data.species = self.observation_data.species.map(str) + ' - ' + self.observation_data.Phenophase_ID.map(str)
         self.temp_data = pd.read_csv(dataset_config['temp_data_file'])
         self.dataset_name=dataset_config['dataset_name']
 
@@ -173,13 +173,19 @@ def worker():
 
         model, bounds, species, bootstrap_i, dataset = model_package
         start_time=time.time()
-        optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=None, popsize=100, mutation=1.5, recombination=0.25)
+
+        #If some error happens in the fitting process. "model_error" will show up
+        #as the single parameter for this model run.
+        try:
+            optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=None, popsize=100, mutation=1.5, recombination=0.25)
+            return_data = model.translate_scipy_parameter_output(optimize_output['x'])
+        except:
+            return_data = {'model_error' : 0}
         #quicker testing optimizer
         #optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=5, popsize=10)
         #Save the optimizer run time in hours
         total_time=round((time.time() - start_time)/60/60, 2)
 
-        return_data = model.translate_scipy_parameter_output(optimize_output['x'])
         #return_data['final_score']=optimize_output['fun']
         return_data['species']      = species
         return_data['bootstrap_num']= bootstrap_i
