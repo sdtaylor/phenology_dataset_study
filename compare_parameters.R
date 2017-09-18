@@ -5,6 +5,14 @@ all_parameters = read_csv('./results/model_parameters.csv') %>%
   filter(parameter_name!='run_time') %>%
   filter(!species %in% c('heracleum maximum', 'achillea millefolium')) #can't do these till github #16 is fixed
 
+#Pull out phenophase
+all_parameters = all_parameters %>% 
+  mutate(phenophase = stringr::word(species,2,2, ' - '),
+         species = stringr::word(species,1,1,' - '))
+
+all_parameters$phenophase = ifelse(all_parameters$dataset == 'jornada', 501, all_parameters$phenophase)
+all_parameters$phenophase = as.numeric(all_parameters$phenophase)
+
 #Keep only species that are present in NPN dataset
 npn_species = all_parameters %>%
   filter(dataset == 'npn') %>%
@@ -15,6 +23,27 @@ all_parameters = all_parameters %>%
   filter(species %in% npn_species$species)
 
 
+############################################################################
+#The distribution of all parameters derived using bootstrapping
+make_parameter_histograms = FALSE
+
+save_histogram = function(r){
+  histogram_data = all_parameters %>%
+    filter(species==r$species, phenophase==r$phenophase, model==r$model, parameter_name==r$parameter_name, dataset==r$dataset)
+  plot_name = paste0('parameter_histograms/parameter_',r$id,'.png')
+  histogram = ggplot(histogram_data, aes(value)) +
+    geom_histogram(bins=50) +
+    facet_wrap(species~phenophase~model~parameter_name~dataset)
+  ggsave(plot_name, plot=histogram, height=20, width=20, units = 'cm', limitsize = FALSE)
+}
+
+if(make_parameter_histograms){
+  possible_histograms = all_parameters %>% 
+    select(species,phenophase,model,parameter_name,dataset) %>%
+    distinct() %>%
+    mutate(id = 1:n()) %>%
+    purrrlyr::by_row(save_histogram)
+}
 ############################################################################
 #Statistical test of parameters
 #http://stats.stackexchange.com/questions/93540/testing-equality-of-coefficients-from-two-different-regressions
@@ -41,7 +70,7 @@ npn_parameters = all_parameters %>%
   left_join(parameters_to_log_transform, by=c('model','parameter_name')) %>%
   mutate(transform = ifelse(is.na(transform), 'no', transform)) %>%
   mutate(value = ifelse(transform=='yes', log(abs(value)), value)) %>%
-  group_by(model, parameter_name, species) %>%
+  group_by(model, parameter_name, species, phenophase) %>%
   summarize(npn_mean=mean(value), npn_sd=sd(value)) %>%
   ungroup()
 
@@ -50,10 +79,10 @@ p_values = all_parameters %>%
   left_join(parameters_to_log_transform, by=c('model','parameter_name')) %>%
   mutate(transform = ifelse(is.na(transform), 'no', transform)) %>%
   mutate(value = ifelse(transform=='yes', log(abs(value)), value)) %>%
-  group_by(dataset, model, parameter_name, species) %>%
+  group_by(dataset, model, parameter_name, species, phenophase) %>%
   summarize(parameter_mean=mean(value), parameter_sd=sd(value)) %>%
   ungroup() %>%
-  left_join(npn_parameters, by=c('model', 'parameter_name','species')) %>%
+  left_join(npn_parameters, by=c('model', 'parameter_name','species', 'phenophase')) %>%
   mutate(p_value = stats_test(x_mean=parameter_mean, x_sd=parameter_sd, 
                               y_mean=npn_mean, y_sd=npn_sd)) %>%
   select(dataset,model,parameter_name,species,p_value)
@@ -63,14 +92,11 @@ p_values = all_parameters %>%
 ###############################################################################
 #scatter plots of npn vs long term datasets
 
-#parameter_sd= all_parameters %>%
-#  group_by(species, parameter_name, dataset) %>%
-#  summarise(param_se=sd(value)) %>%
-#  ungroup() %>%
-#  mutate(dataset = paste0(dataset,'_se')) %>%
-#  spread(dataset, param_se)
+leaf_phenophases = c(371, 496, 488)
+flower_phenophases = c(501)
 
 parameter_means = all_parameters %>%
+  filter(phenophase %in% flower_phenophases) %>%
   group_by(species, parameter_name, dataset, model) %>%
   summarise(param_mean = mean(value)) %>%
   ungroup() 
@@ -135,7 +161,7 @@ naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, c
   theme(legend.position = "none") +
   labs(y = "Naive Model", x='')
 
-legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='unichill'), aes(x=npn, y=param_mean, color=dataset, group=dataset))+
+legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset))+
                                geom_point())
 
 empty_space = ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=species, group=species)) +
@@ -151,11 +177,11 @@ complex_layout = rbind(c(2,1,1,1,7,7,7,1),
                        c(5,5,5,5,1,1,1,1),
                        c(6,6,6,6,6,6,6,6))
 #                                      1       2(1)     3(2)    4(3)  5(4)      6(8)         7
-whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, unichill, legend, layout_matrix=complex_layout,
+whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, uniforc, legend, layout_matrix=complex_layout,
                         left = 'Long Term Dataset Derived Parameter Estimates',
                         bottom = 'NPN Derived Parameter Estimates')
 
-ggsave('param_comparison.png', plot=whole_plot, heigh=20, width=40, units = 'cm')
+ggsave('param_comparison_flower.png', plot=whole_plot, height=40, width=80, units = 'cm')
 
 ####################################################33
 #Test for normality among parameters
