@@ -91,6 +91,8 @@ error_analysis = oos_estimates %>%
   select(-error_type) %>%
   spread(model_name, error_value)
 
+write_csv(error_analysis, 'observation_errors.csv')
+
 ############################################################
 x=ggplot(filter(oos_estimates, observation_source=='hjandrews'), aes(x=doy_observed, y=doy_estimated_mean, group=parameter_source, color=parameter_source)) +
   geom_point() +
