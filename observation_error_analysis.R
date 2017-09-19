@@ -13,69 +13,102 @@ oos_data = oos_data %>%
   filter(species %in% npn_species$species)
 
 
+
+normality_test = function(x){
+  tryCatch(stats::shapiro.test(x)$p.value, error = function(x){NA})
+}
+
+get_mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+
+#Compress the bootstrapped estimates down to a single estimate
+#With diagnostic stats on the variance distributions
+# oos_estimates = oos_data %>%
+#   group_by(model_name, observation_source, parameter_source, site_observed, species, year_observed, observation_id) %>%
+#   summarise(n=n(), normality_p_value = normality_test(doy_estimated), percent_1000= mean(doy_estimated==1000),
+#             doy_estimated_mean = mean(doy_estimated), doy_estimated_sd = sd(doy_estimated), doy_estimated_mode = get_mode(doy_estimated),
+#             doy_observed = mean(doy_observed)) %>%
+#   ungroup()
+
 oos_estimates = oos_data %>%
-  group_by(model_name, observation_source, parameter_source, site_observed, species, year_observed) %>%
-  summarise(n=n(), doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
+  group_by(model_name, observation_source, parameter_source, site_observed, species, year_observed, observation_id) %>%
+  summarise(doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
+  ungroup()
+
+############################################################################
+#Pull out phenophase and identify as leaf or flower instead of numbers
+oos_estimates = oos_estimates %>% 
+  mutate(phenophase = stringr::word(species,2,2, ' - '),
+         species = stringr::word(species,1,1,' - '))
+
+oos_estimates$phenophase = as.numeric(oos_estimates$phenophase)
+
+phenophase_types = read.table(header=TRUE, sep=',', stringsAsFactors = FALSE, text='
+                              phenophase,phenophase_type
+                              371,Leaves
+                              480,Leaves
+                              488,Leaves
+                              501,Flowers')
+
+oos_estimates = oos_estimates %>%
+  left_join(phenophase_types, by='phenophase') %>%
+  select(-phenophase) %>%
+  rename(phenophase = phenophase_type)
+
+
+############################################################
+#Add an ensemble model
+
+ensemble_model_estimates = oos_estimates %>%
+  group_by(observation_source, parameter_source, species, observation_id, phenophase) %>%
+  summarise(doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
   ungroup() %>%
-  mutate(error = doy_observed - doy_estimated) %>%
-  filter(parameter_source=='npn')
+  mutate(model_name='ensemble')
 
+oos_estimates = oos_estimates %>%
+  bind_rows(ensemble_model_estimates)
 
-####################################################
+##################################################################
 
-new_names=c('Q. rubra', 'Q. alba', 'F. grandifolia', 'P. tremuloides', 'A. rubrum', 'B. papyrifera', 'A. saccharum', 'P. serotina')
-old_names = c('quercus rubra','quercus alba','fagus grandifolia','populus tremuloides','acer rubrum','betula papyrifera','acer saccharum','prunus serotina')
-oos_estimates$species = factor(oos_estimates$species, levels=old_names, labels=new_names)
+#R^2 from a 1:1 line
+r2=function(actual, predicted){
+  actual=actual
+  predicted=predicted
+  1 - (sum((actual - predicted) ** 2) / sum((actual - mean(actual)) ** 2))
+}
 
-#The in graph mu and standard devitation. See ?plotmath for details of special symbols
-error_stats = oos_estimates %>%
-  group_by(species, observation_source, parameter_source) %>%
-  summarise(error_mean = mean(error), error_sd=sd(error)) %>%
+error_analysis = oos_estimates %>%
+  group_by(model_name, observation_source, parameter_source, species) %>%
+  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)),
+            r2   = r2(doy_observed, doy_estimated)) %>%
   ungroup() %>%
-  mutate(text1 = paste('mu: ', round(error_mean,2)),
-         text2 = paste('sigma: ', round(error_sd,2))) %>%
-  left_join(data.frame(species=new_names,
-                       x_placement=c(40, 30, 50, 40, 50, 70, 70, 70)), by='species')
+  gather(error_type, error_value, rmse, r2) %>%
+  mutate(error_value = round(error_value,2)) %>%
+  mutate(model_name = paste(model_name, error_type,sep=' - ')) %>%
+  select(-error_type) %>%
+  spread(model_name, error_value)
 
-
-figure_1st_row = c('Q. rubra', 'Q. alba', 'F. grandifolia', 'P. tremuloides')
-oos_estimates$figure_row = ifelse(oos_estimates$species %in% figure_1st_row, 'first','second')
-error_stats$figure_row = ifelse(error_stats$species %in% figure_1st_row, 'first','second')
-
-first_row = ggplot(filter(oos_estimates, figure_row=='first'), aes(error, group=observation_source, fill=observation_source)) +
-  geom_histogram(bins=30) +
-  geom_vline(xintercept = 0) +  
-  ylim(0,100) +
-  geom_text(data = filter(error_stats, figure_row=='first'), aes(x=x_placement, y=85, label=text1),size=5, parse=TRUE)+
-  geom_text(data = filter(error_stats, figure_row=='first'), aes(x=x_placement, y=65, label=text2),size=5, parse=TRUE)+
-  scale_color_manual(values=c('#E69F00','#0072B2')) +
-  scale_fill_manual(values=c('#E69F00','#0072B2')) +
-  facet_grid(observation_source~species, scales = 'free_x')+
-  theme_bw()+
-  labs(x = '', y = NULL) + 
-  theme(legend.position = "none",
+############################################################
+x=ggplot(filter(oos_estimates, observation_source=='hjandrews'), aes(x=doy_observed, y=doy_estimated_mean, group=parameter_source, color=parameter_source)) +
+  geom_point() +
+  geom_smooth(method='lm', se=FALSE, size=1) +
+  geom_abline(intercept=0, slope=1) + 
+  #annotate('text', label= 'NPN   Harvard', size=3, x=110, y=150) +
+  #geom_text(data=filter(errors, observation_source='harvard'), aes(x=x_placement, y=))
+  facet_grid(model_name~species) +
+  theme(plot.subtitle = element_text(vjust = 1), 
+        plot.caption = element_text(vjust = 1),
+        axis.text.x = element_text(size = 20), 
+        axis.text.y = element_text(size = 20),
         strip.text.x=element_text(size=22),
-        strip.text.y=element_text(size=22),
-        axis.text = element_text(size = 15))
+        axis.text = element_text(size = 20),
+        legend.position = c(0.85, 0.18)) + theme(legend.text = element_text(size = 20), 
+                                                 legend.title = element_text(size = 20))
 
-second_row = ggplot(filter(oos_estimates, figure_row=='second'), aes(error, group=observation_source, fill=observation_source)) +
-  geom_histogram(bins=30) +
-  geom_vline(xintercept = 0) +  
-  ylim(0,100) +
-  geom_text(data = filter(error_stats, figure_row=='second'), aes(x=x_placement, y=85, label=text1),size=5, parse=TRUE)+
-  geom_text(data = filter(error_stats, figure_row=='second'), aes(x=x_placement, y=65, label=text2),size=5, parse=TRUE)+
-  scale_color_manual(values=c('#E69F00','#0072B2')) +
-  scale_fill_manual(values=c('#E69F00','#0072B2')) +
-  facet_grid(observation_source~species, scales = 'free_x')+
-  theme_bw()+
-  labs(x = 'Budburst Day of Year Error (observation - prediction)', y = NULL) + 
-  theme(legend.position = "none",
-        strip.text.x=element_text(size=22),
-        strip.text.y=element_text(size=22),
-        axis.text = element_text(size = 15),
-        axis.title = element_text(size = 25))
-
-gridExtra::grid.arrange(first_row, second_row)
+ggsave('obs_vs_predicted_hjandrews.png', plot=x, height=40, width=180, units = 'cm', limitsize = FALSE)
 
 
 ###########################################################################3
