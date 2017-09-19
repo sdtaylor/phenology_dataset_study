@@ -43,7 +43,17 @@ oos_estimates = oos_estimates %>%
   select(-phenophase) %>%
   rename(phenophase = phenophase_type)
 
+############################################################
+#Add an ensemble model
 
+ensemble_model_estimates = oos_estimates %>%
+  group_by(observation_source, parameter_source, species, observation_id, phenophase) %>%
+  summarise(doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
+  ungroup() %>%
+  mutate(model_name='ensemble')
+
+oos_estimates = oos_estimates %>%
+  bind_rows(ensemble_model_estimates)
 
 ############################################################
 
@@ -64,7 +74,7 @@ observation_estimate_comparison = oos_estimates %>%
 #Make density plots of distribution of estimate differences
 for(this_observation_source in c('hubbard','hjandrews','harvard')){
   p_title = paste('Observations from ',this_observation_source)
-  p_filename = paste0('obs_vs_predicted_compare_',observation_source,'.png')
+  p_filename = paste0('obs_vs_predicted_compare_',this_observation_source,'.png')
 p = ggplot(filter(observation_estimate_comparison, observation_source==this_observation_source), 
            aes(model_estimate_difference, fill=as.factor(phenophase), group=as.factor(phenophase))) +
   geom_density(aes(y=..scaled..), alpha=0.8) +
@@ -87,16 +97,16 @@ print(p)
 ##############################################################
 #Fancy table of all estimate differences and their p-values of being different from 0
 #0 implies that they generally give similar estimates
-library(tables)
 
 #Convert each unique entity to a p-value
 p_values = observation_estimate_comparison %>%
   group_by(model_name, observation_source, species, phenophase) %>%
   filter(model_name != 'naive') %>%
-  dplyr::summarize(p_value = round(t.test(model_estimate_difference)$p.value, 3)) %>%
+  dplyr::summarize(p_value = round(t.test(model_estimate_difference)$p.value, 3), n=n()) %>%
   ungroup() %>%
   spread(model_name, p_value)
 
+write_csv(p_values, 'observation_estimate_comparison_p_values.csv')
 gridExtra::grid.table(p_values)
 
 
