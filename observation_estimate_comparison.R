@@ -62,19 +62,26 @@ observation_estimate_comparison = oos_estimates %>%
 
 ############################################################
 #Make density plots of distribution of estimate differences
-for(observation_source in c('hubbard','hjandrews','harvard')){
-  p_title = paste('Observations from ',observation_source)
-p = ggplot(filter(observation_estimate_comparison, observation_source==observation_source), 
+for(this_observation_source in c('hubbard','hjandrews','harvard')){
+  p_title = paste('Observations from ',this_observation_source)
+  p_filename = paste0('obs_vs_predicted_compare_',observation_source,'.png')
+p = ggplot(filter(observation_estimate_comparison, observation_source==this_observation_source), 
            aes(model_estimate_difference, fill=as.factor(phenophase), group=as.factor(phenophase))) +
   geom_density(aes(y=..scaled..), alpha=0.8) +
+  #geom_histogram(bins=50, position = 'identity', alpha=0.7) +
+  scale_fill_brewer(palette = 'Set2') +
   geom_vline(xintercept = 0) +
   ggtitle(p_title) +
   xlab('Difference between long term dataset model estimate and NPN model estimate') +
   ylab('Density') +
   facet_grid(model_name~species) +
-  theme_bw()
+  theme_bw() +  
+  theme(legend.position = "bottom", 
+        legend.direction = "horizontal")
 
 print(p)
+#ggsave(p_filename, plot=p, height=20, width=80, units = 'cm', limitsize = FALSE)
+
 }
 
 ##############################################################
@@ -90,7 +97,7 @@ p_values = observation_estimate_comparison %>%
   ungroup() %>%
   spread(model_name, p_value)
 
-
+gridExtra::grid.table(p_values)
 
 
 
