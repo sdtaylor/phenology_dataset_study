@@ -61,7 +61,7 @@ observation_estimate_comparison = oos_estimates %>%
 
 
 ############################################################
-
+#Make density plots of distribution of estimate differences
 for(observation_source in c('hubbard','hjandrews','harvard')){
   p_title = paste('Observations from ',observation_source)
 p = ggplot(filter(observation_estimate_comparison, observation_source==observation_source), 
@@ -71,10 +71,25 @@ p = ggplot(filter(observation_estimate_comparison, observation_source==observati
   ggtitle(p_title) +
   xlab('Difference between long term dataset model estimate and NPN model estimate') +
   ylab('Density') +
-  facet_grid(model_name~species)
+  facet_grid(model_name~species) +
+  theme_bw()
 
 print(p)
 }
+
+##############################################################
+#Fancy table of all estimate differences and their p-values of being different from 0
+#0 implies that they generally give similar estimates
+library(tables)
+
+#Convert each unique entity to a p-value
+p_values = observation_estimate_comparison %>%
+  group_by(model_name, observation_source, species, phenophase) %>%
+  filter(model_name != 'naive') %>%
+  dplyr::summarize(p_value = round(t.test(model_estimate_difference)$p.value, 3)) %>%
+  ungroup() %>%
+  spread(model_name, p_value)
+
 
 
 
