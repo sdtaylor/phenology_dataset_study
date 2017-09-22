@@ -81,9 +81,9 @@ r2=function(actual, predicted){
 }
 
 error_analysis = oos_estimates %>%
-  group_by(model_name, observation_source, parameter_source, species) %>%
+  group_by(model_name, observation_source, parameter_source, species, phenophase) %>%
   summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)),
-            r2   = r2(doy_observed, doy_estimated)) %>%
+            r2   = r2(doy_observed, doy_estimated), n=n()) %>%
   ungroup() %>%
   gather(error_type, error_value, rmse, r2) %>%
   mutate(error_value = round(error_value,2)) %>%

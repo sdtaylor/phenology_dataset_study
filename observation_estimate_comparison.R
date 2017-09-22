@@ -109,6 +109,17 @@ p_values = observation_estimate_comparison %>%
 write_csv(p_values, 'observation_estimate_comparison_p_values.csv')
 gridExtra::grid.table(p_values)
 
+#############################################################
+#Explain differences in observations by either number of observers
+#or size of the sampling error in the npn dataset
+
+npn_sampling_info = read_csv('cleaned_data/npn_species_sampling_data.csv')
+
+estimate_differences = observation_estimate_comparison %>%
+  group_by(model_name, observation_source, parameter_source, species, phenophase) %>%
+  summarise(rmse = sqrt(mean(model_estimate_difference^2))) %>%
+  ungroup() %>%
+  left_join(npn_sampling_info, by='species')
 
 
 
