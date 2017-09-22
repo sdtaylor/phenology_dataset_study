@@ -10,7 +10,6 @@ all_parameters = all_parameters %>%
   mutate(phenophase = stringr::word(species,2,2, ' - '),
          species = stringr::word(species,1,1,' - '))
 
-all_parameters$phenophase = ifelse(all_parameters$dataset == 'jornada', 501, all_parameters$phenophase)
 all_parameters$phenophase = as.numeric(all_parameters$phenophase)
 
 #Keep only species that are present in NPN dataset
@@ -44,48 +43,31 @@ if(make_parameter_histograms){
     mutate(id = 1:n()) %>%
     purrrlyr::by_row(save_histogram)
 }
+
+#Comparison of parameters in npn vs other datasets
+x = all_parameters %>%
+  filter(dataset %in% c('harvard','npn'),model=='gdd',species=='betula papyrifera',phenophase==501)
+
+ggplot(x, aes(x=value, group=dataset, fill=dataset)) +
+  geom_histogram(bins=50, position = 'identity', alpha=0.7) +
+  scale_fill_brewer(palette='Set2') +
+  facet_wrap(parameter_name~model~species~phenophase, scales = 'free')
+
 ############################################################################
 #Statistical test of parameters
-#http://stats.stackexchange.com/questions/93540/testing-equality-of-coefficients-from-two-different-regressions
-stats_test=function(x_mean, x_sd ,y_mean, y_sd){
-  #x_mean = mean(x)
-  #x_sd   = sd(x)
-  #y_mean = mean(y)
-  #y_sd   = sd(y)
-  z = (x_mean-y_mean) / sqrt(y_sd^2 + x_sd^2)
-  p_value = 2 * pnorm(abs(z), lower.tail = F)
-}
-
-parameters_to_log_transform = read.table(header=TRUE, sep=',', stringsAsFactors = FALSE, text='
-model,parameter_name,transform 
-uniforc,b,yes
-uniforc,F,yes
-unichill,a_c,yes
-unichill,C,yes
-unichill,b_f,yes
-unichill,F,yes')
-
 npn_parameters = all_parameters %>%
   filter(dataset=='npn') %>%
-  left_join(parameters_to_log_transform, by=c('model','parameter_name')) %>%
-  mutate(transform = ifelse(is.na(transform), 'no', transform)) %>%
-  mutate(value = ifelse(transform=='yes', log(abs(value)), value)) %>%
-  group_by(model, parameter_name, species, phenophase) %>%
-  summarize(npn_mean=mean(value), npn_sd=sd(value)) %>%
-  ungroup()
+  rename(npn_value = value) %>%
+  select(-dataset)
 
 p_values = all_parameters %>%
   filter(dataset!='npn') %>%
-  left_join(parameters_to_log_transform, by=c('model','parameter_name')) %>%
-  mutate(transform = ifelse(is.na(transform), 'no', transform)) %>%
-  mutate(value = ifelse(transform=='yes', log(abs(value)), value)) %>%
+  rename(dataset_value = value) %>%
+  left_join(npn_parameters, by=c('model','parameter_name','bootstrap_num','species','phenophase')) %>%
   group_by(dataset, model, parameter_name, species, phenophase) %>%
-  summarize(parameter_mean=mean(value), parameter_sd=sd(value)) %>%
-  ungroup() %>%
-  left_join(npn_parameters, by=c('model', 'parameter_name','species', 'phenophase')) %>%
-  mutate(p_value = stats_test(x_mean=parameter_mean, x_sd=parameter_sd, 
-                              y_mean=npn_mean, y_sd=npn_sd)) %>%
-  select(dataset,model,parameter_name,species,p_value)
+  #summarise(p_value = ks.test(.$dataset_value, .$npn_value, alternative='two.side', exact=TRUE)$p.value, n=n()) %>%
+  summarise(p_value = wilcox.test(.$dataset_value, .$npn_value, alternative = 'two.sided')$p.value) %>%
+  ungroup()
 
 
 
@@ -121,7 +103,7 @@ is_sig = parameter_means %>%
 
 unichill=ggplot(filter(parameter_means, model=='unichill'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=4) +
-  geom_point(data=filter(is_sig, model=='unichill'), size=1.5, color='black', aes(shape=dataset)) +
+  #geom_point(data=filter(is_sig, model=='unichill'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   #scale_color_manual(values = graph_palette) +
@@ -130,7 +112,7 @@ unichill=ggplot(filter(parameter_means, model=='unichill'), aes(x=npn, y=param_m
   labs(y = "Unichill Model", x='')
 uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=4) +
-  geom_point(data=filter(is_sig, model=='uniforc'), size=1.5, color='black', aes(shape=dataset)) +
+  #geom_point(data=filter(is_sig, model=='uniforc'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
@@ -138,7 +120,7 @@ uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mea
   labs(y = "Uniforc Model", x='')
 gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=4) +
-  geom_point(data=filter(is_sig, model=='gdd'), size=1.5, color='black', aes(shape=dataset)) +
+  #geom_point(data=filter(is_sig, model=='gdd'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
@@ -146,7 +128,7 @@ gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color
   labs(y = "GDD Model", x='')
 linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=4) +
-  geom_point(data=filter(is_sig, model=='linear_temp'), size=1.5, color='black', aes(shape=dataset)) +
+  #geom_point(data=filter(is_sig, model=='linear_temp'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
@@ -154,7 +136,7 @@ linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=p
   labs(y = "Linear Model", x='')
 naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=4) +
-  geom_point(data=filter(is_sig, model=='naive'), size=1.5, color='black', aes(shape=dataset)) +
+  #geom_point(data=filter(is_sig, model=='naive'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
@@ -171,17 +153,17 @@ empty_space = ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param
   theme_bw() 
 
 empty_space = grid::textGrob('')
-complex_layout = rbind(c(2,1,1,1,7,7,7,1),
-                       c(3,3,1,1,7,7,7,1),
-                       c(4,4,4,1,7,7,7,1),
+complex_layout = rbind(c(2,1,1,1,7,7,7,7),
+                       c(3,3,1,1,7,7,7,7),
+                       c(4,4,4,1,7,7,7,7),
                        c(5,5,5,5,1,1,1,1),
                        c(6,6,6,6,6,6,6,6))
 #                                      1       2(1)     3(2)    4(3)  5(4)      6(8)         7
-whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, uniforc, legend, layout_matrix=complex_layout,
+whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, unichill, legend, layout_matrix=complex_layout,
                         left = 'Long Term Dataset Derived Parameter Estimates',
                         bottom = 'NPN Derived Parameter Estimates')
 
-ggsave('param_comparison_flower.png', plot=whole_plot, height=40, width=80, units = 'cm')
+ggsave('param_comparison_leaf.png', plot=whole_plot, height=40, width=80, units = 'cm')
 
 ####################################################33
 #Test for normality among parameters
