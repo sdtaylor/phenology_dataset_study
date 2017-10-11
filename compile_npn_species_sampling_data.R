@@ -79,15 +79,12 @@ average_distance_to_long_term_sites = unique_sites_for_each_species %>%
   left_join(distances, by='Site_ID') %>%
   group_by(species, dataset) %>%
   summarise(mean_distance = mean(distance)) %>%
-  ungroup() %>%
-  mutate(dataset = paste0('avg_dist_to_',dataset)) %>%
-  spread(dataset, mean_distance)
-
+  ungroup() 
 #################################################################
 
 
 species_sampling_data = area_sampled_for_each_species %>%
-  left_join(unique_observers_for_each_species, by='species') %>%
-  left_join(average_distance_to_long_term_sites, by='species')
+  left_join(unique_observers_for_each_species, by='species') 
 
 write_csv(species_sampling_data, 'cleaned_data/npn_species_sampling_data.csv')
+write_csv(average_distance_to_long_term_sites, 'cleaned_data/npn_mean_distance_to_long_term_sites.csv')
