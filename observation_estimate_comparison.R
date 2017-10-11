@@ -46,14 +46,14 @@ oos_estimates = oos_estimates %>%
 ############################################################
 #Add an ensemble model
 
-ensemble_model_estimates = oos_estimates %>%
-  group_by(observation_source, parameter_source, species, observation_id, phenophase) %>%
-  summarise(doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
-  ungroup() %>%
-  mutate(model_name='ensemble')
-
-oos_estimates = oos_estimates %>%
-  bind_rows(ensemble_model_estimates)
+# ensemble_model_estimates = oos_estimates %>%
+#   group_by(observation_source, parameter_source, species, observation_id, phenophase) %>%
+#   summarise(doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
+#   ungroup() %>%
+#   mutate(model_name='ensemble')
+# 
+# oos_estimates = oos_estimates %>%
+#   bind_rows(ensemble_model_estimates)
 
 ############################################################
 
@@ -64,7 +64,7 @@ npn_model_estimates = oos_estimates %>%
 
 observation_estimate_comparison = oos_estimates %>%
   filter(parameter_source != 'npn') %>%
-  rename(doy_estimated_non_npn_model = doy_estimated) %>%
+  rename(doy_estimated_non_npn_model = doy_estimated, non_npn_parameter_source = parameter_source) %>%
   left_join(npn_model_estimates, by=c('model_name','observation_source','species','observation_id','phenophase')) %>%
   filter(complete.cases(.)) %>%
   mutate(model_estimate_difference = doy_estimated_non_npn_model - doy_estimated_npn_model)
@@ -114,21 +114,32 @@ gridExtra::grid.table(p_values)
 #or size of the sampling error in the npn dataset
 
 npn_sampling_info = read_csv('cleaned_data/npn_species_sampling_data.csv')
+npn_distances = read_csv('cleaned_data/npn_mean_distance_to_long_term_sites.csv')
+
+
+# Mean absolute difference between long_term_study models and npn_models. 
+# < 0 means npn model estimated higher (later in year) doy
 
 estimate_differences = observation_estimate_comparison %>%
-  group_by(model_name, observation_source, parameter_source, species, phenophase) %>%
-  summarise(rmse = sqrt(mean(model_estimate_difference^2))) %>%
+  group_by(model_name, observation_source, non_npn_parameter_source, species, phenophase) %>%
+  summarise(rmsd = sqrt(mean(model_estimate_difference^2))) %>%
   ungroup() %>%
-  left_join(npn_sampling_info, by='species')
+  filter(observation_source == non_npn_parameter_source) %>%
+  left_join(npn_sampling_info, by='species') %>%
+  left_join(npn_distances, by=c('species','observation_source'='dataset'))
+
+summary(lm(log(rmsd) ~ log(num_observers) + log(mean_distance) + model_name, data=estimate_differences))
+
+summary(lm(rmsd ~ num_observers + mean_distance, data=estimate_differences))
 
 
 
+random_effects_model = lmer(log(rmsd) ~ log(num_observers) + log(mean_distance) + (log(num_observers) + log(mean_distance)|model_name), data=estimate_differences)
+summary(random_effects_model)
 
-
-
-
-
-
+ggplot(filter(estimate_differences, num_observers<200), aes(x=num_observers, y=rmsd, group=model_name, color=model_name)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se=FALSE)
 
 
 
