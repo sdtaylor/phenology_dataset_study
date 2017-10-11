@@ -75,7 +75,7 @@ distances$distance = distances$distance / 1000
 
 # For each species, get the mean distance of all it's sampling points
 # to the long term sites
-average_distance_to_long_term_sites = unique_sites_for_each_species %>%
+average_distance_to_long_term_sites = all_observations %>%
   left_join(distances, by='Site_ID') %>%
   group_by(species, dataset) %>%
   summarise(mean_distance = mean(distance)) %>%
