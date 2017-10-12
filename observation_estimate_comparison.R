@@ -9,6 +9,8 @@ npn_species = oos_data %>%
   select(species) %>%
   distinct()
 
+oos_data = oos_data %>%
+  filter(species %in% npn_species$species)
 
 #Compress the bootstrapped estimates down to a single estimate
 oos_estimates = oos_data %>%
@@ -72,22 +74,22 @@ observation_estimate_comparison = oos_estimates %>%
 
 ############################################################
 #Make density plots of distribution of estimate differences
-for(this_observation_source in c('hubbard','hjandrews','harvard')){
-  p_title = paste('Observations from ',this_observation_source)
-  p_filename = paste0('obs_vs_predicted_compare_',this_observation_source,'.png')
-p = ggplot(filter(observation_estimate_comparison, observation_source==this_observation_source), 
-           aes(model_estimate_difference, fill=as.factor(phenophase), group=as.factor(phenophase))) +
-  geom_density(aes(y=..scaled..), alpha=0.8) +
-  #geom_histogram(bins=50, position = 'identity', alpha=0.7) +
-  scale_fill_brewer(palette = 'Set2') +
-  geom_vline(xintercept = 0) +
-  ggtitle(p_title) +
-  xlab('Difference between long term dataset model estimate and NPN model estimate') +
-  ylab('Density') +
-  facet_grid(model_name~species) +
-  theme_bw() +  
-  theme(legend.position = "bottom", 
-        legend.direction = "horizontal")
+# for(this_observation_source in c('hubbard','hjandrews','harvard')){
+#   p_title = paste('Observations from ',this_observation_source)
+#   p_filename = paste0('obs_vs_predicted_compare_',this_observation_source,'.png')
+# p = ggplot(filter(observation_estimate_comparison, observation_source==this_observation_source), 
+#            aes(model_estimate_difference, fill=as.factor(phenophase), group=as.factor(phenophase))) +
+#   #geom_density(aes(y=..scaled..), alpha=0.8) +
+#   geom_histogram(bins=50, position = 'identity', alpha=0.7) +
+#   scale_fill_brewer(palette = 'Set2') +
+#   geom_vline(xintercept = 0) +
+#   ggtitle(p_title) +
+#   xlab('Difference between long term dataset model estimate and NPN model estimate') +
+#   ylab('Density') +
+#   facet_wrap(model_name~species, nrow=5, scales='free_y') +
+#   theme_bw() +  
+#   theme(legend.position = "bottom", 
+#         legend.direction = "horizontal")
 
 print(p)
 #ggsave(p_filename, plot=p, height=20, width=80, units = 'cm', limitsize = FALSE)
@@ -128,6 +130,15 @@ estimate_differences = observation_estimate_comparison %>%
   left_join(npn_sampling_info, by='species') %>%
   left_join(npn_distances, by=c('species','observation_source'='dataset'))
 
+################################################################
+# Graph of RMSD model, phenophase, lts dataset
+ggplot(estimate_differences, aes(x=model_name, y=rmsd, group=observation_source, color=observation_source)) + 
+  geom_jitter(width = 0.2, size=5, aes(shape = phenophase)) +
+  scale_shape_manual(values=c(1,17))
+
+
+#################################################################
+# Models explaining RMSD
 summary(lm(log(rmsd) ~ log(num_observers) + log(mean_distance) + model_name, data=estimate_differences))
 
 summary(lm(rmsd ~ num_observers + mean_distance, data=estimate_differences))
