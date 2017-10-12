@@ -2,8 +2,7 @@ library(tidyverse)
 library(broom)
 
 all_parameters = read_csv('./results/model_parameters.csv') %>%
-  filter(parameter_name!='run_time') %>%
-  filter(!species %in% c('heracleum maximum', 'achillea millefolium')) #can't do these till github #16 is fixed
+  filter(parameter_name!='run_time') 
 
 #Pull out phenophase
 all_parameters = all_parameters %>% 
