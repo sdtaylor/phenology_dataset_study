@@ -1,5 +1,6 @@
 library(tidyverse)
 library(broom)
+library(cowplot)
 
 all_parameters = read_csv('./results/model_parameters.csv') %>%
   filter(parameter_name!='run_time') 
@@ -73,14 +74,21 @@ p_values = all_parameters %>%
 ###############################################################################
 #scatter plots of npn vs long term datasets
 
+#Setup colors for 20+ species
+#color_count = length(unique(parameter_means$species))
+#getPalette = colorRampPalette(RColorBrewer::brewer.pal(9, "Set1"))
+#set.seed(1)
+#graph_palette = sample(getPalette(color_count))
+
+
 leaf_phenophases = c(371, 496, 488)
 flower_phenophases = c(501)
 
 parameter_means = all_parameters %>%
-  filter(phenophase %in% flower_phenophases) %>%
-  group_by(species, parameter_name, dataset, model) %>%
+  mutate(phenophase = ifelse(phenophase %in% leaf_phenophases, 'Leaf','Flower')) %>%
+  group_by(species, parameter_name, dataset, model, phenophase) %>%
   summarise(param_mean = mean(value)) %>%
-  ungroup() 
+  ungroup()
 
 npn_paramters = parameter_means %>%
   filter(dataset=='npn') %>%
@@ -88,68 +96,73 @@ npn_paramters = parameter_means %>%
 
 parameter_means = parameter_means %>%
   filter(dataset!='npn') %>%
-  left_join(npn_paramters, by=c('species','parameter_name','model'))
+  left_join(npn_paramters, by=c('species','parameter_name','model', 'phenophase'))
 
-is_sig = parameter_means %>%
-  left_join(p_values, by=c('dataset','species','parameter_name','model')) %>%
-  filter(p_value<=0.05)
-
-#Setup colors for 20+ species
-#color_count = length(unique(parameter_means$species))
-#getPalette = colorRampPalette(RColorBrewer::brewer.pal(9, "Set1"))
-#set.seed(1)
-#graph_palette = sample(getPalette(color_count))
+common_plot_theme = theme(strip.text = element_text(size=20),
+                          axis.text = element_text(size=18),
+                          axis.title.y = element_text(size=22))
 
 unichill=ggplot(filter(parameter_means, model=='unichill'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=4) +
+  geom_point(size=7, aes(shape = phenophase)) +
+  scale_shape_manual(values=c(1,17)) +
   #geom_point(data=filter(is_sig, model=='unichill'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   #scale_color_manual(values = graph_palette) +
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Unichill Model", x='')
+  labs(y = "Unichill Model", x='') +
+  common_plot_theme
 uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=4) +
+  geom_point(size=7, aes(shape = phenophase)) +
+  scale_shape_manual(values=c(1,17)) +
+  #geom_point(data=filter(parameter_means, phenophase=='Flower', model=='uniforc'),size=2, color='white') +
   #geom_point(data=filter(is_sig, model=='uniforc'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Uniforc Model", x='')
+  labs(y = "Uniforc Model", x='') + 
+  common_plot_theme
 gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=4) +
+  geom_point(size=7, aes(shape = phenophase)) +
+  scale_shape_manual(values=c(1,17)) +
   #geom_point(data=filter(is_sig, model=='gdd'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "GDD Model", x='')
+  labs(y = "GDD Model", x='') + 
+  common_plot_theme
 linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=4) +
+  geom_point(size=7, aes(shape = phenophase)) +
+  scale_shape_manual(values=c(1,17)) +
   #geom_point(data=filter(is_sig, model=='linear_temp'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Linear Model", x='')
+  labs(y = "Linear Model", x='') + 
+  common_plot_theme
 naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=4) +
+  geom_point(size=7, aes(shape = phenophase)) +
+  scale_shape_manual(values=c(1,17)) +
   #geom_point(data=filter(is_sig, model=='naive'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Naive Model", x='')
+  labs(y = "Naive Model", x='') + 
+  common_plot_theme
 
 legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset))+
-                               geom_point())
-
-empty_space = ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=species, group=species)) +
-  #geom_point(size=4, aes(shape=dataset)) +
-  #geom_abline(intercept=0, slope=1) +
-  #facet_grid(~parameter_name, scales='free') + 
-  theme_bw() 
+                               geom_point(size=4, aes(shape = phenophase)) +
+                               scale_shape_manual(values=c(1,17))  + 
+                               theme(legend.text = element_text(size = 20), 
+                                     legend.title = element_text(size = 25), 
+                                     legend.key.size = unit(5, units = 'mm')) +
+                               labs(colour = "LTS Dataset", 
+                                    shape = "Phenophase"))
 
 empty_space = grid::textGrob('')
 complex_layout = rbind(c(2,1,1,1,7,7,7,7),
@@ -157,12 +170,15 @@ complex_layout = rbind(c(2,1,1,1,7,7,7,7),
                        c(4,4,4,1,7,7,7,7),
                        c(5,5,5,5,1,1,1,1),
                        c(6,6,6,6,6,6,6,6))
+
 #                                      1       2(1)     3(2)    4(3)  5(4)      6(8)         7
 whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, unichill, legend, layout_matrix=complex_layout,
                         left = 'Long Term Dataset Derived Parameter Estimates',
                         bottom = 'NPN Derived Parameter Estimates')
 
-ggsave('param_comparison_leaf.png', plot=whole_plot, height=40, width=80, units = 'cm')
+
+
+ggsave('param_comparison.png', plot=whole_plot, height=40, width=80, units = 'cm')
 
 ####################################################33
 #Test for normality among parameters
