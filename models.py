@@ -195,7 +195,7 @@ class phenology_model:
             return [(-67,298), (-25,25), (0,1000)]
         elif self.model_name=='gdd_fixed':
             #          F*
-            return [(0,1500)]
+            return [(0,2500)]
         elif self.model_name=='naive':
             #           mean_doy
             return [(-67,298)]
