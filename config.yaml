@@ -23,6 +23,7 @@ dataset_configs:
 models_to_use:
     - uniforc
     - gdd
+    - gdd_fixed
     - unichill
     - naive
     - linear_temp
