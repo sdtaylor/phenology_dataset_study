@@ -39,6 +39,8 @@ class phenology_model:
             self.model = self.uniforc
         elif self.model_name=='gdd':
             self.model = self.gdd
+        elif self.model_name=='gdd_fixed':
+            self.model = self.gdd_fixed
         elif self.model_name=='unichill':
             self.model = self.unichill
         elif self.model_name=='naive':
@@ -88,6 +90,22 @@ class phenology_model:
     #Uses only the mean doy from all observations
     def naive(self, mean_doy, **kwargs):
         return np.repeat(mean_doy, self.num_replicates)
+
+
+    #simple gdd model with fixed t1 (set to Jan 1) and T (set to 0) 
+    #F: total gdd required
+    def gdd_fixed(self, F, **kwargs):
+        all_site_temps = self.temp_observations.copy()
+
+        #Temperature cutoff
+        all_site_temps[all_site_temps < 0]=0
+
+        #Only accumulate forcing after t1
+        all_site_temps[:,self.temp_doy < 0]=0
+
+        all_site_daily_gdd=self.gdd_calculator(all_site_temps)
+
+        return self.doy_estimator(all_site_daily_gdd, self.temp_doy, F)
 
     #simple gdd model. 
     #t1: day gdd accumulation begins
@@ -175,6 +193,9 @@ class phenology_model:
         elif self.model_name=='gdd':
             #           t1         T         F*
             return [(-67,298), (-25,25), (0,1000)]
+        elif self.model_name=='gdd_fixed':
+            #          F*
+            return [(0,1000)]
         elif self.model_name=='naive':
             #           mean_doy
             return [(-67,298)]
@@ -191,6 +212,8 @@ class phenology_model:
             o['t0'], o['a_c'], o['b_c'], o['c_c'], o['C'], o['b_f'], o['c_f'], o['F'] = x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7]
         elif self.model_name=='gdd':
             o['t1'], o['T'], o['F'] = x[0], x[1], x[2]
+        elif self.model_name=='gdd_fixed':
+            o['F'] = x[0]
         elif self.model_name=='naive':
             o['mean_doy'] = x[0]
         elif self.model_name=='linear_temp':
@@ -207,6 +230,8 @@ class phenology_model:
             kargs={'t0':x[0], 'a_c':x[1], 'b_c':x[2], 'c_c':x[3], 'C':x[4], 'b_f':x[5], 'c_f':x[6], 'F':x[7]}
         elif self.model_name=='gdd':
             kargs={'t1':x[0], 'T':x[1], 'F':x[2]}
+        elif self.model_name=='gdd_fixed':
+            kargs={'F':x[0]}
         elif self.model_name=='naive':
             kargs={'mean_doy':x[0]}
         elif self.model_name=='linear_temp':
