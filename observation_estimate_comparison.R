@@ -158,19 +158,20 @@ color_pallete=c("#CC79A7", "#E69F00", "#56B4E9", "#D55E00")
 
 npn_estimate_differences = ggplot(estimate_differences_npn_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
   geom_jitter(width = 0.2, size=5, aes(shape = phenophase)) +
-  geom_violin(inherit.aes = FALSE, aes(x=model_name, y=rmsd), alpha=0) +
+  geom_boxplot(inherit.aes = FALSE, aes(x=model_name, y=rmsd), alpha=0) +
   ylim(0,70) +
   scale_shape_manual(values=c(17,8)) + 
   scale_color_manual(values=color_pallete) +
   theme_bw() +
-  theme(legend.position = c(0.3,0.85),
+  theme(axis.line = element_line(color='black'),
+    legend.position = c(0.3,0.85),
         legend.box = 'horizontal',
         legend.background = element_rect(color='black')) +
   labs(x='',y='',color='LTS Parameter Source', shape='Phenophase')
 
 lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
   geom_jitter(width = 0.2, size=5, aes(shape = phenophase)) +
-  geom_violin(inherit.aes = FALSE, aes(x=model_name, y=rmsd), alpha=0) +
+  geom_boxplot(inherit.aes = FALSE, aes(x=model_name, y=rmsd), alpha=0) +
   ylim(0,70) +
   scale_shape_manual(values=c(17,8)) + 
   scale_color_manual(values=color_pallete) +
@@ -178,10 +179,16 @@ lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=m
   theme(legend.position = 'none') +
   labs(y='',x='Model')
 
-npn_label = 'A. Differences between NPN and LTS estimates when compared over all NPN sites'
-lts_label = 'B. Differences between NPN and LTS estimates when compared at local LTS sites'
+npn_label = 'A. Root mean square difference between NPN and LTS estimates when compared over all NPN sites'
+lts_label = 'B. Root mean square difference between NPN and LTS estimates when compared at local LTS sites'
 cowplot::plot_grid(npn_estimate_differences, lts_estimate_differences, labels=c(npn_label, lts_label), ncol=1,
                    hjust=-0.08, vjust=0.5, label_size=12)
+
+# The median of npn observations with the unichill model. This is reported in text since it's cutoff on the graph
+estimate_differences_lts_observations %>%
+  filter(model_name=='Unichill') %>%
+  pull(rmsd) %>%
+  median()
 #################################################################
 # Models explaining RMSD
 summary(lm(log(rmsd) ~ log(num_observers) + log(mean_distance) + model_name, data=estimate_differences))
