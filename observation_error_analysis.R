@@ -62,14 +62,14 @@ oos_estimates = oos_estimates %>%
 ############################################################
 #Add an ensemble model
 
-ensemble_model_estimates = oos_estimates %>%
-  group_by(observation_source, parameter_source, species, observation_id, phenophase) %>%
-  summarise(doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
-  ungroup() %>%
-  mutate(model_name='ensemble')
-
-oos_estimates = oos_estimates %>%
-  bind_rows(ensemble_model_estimates)
+# ensemble_model_estimates = oos_estimates %>%
+#   group_by(observation_source, parameter_source, species, observation_id, phenophase) %>%
+#   summarise(doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
+#   ungroup() %>%
+#   mutate(model_name='ensemble')
+# 
+# oos_estimates = oos_estimates %>%
+#   bind_rows(ensemble_model_estimates)
 
 ##################################################################
 
@@ -80,18 +80,85 @@ r2=function(actual, predicted){
   1 - (sum((actual - predicted) ** 2) / sum((actual - mean(actual)) ** 2))
 }
 
-error_analysis = oos_estimates %>%
+model_errors = oos_estimates %>%
   group_by(model_name, observation_source, parameter_source, species, phenophase) %>%
   summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)),
             r2   = r2(doy_observed, doy_estimated), n=n()) %>%
   ungroup() %>%
   gather(error_type, error_value, rmse, r2) %>%
-  mutate(error_value = round(error_value,2)) %>%
-  mutate(model_name = paste(model_name, error_type,sep=' - ')) %>%
-  select(-error_type) %>%
-  spread(model_name, error_value)
+  mutate(error_value = round(error_value,2))
 
-write_csv(error_analysis, 'observation_errors.csv')
+# Apply more pleasing names to everything for figures
+model_names = c('gdd','gdd_fixed','linear_temp','naive','unichill','uniforc')
+pretty_model_names = c('GDD','Fixed GDD','Linear Temp','Naive','Unichill','Uniforc')
+datasets = c('harvard','hjandrews','hubbard','jornada','npn')
+pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornada','NPN')
+
+model_errors$model_name = factor(model_errors$model_name, levels = model_names, labels = pretty_model_names)
+model_errors$parameter_source = factor(model_errors$parameter_source, levels=datasets, labels = pretty_dataset_names)
+
+color_pallete=c("#CC79A7", "#E69F00", "#56B4E9", "#D55E00", "#009E73")
+point_size=3
+npn_r2_error_plot = model_errors %>%
+  filter(observation_source == 'npn', error_type=='r2') %>%
+  ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
+  geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
+  # scale_size_continuous(breaks=c(100,200,500,5000)) + 
+  ylim(0,1) +
+  scale_shape_manual(values=c(8,17)) +
+  scale_color_manual(values=color_pallete) +
+  theme_linedraw() +
+  labs(y = 'R^2', x='') 
+
+npn_rmse_error_plot = model_errors %>%
+  filter(observation_source == 'npn', error_type=='rmse') %>%
+  ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
+  geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
+  # scale_size_continuous(breaks=c(100,200,500,5000)) + 
+  ylim(0,100) +
+  scale_shape_manual(values=c(8,17)) + 
+  scale_color_manual(values=color_pallete) +
+  theme_linedraw() +
+  labs(y='RMSE', x='') 
+
+lts_r2_error_plot = model_errors %>%
+  filter(observation_source != 'npn', error_type=='r2') %>%
+  ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
+  geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
+  # scale_size_continuous(breaks=c(100,200,500,5000)) + 
+  ylim(0,1) +
+  scale_shape_manual(values=c(8,17)) + 
+  scale_color_manual(values=color_pallete) +
+  theme_linedraw() +
+  labs(y = 'R^2', x='') 
+
+lts_rmse_error_plot = model_errors %>%
+  filter(observation_source != 'npn', error_type=='rmse') %>%
+  ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
+  geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
+  # scale_size_continuous(breaks=c(100,200,500,5000)) + 
+  ylim(0,40) +
+  scale_shape_manual(values=c(8,17)) + 
+  scale_color_manual(values=color_pallete) +
+  theme_linedraw() +
+  labs(y = 'RMSE', x='', color='Parameter Source', shape='Phenophase') +
+  theme(legend.position = 'bottom',
+        legend.direction = 'horizontal',
+        legend.background = element_rect(color='black'))
+
+legend_alone = get_legend(lts_rmse_error_plot)
+remove_legend = theme(legend.position = 'none')
+
+top_row = plot_grid(npn_r2_error_plot + remove_legend, npn_rmse_error_plot + remove_legend)
+bottom_row = plot_grid(lts_r2_error_plot + remove_legend, lts_rmse_error_plot + remove_legend)
+
+top_row_text = 'A. Model error metrics for observations in NPN dataset'
+bottom_row_text = 'B. Model error metrics for observations in LTS datasets'
+plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_text, bottom_row_text, ''), 
+          rel_heights = c(1,1,0.2), hjust=-0.07, vjust=0.5, label_size=12)
+
+
+#write_csv(error_analysis, 'observation_errors.csv')
 
 ############################################################
 x=ggplot(filter(oos_estimates, observation_source=='hjandrews'), aes(x=doy_observed, y=doy_estimated_mean, group=parameter_source, color=parameter_source)) +
