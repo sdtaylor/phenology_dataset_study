@@ -91,25 +91,25 @@ observation_estimate_comparison = oos_estimates %>%
 #   theme(legend.position = "bottom", 
 #         legend.direction = "horizontal")
 
-print(p)
-#ggsave(p_filename, plot=p, height=20, width=80, units = 'cm', limitsize = FALSE)
+# print(p)
+# ggsave(p_filename, plot=p, height=20, width=80, units = 'cm', limitsize = FALSE)
 
-}
+# }
 
 ##############################################################
 #Fancy table of all estimate differences and their p-values of being different from 0
 #0 implies that they generally give similar estimates
 
 #Convert each unique entity to a p-value
-p_values = observation_estimate_comparison %>%
-  group_by(model_name, observation_source, species, phenophase) %>%
-  filter(model_name != 'naive') %>%
-  dplyr::summarize(p_value = round(t.test(model_estimate_difference)$p.value, 3), n=n()) %>%
-  ungroup() %>%
-  spread(model_name, p_value)
-
-write_csv(p_values, 'observation_estimate_comparison_p_values.csv')
-gridExtra::grid.table(p_values)
+# p_values = observation_estimate_comparison %>%
+#   group_by(model_name, observation_source, species, phenophase) %>%
+#   filter(model_name != 'naive') %>%
+#   dplyr::summarize(p_value = round(t.test(model_estimate_difference)$p.value, 3), n=n()) %>%
+#   ungroup() %>%
+#   spread(model_name, p_value)
+# 
+# write_csv(p_values, 'observation_estimate_comparison_p_values.csv')
+# gridExtra::grid.table(p_values)
 
 #############################################################
 #Explain differences in observations by either number of observers
@@ -122,7 +122,7 @@ npn_distances = read_csv('cleaned_data/npn_mean_distance_to_long_term_sites.csv'
 # Mean absolute difference between long_term_study models and npn_models. 
 # < 0 means npn model estimated higher (later in year) doy
 
-estimate_differences = observation_estimate_comparison %>%
+estimate_differences_lts_observations = observation_estimate_comparison %>%
   group_by(model_name, observation_source, non_npn_parameter_source, species, phenophase) %>%
   summarise(rmsd = sqrt(mean(model_estimate_difference^2))) %>%
   ungroup() %>%
@@ -130,13 +130,58 @@ estimate_differences = observation_estimate_comparison %>%
   left_join(npn_sampling_info, by='species') %>%
   left_join(npn_distances, by=c('species','observation_source'='dataset'))
 
+estimate_differences_npn_observations = observation_estimate_comparison %>%
+  group_by(model_name, observation_source, non_npn_parameter_source, species, phenophase) %>%
+  summarise(rmsd = sqrt(mean(model_estimate_difference^2))) %>%
+  ungroup() %>%
+  filter(observation_source == 'npn') %>%
+  left_join(npn_sampling_info, by='species') %>%
+  left_join(npn_distances, by=c('species','observation_source'='dataset'))
+
 ################################################################
 # Graph of RMSD model, phenophase, lts dataset
-ggplot(estimate_differences, aes(x=model_name, y=rmsd, group=observation_source, color=observation_source)) + 
+
+# Apply more pleasing names to everything for figures
+model_names = c('gdd','gdd_fixed','linear_temp','naive','unichill','uniforc')
+pretty_model_names = c('GDD','Fixed GDD','Linear Temp','Naive','Unichill','Uniforc')
+datasets = c('harvard','hjandrews','hubbard','jornada','npn')
+pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornada','NPN')
+
+estimate_differences_lts_observations$model_name = factor(estimate_differences_lts_observations$model_name, levels=model_names, labels=pretty_model_names)
+estimate_differences_npn_observations$model_name = factor(estimate_differences_npn_observations$model_name, levels=model_names, labels=pretty_model_names)
+estimate_differences_lts_observations$non_npn_parameter_source = factor(estimate_differences_lts_observations$non_npn_parameter_source,
+                                                                           levels=datasets, labels=pretty_dataset_names)
+estimate_differences_npn_observations$non_npn_parameter_source = factor(estimate_differences_npn_observations$non_npn_parameter_source,
+                                                                           levels=datasets, labels=pretty_dataset_names)
+
+color_pallete=c("#CC79A7", "#E69F00", "#56B4E9", "#D55E00")
+
+npn_estimate_differences = ggplot(estimate_differences_npn_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
   geom_jitter(width = 0.2, size=5, aes(shape = phenophase)) +
-  scale_shape_manual(values=c(1,17))
+  geom_violin(inherit.aes = FALSE, aes(x=model_name, y=rmsd), alpha=0) +
+  ylim(0,70) +
+  scale_shape_manual(values=c(17,8)) + 
+  scale_color_manual(values=color_pallete) +
+  theme_bw() +
+  theme(legend.position = c(0.3,0.85),
+        legend.box = 'horizontal',
+        legend.background = element_rect(color='black')) +
+  labs(x='',y='',color='LTS Parameter Source', shape='Phenophase')
 
+lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
+  geom_jitter(width = 0.2, size=5, aes(shape = phenophase)) +
+  geom_violin(inherit.aes = FALSE, aes(x=model_name, y=rmsd), alpha=0) +
+  ylim(0,70) +
+  scale_shape_manual(values=c(17,8)) + 
+  scale_color_manual(values=color_pallete) +
+  theme_bw() +
+  theme(legend.position = 'none') +
+  labs(y='',x='Model')
 
+npn_label = 'A. Differences between NPN and LTS estimates when compared over all NPN sites'
+lts_label = 'B. Differences between NPN and LTS estimates when compared at local LTS sites'
+cowplot::plot_grid(npn_estimate_differences, lts_estimate_differences, labels=c(npn_label, lts_label), ncol=1,
+                   hjust=-0.08, vjust=0.5, label_size=12)
 #################################################################
 # Models explaining RMSD
 summary(lm(log(rmsd) ~ log(num_observers) + log(mean_distance) + model_name, data=estimate_differences))
