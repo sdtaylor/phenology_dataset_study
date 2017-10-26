@@ -43,6 +43,8 @@ class phenology_model:
             self.model = self.gdd_fixed
         elif self.model_name=='unichill':
             self.model = self.unichill
+        elif self.model_name=='alternating':
+            self.model = self.alternating
         elif self.model_name=='naive':
             self.model = self.naive
         elif self.model_name=='linear_temp':
@@ -78,6 +80,27 @@ class phenology_model:
     #return the accumulated forcing/gdd for each doy for each observation
     def gdd_calculator(self, temps):
         return temps.cumsum(axis=1)
+
+    # Alternating model, originally defined in Cannell & Smith 1983
+    # Phenological event happens the first day that GDD (above 5C)
+    # is greater than an exponential curve of number of chill days (below 5C)
+    def alternating(self, a, b, c, threshold=5, **kwargs):
+        # Number of days below threshold from Jan 1
+        chill_days = ((self.temp_observations < threshold)*1).copy()
+        chill_days[:,self.temp_doy < 0]=0
+        chill_days = self.gdd_calculator(chill_days)
+
+        # Accumulated growing degree days from Jan 1
+        gdd = self.temp_observations.copy()
+        gdd[gdd < threshold]=0
+        gdd[:,self.temp_doy < 0]=0
+        gdd = self.gdd_calculator(gdd)
+
+        # Phenological event happens the first day gdd is > chill_day curve
+        chill_day_curve = a + b * np.exp( c * chill_days)
+        difference = gdd - chill_day_curve
+
+        return self.doy_estimator(difference, self.temp_doy, F=0)
 
     #Linear temperature model
     #A linear regression between mean spring temperature(Jan 1 - March 31)
@@ -193,6 +216,9 @@ class phenology_model:
         elif self.model_name=='gdd':
             #           t1         T         F*
             return [(-67,298), (-25,25), (0,1000)]
+        elif self.model_name=='alternating':
+            #           a         b         c
+            return [(-5000,5000), (-5000,5000), (0,100)]
         elif self.model_name=='gdd_fixed':
             #          F*
             return [(0,2500)]
@@ -212,6 +238,8 @@ class phenology_model:
             o['t0'], o['a_c'], o['b_c'], o['c_c'], o['C'], o['b_f'], o['c_f'], o['F'] = x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7]
         elif self.model_name=='gdd':
             o['t1'], o['T'], o['F'] = x[0], x[1], x[2]
+        elif self.model_name=='alternating':
+            o['a'], o['b'], o['c'] = x[0], x[1], x[2]
         elif self.model_name=='gdd_fixed':
             o['F'] = x[0]
         elif self.model_name=='naive':
@@ -230,6 +258,8 @@ class phenology_model:
             kargs={'t0':x[0], 'a_c':x[1], 'b_c':x[2], 'c_c':x[3], 'C':x[4], 'b_f':x[5], 'c_f':x[6], 'F':x[7]}
         elif self.model_name=='gdd':
             kargs={'t1':x[0], 'T':x[1], 'F':x[2]}
+        elif self.model_name=='alternating':
+            kargs={'a':x[0], 'b':x[1], 'c':x[2]}
         elif self.model_name=='gdd_fixed':
             kargs={'F':x[0]}
         elif self.model_name=='naive':
