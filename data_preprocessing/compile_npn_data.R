@@ -76,7 +76,7 @@ processed_data = processed_data %>%
 #More than 1 individual observed at a site in year? Take  the average value
 processed_data = processed_data %>%
   group_by(species, Site_ID, year, Phenophase_ID) %>%
-  summarise(doy = mean(doy)) %>%
+  summarise(doy = round(mean(doy),0)) %>%
   ungroup()
 
 observations_per_species = processed_data %>%
