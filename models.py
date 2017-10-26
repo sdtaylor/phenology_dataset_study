@@ -82,8 +82,8 @@ class phenology_model:
         return temps.cumsum(axis=1)
 
     # Alternating model, originally defined in Cannell & Smith 1983
-    # Phenological event happens the first day that GDD (above 0C)
-    # is greater than an exponential curve of number of chill days (below 0C)
+    # Phenological event happens the first day that GDD (above 5C)
+    # is greater than an exponential curve of number of chill days (below 5C)
     def alternating(self, a, b, c, threshold=5, **kwargs):
         # Number of days below threshold from Jan 1
         chill_days = ((self.temp_observations < threshold)*1).copy()
