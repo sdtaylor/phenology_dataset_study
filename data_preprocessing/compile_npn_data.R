@@ -19,10 +19,23 @@ subset_npn_data = function(this_species, this_phenophase){
 ##################################################################################
 data_dir = '~/data/phenology/npn_core/'
 
+
+#Add some extra species that aren't in any long term studies, but to 
+#compare results to Crimmens et al. 2017
+extra_spp = doy_cutoffs = read.table(header = TRUE, sep=',', text = '
+species,Phenophase_ID
+quercus alba,501
+amelanchier canadensis,371
+amelanchier canadensis,501
+cornus florida,371
+betula papyrifera,501')
+
 #Some species are in > dataset, so only get distinct species/phenophases
 non_npn_species = read_csv('./cleaned_data/non_npn_species_list.csv') %>%
   select(-dataset) %>%
+  bind_rows(extra_spp) %>%
   distinct()
+
 
 #The raw npn data
 all_observations = read_csv(paste0(data_dir,'status_intensity_observation_data.csv')) %>%
@@ -39,7 +52,7 @@ processed_data = non_npn_species %>%
   ungroup() %>%
   filter(status>=0) %>%
   select(Site_ID, species, individual_id, year, doy, status, Phenophase_ID) %>%
-  process_phenology_observations(prior_obs_cutoff = 21)
+  process_phenology_observations(prior_obs_cutoff = 14)
 
 #Core NPN collection started in 2009.
 #2017 does not have climate data available yet
