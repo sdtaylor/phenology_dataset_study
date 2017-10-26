@@ -39,21 +39,42 @@ processed_data = non_npn_species %>%
   ungroup() %>%
   filter(status>=0) %>%
   select(Site_ID, species, individual_id, year, doy, status, Phenophase_ID) %>%
-  process_phenology_observations()
+  process_phenology_observations(prior_obs_cutoff = 21)
 
 #Core NPN collection started in 2009.
 #2017 does not have climate data available yet
 processed_data = processed_data %>%
   filter(year>=2009, year<2017)
 
+#Don't include observations past Aug 1 for flowers, or June 21 for buds
+doy_cutoffs = read.table(header = TRUE, sep=',', text = '
+Phenophase_ID,doy_cutoff
+371,172
+501,213
+480,172
+488,172
+496,172
+')
+
+processed_data = processed_data %>%
+  left_join(doy_cutoffs, by='Phenophase_ID') %>%
+  filter(doy <= doy_cutoff)
+
+#More than 1 individual observed at a site in year? Take  the average value
+processed_data = processed_data %>%
+  group_by(species, Site_ID, year, Phenophase_ID) %>%
+  summarise(doy = mean(doy)) %>%
+  ungroup()
+
 observations_per_species = processed_data %>%
   group_by(species, Phenophase_ID) %>%
   tally()
 
-#Minimum 40 observations for each species after all prior filtering
+
+#Minimum 30 observations for each species after all prior filtering
 processed_data = processed_data %>%
   group_by(species, Phenophase_ID) %>%
-  filter(n() > 40) %>%
+  filter(n() > 30) %>%
   ungroup()
 
 write_csv(processed_data, './cleaned_data/npn_observations.csv') 
