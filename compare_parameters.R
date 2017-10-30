@@ -102,17 +102,16 @@ common_plot_theme = theme(strip.text = element_text(size=20),
                           axis.text = element_text(size=18),
                           axis.title.y = element_text(size=22))
 
-unichill=ggplot(filter(parameter_means, model=='unichill'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
+alternating=ggplot(filter(parameter_means, model=='alternating'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=7, aes(shape = phenophase)) +
   scale_shape_manual(values=c(1,17)) +
-  #geom_point(data=filter(is_sig, model=='unichill'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   #scale_color_manual(values = graph_palette) +
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Unichill Model", x='') +
-  common_plot_theme
+  labs(y = "Alternating", x='') +
+  common_plot_theme 
 uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=7, aes(shape = phenophase)) +
   scale_shape_manual(values=c(1,17)) +
@@ -122,7 +121,7 @@ uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mea
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Uniforc Model", x='') + 
+  labs(y = "Uniforc", x='') + 
   common_plot_theme
 gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=7, aes(shape = phenophase)) +
@@ -132,7 +131,17 @@ gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "GDD Model", x='') + 
+  labs(y = "GDD", x='') + 
+  common_plot_theme
+gdd_fixed=ggplot(filter(parameter_means, model=='gdd_fixed'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
+  geom_point(size=7, aes(shape = phenophase)) +
+  scale_shape_manual(values=c(1,17)) +
+  #geom_point(data=filter(is_sig, model=='gdd'), size=1.5, color='black', aes(shape=dataset)) +
+  geom_abline(intercept=0, slope=1) +
+  facet_wrap(~parameter_name, scales='free', nrow=1) + 
+  theme_bw() +
+  theme(legend.position = "none") +
+  labs(y = "Fixed GDD", x='') + 
   common_plot_theme
 linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=7, aes(shape = phenophase)) +
@@ -142,7 +151,7 @@ linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=p
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Linear Model", x='') + 
+  labs(y = "Linear", x='') + 
   common_plot_theme
 naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=7, aes(shape = phenophase)) +
@@ -152,7 +161,7 @@ naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, c
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Naive Model", x='') + 
+  labs(y = "Naive", x='') + 
   common_plot_theme
 
 legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset))+
@@ -165,14 +174,15 @@ legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='uniforc'), a
                                     shape = "Phenophase"))
 
 empty_space = grid::textGrob('')
-complex_layout = rbind(c(2,1,1,1,7,7,7,7),
-                       c(3,3,1,1,7,7,7,7),
-                       c(4,4,4,1,7,7,7,7),
-                       c(5,5,5,5,1,1,1,1),
-                       c(6,6,6,6,6,6,6,6))
+complex_layout = rbind(c(2,1,7,7),
+                       c(8,1,7,7),
+                       c(3,3,1,1),
+                       c(4,4,4,1),
+                       c(6,6,6,1),
+                       c(5,5,5,5))
 
-#                                      1       2(1)     3(2)    4(3)  5(4)      6(8)         7
-whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, unichill, legend, layout_matrix=complex_layout,
+#                                      1       2(1)     3(2)       4(3)  5(4)      6(3)         7        8
+whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, alternating, legend, gdd_fixed, layout_matrix=complex_layout,
                         left = 'Long Term Dataset Derived Parameter Estimates',
                         bottom = 'NPN Derived Parameter Estimates')
 
