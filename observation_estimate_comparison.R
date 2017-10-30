@@ -191,13 +191,13 @@ estimate_differences_lts_observations %>%
   median()
 #################################################################
 # Models explaining RMSD
-summary(lm(log(rmsd) ~ log(num_observers) + log(mean_distance) + model_name, data=estimate_differences))
+summary(lm(log(rmsd) ~ log(num_observers) + log(mean_distance) + model_name, data=estimate_differences_lts_observations))
 
 summary(lm(rmsd ~ num_observers + mean_distance, data=estimate_differences))
 
 
 
-random_effects_model = lmer(log(rmsd) ~ log(num_observers) + log(mean_distance) + (log(num_observers) + log(mean_distance)|model_name), data=estimate_differences)
+random_effects_model = lmer(log(rmsd) ~ log(num_observers) + log(mean_distance) + (log(num_observers) + log(mean_distance)|model_name), data=estimate_differences_lts_observations)
 summary(random_effects_model)
 
 ggplot(filter(estimate_differences, num_observers<200), aes(x=num_observers, y=rmsd, group=model_name, color=model_name)) +
