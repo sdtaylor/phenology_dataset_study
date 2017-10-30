@@ -98,12 +98,14 @@ parameter_means = parameter_means %>%
   filter(dataset!='npn') %>%
   left_join(npn_paramters, by=c('species','parameter_name','model', 'phenophase'))
 
-common_plot_theme = theme(strip.text = element_text(size=20),
-                          axis.text = element_text(size=18),
-                          axis.title.y = element_text(size=22))
+common_plot_theme = theme(strip.text = element_text(size=10),
+                          axis.text = element_text(size=12),
+                          axis.title.y = element_text(size=18))
+
+point_size=5
 
 alternating=ggplot(filter(parameter_means, model=='alternating'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=7, aes(shape = phenophase)) +
+  geom_point(size=point_size, aes(shape = phenophase)) +
   scale_shape_manual(values=c(1,17)) +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
@@ -113,7 +115,7 @@ alternating=ggplot(filter(parameter_means, model=='alternating'), aes(x=npn, y=p
   labs(y = "Alternating", x='') +
   common_plot_theme 
 uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=7, aes(shape = phenophase)) +
+  geom_point(size=point_size, aes(shape = phenophase)) +
   scale_shape_manual(values=c(1,17)) +
   #geom_point(data=filter(parameter_means, phenophase=='Flower', model=='uniforc'),size=2, color='white') +
   #geom_point(data=filter(is_sig, model=='uniforc'), size=1.5, color='black', aes(shape=dataset)) +
@@ -124,7 +126,7 @@ uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mea
   labs(y = "Uniforc", x='') + 
   common_plot_theme
 gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=7, aes(shape = phenophase)) +
+  geom_point(size=point_size, aes(shape = phenophase)) +
   scale_shape_manual(values=c(1,17)) +
   #geom_point(data=filter(is_sig, model=='gdd'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
@@ -134,7 +136,7 @@ gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color
   labs(y = "GDD", x='') + 
   common_plot_theme
 gdd_fixed=ggplot(filter(parameter_means, model=='gdd_fixed'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=7, aes(shape = phenophase)) +
+  geom_point(size=point_size, aes(shape = phenophase)) +
   scale_shape_manual(values=c(1,17)) +
   #geom_point(data=filter(is_sig, model=='gdd'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
@@ -144,7 +146,7 @@ gdd_fixed=ggplot(filter(parameter_means, model=='gdd_fixed'), aes(x=npn, y=param
   labs(y = "Fixed GDD", x='') + 
   common_plot_theme
 linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=7, aes(shape = phenophase)) +
+  geom_point(size=point_size, aes(shape = phenophase)) +
   scale_shape_manual(values=c(1,17)) +
   #geom_point(data=filter(is_sig, model=='linear_temp'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
@@ -154,7 +156,7 @@ linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=p
   labs(y = "Linear", x='') + 
   common_plot_theme
 naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=7, aes(shape = phenophase)) +
+  geom_point(size=point_size, aes(shape = phenophase)) +
   scale_shape_manual(values=c(1,17)) +
   #geom_point(data=filter(is_sig, model=='naive'), size=1.5, color='black', aes(shape=dataset)) +
   geom_abline(intercept=0, slope=1) +
