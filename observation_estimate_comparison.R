@@ -142,8 +142,8 @@ estimate_differences_npn_observations = observation_estimate_comparison %>%
 # Graph of RMSD model, phenophase, lts dataset
 
 # Apply more pleasing names to everything for figures
-model_names = c('gdd','gdd_fixed','linear_temp','naive','unichill','uniforc')
-pretty_model_names = c('GDD','Fixed GDD','Linear Temp','Naive','Unichill','Uniforc')
+model_names = c('gdd','gdd_fixed','linear_temp','naive','alternating','uniforc')
+pretty_model_names = c('GDD','Fixed GDD','Linear Temp','Naive','Alternating','Uniforc')
 datasets = c('harvard','hjandrews','hubbard','jornada','npn')
 pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornada','NPN')
 
@@ -164,10 +164,8 @@ npn_estimate_differences = ggplot(estimate_differences_npn_observations, aes(x=m
   scale_color_manual(values=color_pallete) +
   theme_bw() +
   theme(axis.line = element_line(color='black'),
-    legend.position = c(0.3,0.85),
-        legend.box = 'horizontal',
-        legend.background = element_rect(color='black')) +
-  labs(x='',y='',color='LTS Parameter Source', shape='Phenophase')
+        legend.position = 'none') +
+  labs(x='',y='')
 
 lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
   geom_jitter(width = 0.2, size=5, aes(shape = phenophase)) +
@@ -176,8 +174,10 @@ lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=m
   scale_shape_manual(values=c(17,8)) + 
   scale_color_manual(values=color_pallete) +
   theme_bw() +
-  theme(legend.position = 'none') +
-  labs(y='',x='Model')
+  theme(legend.position = c(0.25,0.8),
+        legend.box = 'horizontal',
+        legend.background = element_rect(color='black')) +
+  labs(y='',x='Model',color='LTS Parameter Source', shape='Phenophase')
 
 npn_label = 'A. Root mean square difference between NPN and LTS estimates when compared over all NPN sites'
 lts_label = 'B. Root mean square difference between NPN and LTS estimates when compared at local LTS sites'
