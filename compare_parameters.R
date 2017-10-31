@@ -21,6 +21,13 @@ npn_species = all_parameters %>%
 all_parameters = all_parameters %>% 
   filter(species %in% npn_species$species)
 
+# This is the final numbers put into the Table 1
+# lts_sample_sizes = all_parameters %>% 
+#   filter(dataset!='npn') %>% 
+#   select(dataset, species, phenophase) %>% 
+#   distinct() %>% group_by(dataset, phenophase) %>% 
+#   summarize(n_species = n_distinct(species))
+
 
 ############################################################################
 #The distribution of all parameters derived using bootstrapping
@@ -60,14 +67,14 @@ npn_parameters = all_parameters %>%
   rename(npn_value = value) %>%
   select(-dataset)
 
-p_values = all_parameters %>%
-  filter(dataset!='npn') %>%
-  rename(dataset_value = value) %>%
-  left_join(npn_parameters, by=c('model','parameter_name','bootstrap_num','species','phenophase')) %>%
-  group_by(dataset, model, parameter_name, species, phenophase) %>%
-  #summarise(p_value = ks.test(.$dataset_value, .$npn_value, alternative='two.side', exact=TRUE)$p.value, n=n()) %>%
-  summarise(p_value = wilcox.test(.$dataset_value, .$npn_value, alternative = 'two.sided')$p.value) %>%
-  ungroup()
+# p_values = all_parameters %>%
+#   filter(dataset!='npn') %>%
+#   rename(dataset_value = value) %>%
+#   left_join(npn_parameters, by=c('model','parameter_name','bootstrap_num','species','phenophase')) %>%
+#   group_by(dataset, model, parameter_name, species, phenophase) %>%
+#   #summarise(p_value = ks.test(.$dataset_value, .$npn_value, alternative='two.side', exact=TRUE)$p.value, n=n()) %>%
+#   summarise(p_value = wilcox.test(.$dataset_value, .$npn_value, alternative = 'two.sided')$p.value) %>%
+#   ungroup()
 
 
 
