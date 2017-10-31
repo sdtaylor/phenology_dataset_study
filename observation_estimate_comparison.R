@@ -166,7 +166,8 @@ npn_estimate_differences = ggplot(estimate_differences_npn_observations, aes(x=m
   scale_color_manual(values=color_pallete) +
   theme_bw() +
   theme(axis.line = element_line(color='black'),
-        legend.position = 'none') +
+        legend.position = 'none',
+        plot.margin = unit(c(1,0,0.5,0),'cm')) +
   labs(x='',y='')
 
 lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
@@ -178,13 +179,14 @@ lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=m
   theme_bw() +
   theme(legend.position = c(0.25,0.8),
         legend.box = 'horizontal',
-        legend.background = element_rect(color='black')) +
+        legend.background = element_rect(color='black'),
+        plot.margin = unit(c(1,0,0.5,0),'cm')) +
   labs(y='',x='Model',color='LTS Parameter Source', shape='Phenophase')
 
 npn_label = 'A. Root mean square difference between NPN and LTS estimates when compared over all NPN sites'
 lts_label = 'B. Root mean square difference between NPN and LTS estimates when compared at local LTS sites'
 cowplot::plot_grid(npn_estimate_differences, lts_estimate_differences, labels=c(npn_label, lts_label), ncol=1,
-                   hjust=-0.08, vjust=0.5, label_size=12)
+                   hjust=-0.08, vjust=1.1, label_size=12)
 
 # The median of npn observations with the unichill model. This is reported in text since it's cutoff on the graph
 estimate_differences_lts_observations %>%
