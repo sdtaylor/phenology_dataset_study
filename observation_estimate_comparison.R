@@ -35,9 +35,9 @@ oos_estimates$phenophase = as.numeric(oos_estimates$phenophase)
 
 phenophase_types = read.table(header=TRUE, sep=',', stringsAsFactors = FALSE, text='
 phenophase,phenophase_type
-371,Leaves
-480,Leaves
-488,Leaves
+371,Budburst
+480,Budburst
+488,Budburst
 501,Flowers')
 
 oos_estimates = oos_estimates %>%
@@ -154,13 +154,15 @@ estimate_differences_lts_observations$non_npn_parameter_source = factor(estimate
 estimate_differences_npn_observations$non_npn_parameter_source = factor(estimate_differences_npn_observations$non_npn_parameter_source,
                                                                            levels=datasets, labels=pretty_dataset_names)
 
-color_pallete=c("#CC79A7", "#E69F00", "#56B4E9", "#D55E00")
+point_size=5
+point_shapes = c(17,13)
+color_pallete=c("grey42", "#E69F00", "#56B4E9", "#CC79A7")
 
 npn_estimate_differences = ggplot(estimate_differences_npn_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
-  geom_jitter(width = 0.2, size=5, aes(shape = phenophase)) +
+  geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   geom_boxplot(inherit.aes = FALSE, aes(x=model_name, y=rmsd), alpha=0) +
   ylim(0,70) +
-  scale_shape_manual(values=c(17,8)) + 
+  scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_bw() +
   theme(axis.line = element_line(color='black'),
@@ -168,10 +170,10 @@ npn_estimate_differences = ggplot(estimate_differences_npn_observations, aes(x=m
   labs(x='',y='')
 
 lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
-  geom_jitter(width = 0.2, size=5, aes(shape = phenophase)) +
+  geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   geom_boxplot(inherit.aes = FALSE, aes(x=model_name, y=rmsd), alpha=0) +
   ylim(0,70) +
-  scale_shape_manual(values=c(17,8)) + 
+  scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_bw() +
   theme(legend.position = c(0.25,0.8),
