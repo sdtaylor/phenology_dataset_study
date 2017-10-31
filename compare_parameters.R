@@ -88,11 +88,11 @@ npn_parameters = all_parameters %>%
 #graph_palette = sample(getPalette(color_count))
 
 
-leaf_phenophases = c(371, 496, 488)
+budburst_phenophases = c(371, 496, 488)
 flower_phenophases = c(501)
 
 parameter_means = all_parameters %>%
-  mutate(phenophase = ifelse(phenophase %in% leaf_phenophases, 'Leaf','Flower')) %>%
+  mutate(phenophase = ifelse(phenophase %in% budburst_phenophases, 'Budburst','Flower')) %>%
   group_by(species, parameter_name, dataset, model, phenophase) %>%
   summarise(param_mean = mean(value)) %>%
   ungroup()
