@@ -53,7 +53,7 @@ if(make_parameter_histograms){
 
 #Comparison of parameters in npn vs other datasets
 x = all_parameters %>%
-  filter(dataset %in% c('harvard','npn'),model=='gdd',species=='betula papyrifera',phenophase==501)
+  filter(dataset %in% c('hjandrews','npn'),model=='gdd_fixed')
 
 ggplot(x, aes(x=value, group=dataset, fill=dataset)) +
   geom_histogram(bins=50, position = 'identity', alpha=0.7) +
@@ -110,7 +110,7 @@ common_plot_theme = theme(strip.text = element_text(size=10),
                           axis.text = element_text(size=12),
                           axis.title.y = element_text(size=18))
 
-point_size=5
+point_size=4
 point_shapes = c(17,13)
 color_pallete=c("grey42", "#E69F00", "#56B4E9", "#CC79A7")
 
@@ -144,7 +144,17 @@ gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color
   theme(legend.position = "none") +
   labs(y = "GDD", x='') + 
   common_plot_theme
-gdd_fixed=ggplot(filter(parameter_means, model=='gdd_fixed'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
+gdd_fixed_a=ggplot(filter(parameter_means, model=='gdd_fixed'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
+  geom_point(size=point_size, aes(shape = phenophase)) +
+  scale_shape_manual(values=point_shapes) +
+  scale_color_manual(values=color_pallete) +
+  geom_abline(intercept=0, slope=1) +
+  facet_wrap(~parameter_name, scales='free', nrow=1) + 
+  theme_bw() +
+  theme(legend.position = "none") +
+  labs(y = "Fixed GDD", x='') + 
+  common_plot_theme
+gdd_fixed_b=ggplot(filter(parameter_means, model=='gdd_fixed', dataset!='jornada'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
   scale_shape_manual(values=point_shapes) +
   scale_color_manual(values=color_pallete) +
@@ -193,8 +203,8 @@ complex_layout = rbind(c(2,1,7,7),
                        c(6,6,6,1),
                        c(5,5,5,5))
 
-#                                      1       2(1)     3(2)       4(3)  5(4)      6(3)         7        8
-whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, alternating, legend, gdd_fixed, layout_matrix=complex_layout,
+#                                      1       2(1)     3(2)       4(3)  5(4)      6(3)         7        8       
+whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, alternating, legend, gdd_fixed_a, layout_matrix=complex_layout,
                         left = 'Long Term Dataset Derived Parameter Estimates',
                         bottom = 'NPN Derived Parameter Estimates')
 
