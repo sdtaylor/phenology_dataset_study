@@ -154,9 +154,12 @@ estimate_differences_lts_observations$non_npn_parameter_source = factor(estimate
 estimate_differences_npn_observations$non_npn_parameter_source = factor(estimate_differences_npn_observations$non_npn_parameter_source,
                                                                            levels=datasets, labels=pretty_dataset_names)
 
-point_size=5
+point_size=6
 point_shapes = c(17,13)
 color_pallete=c("grey42", "#E69F00", "#56B4E9", "#CC79A7")
+
+common_theme_elements = theme(axis.text = element_text(size=18),
+                              axis.title.x = element_text(size=20))
 
 npn_estimate_differences = ggplot(estimate_differences_npn_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
@@ -166,7 +169,9 @@ npn_estimate_differences = ggplot(estimate_differences_npn_observations, aes(x=m
   scale_color_manual(values=color_pallete) +
   theme_bw() +
   theme(axis.line = element_line(color='black'),
-        legend.position = 'none') +
+        legend.position = 'none',
+        plot.margin = unit(c(1,0,0.5,0),'cm')) +
+  common_theme_elements +
   labs(x='',y='')
 
 lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
@@ -178,13 +183,17 @@ lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=m
   theme_bw() +
   theme(legend.position = c(0.25,0.8),
         legend.box = 'horizontal',
-        legend.background = element_rect(color='black')) +
+        legend.text = element_text(size=15),
+        legend.title = element_text(size=15),
+        legend.background = element_rect(color='black'),
+        plot.margin = unit(c(1,0,0.5,0),'cm')) +
+  common_theme_elements +
   labs(y='',x='Model',color='LTS Parameter Source', shape='Phenophase')
 
 npn_label = 'A. Root mean square difference between NPN and LTS estimates when compared over all NPN sites'
 lts_label = 'B. Root mean square difference between NPN and LTS estimates when compared at local LTS sites'
 cowplot::plot_grid(npn_estimate_differences, lts_estimate_differences, labels=c(npn_label, lts_label), ncol=1,
-                   hjust=-0.08, vjust=0.5, label_size=12)
+                   hjust=-0.08, vjust=1.1, label_size=12)
 
 # The median of npn observations with the unichill model. This is reported in text since it's cutoff on the graph
 estimate_differences_lts_observations %>%
@@ -193,6 +202,20 @@ estimate_differences_lts_observations %>%
   median()
 #################################################################
 # Models explaining RMSD
+fixed_gdd_lts_rmsd = estimate_differences_lts_observations %>%
+  filter(model_name=='Fixed GDD')
+
+all_results = estimate_differences_lts_observations %>%
+  group_by(model_name) %>%
+  do(broom::tidy(lm(log(.$rmsd) ~ log(.$num_observers) + log(.$mean_distance)))) %>%
+  ungroup() %>%
+  mutate(is_sig = p.value<0.05)
+
+
+fixed_gdd_model = lm(log(rmsd) ~ log(num_observers) + log(mean_distance) + log(area_sampled), data=fixed_gdd_lts_rmsd)
+fixed_gdd_model_step = step(fixed_gdd_model, direction = 'both')
+
+
 summary(lm(log(rmsd) ~ log(num_observers) + log(mean_distance) + model_name, data=estimate_differences_lts_observations))
 
 summary(lm(rmsd ~ num_observers + mean_distance, data=estimate_differences))
