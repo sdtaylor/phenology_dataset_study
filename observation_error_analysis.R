@@ -1,4 +1,5 @@
 library(tidyverse)
+library(cowplot)
 #Compare out of sample verification between datasets
 
 
@@ -9,36 +10,23 @@ npn_species = oos_data %>%
   select(species) %>%
   distinct()
 
-oos_data = oos_data %>% 
+oos_data = oos_data %>%
   filter(species %in% npn_species$species)
 
-
-
-normality_test = function(x){
-  tryCatch(stats::shapiro.test(x)$p.value, error = function(x){NA})
-}
-
-get_mode <- function(x) {
-  ux <- unique(x)
-  ux[which.max(tabulate(match(x, ux)))]
-}
-
-
 #Compress the bootstrapped estimates down to a single estimate
-#With diagnostic stats on the variance distributions
-# oos_estimates = oos_data %>%
-#   group_by(model_name, observation_source, parameter_source, site_observed, species, year_observed, observation_id) %>%
-#   summarise(n=n(), normality_p_value = normality_test(doy_estimated), percent_1000= mean(doy_estimated==1000),
-#             doy_estimated_mean = mean(doy_estimated), doy_estimated_sd = sd(doy_estimated), doy_estimated_mode = get_mode(doy_estimated),
-#             doy_observed = mean(doy_observed)) %>%
-#   ungroup()
-
 oos_estimates = oos_data %>%
-  group_by(model_name, observation_source, parameter_source, site_observed, species, year_observed, observation_id) %>%
-  summarise(doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
+  group_by(model_name, observation_source, parameter_source, species, observation_id) %>%
+  summarise(n=n(), doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed), doy_observed_max = max(doy_observed)) %>%
   ungroup()
 
-############################################################################
+#Sanity checks. this should all equal (ie. only one unique observed value per site/model/species/observation_id/etc)
+if(!with(oos_estimates, all(doy_observed==doy_observed_max))){stop('more than 1 observation/observation_id')}
+#And only 250 estimates (from 250 bootstraps) per observation id
+if(unique(oos_estimates$n) != 250){stop('Too many samples per observation_id')}
+
+oos_estimates = oos_estimates %>%
+  select(-doy_observed_max, -n)
+
 #Pull out phenophase and identify as leaf or flower instead of numbers
 oos_estimates = oos_estimates %>% 
   mutate(phenophase = stringr::word(species,2,2, ' - '),
@@ -48,9 +36,9 @@ oos_estimates$phenophase = as.numeric(oos_estimates$phenophase)
 
 phenophase_types = read.table(header=TRUE, sep=',', stringsAsFactors = FALSE, text='
                               phenophase,phenophase_type
-                              371,Leaves
-                              480,Leaves
-                              488,Leaves
+                              371,Budburst
+                              480,Budburst
+                              488,Budburst
                               501,Flowers')
 
 oos_estimates = oos_estimates %>%
@@ -58,21 +46,22 @@ oos_estimates = oos_estimates %>%
   select(-phenophase) %>%
   rename(phenophase = phenophase_type)
 
-
-############################################################
-#Add an ensemble model
-
-# ensemble_model_estimates = oos_estimates %>%
-#   group_by(observation_source, parameter_source, species, observation_id, phenophase) %>%
-#   summarise(doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
-#   ungroup() %>%
-#   mutate(model_name='ensemble')
-# 
-# oos_estimates = oos_estimates %>%
-#   bind_rows(ensemble_model_estimates)
-
 ##################################################################
+# Skill scores using the corrosponding LTS dataset as the base estimate
+# > 0 means that the NPN datset did better than LTS dataset (the  LTS datset)
 
+# npn_estimates = oos_estimates %>%
+#   filter(parameter_source=='npn') %>%
+#   rename(npn_doy_estimated = doy_estimated) %>%
+#   select(-doy_observed, -parameter_source)
+# 
+# me_values = oos_estimates %>%
+#   filter(parameter_source != 'npn') %>%
+#   left_join(npn_estimates, by=c('model_name','observation_source','species','observation_id','phenophase')) %>%
+#   group_by(model_name, observation_source, parameter_source, species, phenophase) %>%
+#   summarize(me = 1 - (sum((npn_doy_estimated - doy_observed)^2) / sum((doy_estimated - doy_observed)^2)))
+
+##########################################################
 #R^2 from a 1:1 line
 r2=function(actual, predicted){
   actual=actual
@@ -97,48 +86,50 @@ pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornad
 model_errors$model_name = factor(model_errors$model_name, levels = model_names, labels = pretty_model_names)
 model_errors$parameter_source = factor(model_errors$parameter_source, levels=datasets, labels = pretty_dataset_names)
 
-color_pallete=c("#CC79A7", "#E69F00", "#56B4E9", "#D55E00", "#009E73")
 point_size=3
+point_shapes = c(17,13)
+color_pallete=c("grey42", "#E69F00", "#56B4E9", "#CC79A7", "#009E73")
+
 npn_r2_error_plot = model_errors %>%
-  filter(observation_source == 'npn', error_type=='r2') %>%
+  filter(observation_source == 'npn', parameter_source!='NPN', error_type=='r2') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   # scale_size_continuous(breaks=c(100,200,500,5000)) + 
   ylim(0,1) +
-  scale_shape_manual(values=c(8,17)) +
+  scale_shape_manual(values=point_shapes) +
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
   labs(y = 'R^2', x='') 
 
 npn_rmse_error_plot = model_errors %>%
-  filter(observation_source == 'npn', error_type=='rmse') %>%
+  filter(observation_source == 'npn', parameter_source!='NPN', error_type=='rmse') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   # scale_size_continuous(breaks=c(100,200,500,5000)) + 
   ylim(0,100) +
-  scale_shape_manual(values=c(8,17)) + 
+  scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
   labs(y='RMSE', x='') 
 
 lts_r2_error_plot = model_errors %>%
-  filter(observation_source != 'npn', error_type=='r2') %>%
+  filter(observation_source != 'npn', parameter_source=='NPN', error_type=='r2') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   # scale_size_continuous(breaks=c(100,200,500,5000)) + 
   ylim(0,1) +
-  scale_shape_manual(values=c(8,17)) + 
+  scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
   labs(y = 'R^2', x='') 
 
 lts_rmse_error_plot = model_errors %>%
-  filter(observation_source != 'npn', error_type=='rmse') %>%
+  filter(observation_source != 'npn', parameter_source=='NPN', error_type=='rmse') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   # scale_size_continuous(breaks=c(100,200,500,5000)) + 
   ylim(0,40) +
-  scale_shape_manual(values=c(8,17)) + 
+  scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
   labs(y = 'RMSE', x='', color='Parameter Source', shape='Phenophase') +
