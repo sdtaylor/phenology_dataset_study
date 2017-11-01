@@ -45,17 +45,12 @@ oos_estimates = oos_estimates %>%
   select(-phenophase) %>%
   rename(phenophase = phenophase_type)
 
-############################################################
-#Add an ensemble model
 
-# ensemble_model_estimates = oos_estimates %>%
-#   group_by(observation_source, parameter_source, species, observation_id, phenophase) %>%
-#   summarise(doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed)) %>%
-#   ungroup() %>%
-#   mutate(model_name='ensemble')
-# 
-# oos_estimates = oos_estimates %>%
-#   bind_rows(ensemble_model_estimates)
+############################################################
+############################################################
+# Error Analsys
+
+
 
 ############################################################
 
