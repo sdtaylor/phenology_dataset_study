@@ -138,6 +138,29 @@ plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_text, bott
 
 #write_csv(error_analysis, 'observation_errors.csv')
 
+
+###########################################################
+# Straight up model comparison to ask "Whats the best NPN model to predict LTS obs.?"
+# Beginnings are here.
+# spp_short_names = read_csv('final_species_abbr.csv')
+# model_errors = model_errors %>% 
+#   left_join(spp_short_names, by='species')
+# 
+# # model comparison extrapolating LTS models out to NPN data
+# ggplot(filter(model_errors, observation_source=='npn', is_lts_model==TRUE), aes(x=species_short, y=error_value, group=model_name, color=model_name)) +
+#   geom_jitter(width=0.2, size=point_size, aes(shape=phenophase)) +
+#   scale_shape_manual(values=point_shapes) +
+#   #ylim(0,20) +
+#   theme(axis.text.x = element_text(vjust = 0.99, hjust=0, angle=-45, debug = F))
+# 
+#   scale_color_manual(values=color_pallete) 
+# 
+# # model comparison extrapolating NPN models to LTS data
+# ggplot(filter(model_errors, observation_source!='npn', is_lts_model==FALSE), aes(x=species_short, y=error_value, group=model_name, color=model_name)) +
+#   geom_jitter(width=0.2, size=point_size, aes(shape=phenophase)) +
+#   scale_shape_manual(values=point_shapes) +
+#   theme(axis.text.x = element_text(vjust = 0.99, hjust=0, angle=-45, debug = F))
+
 ############################################################
 x=ggplot(filter(oos_estimates, observation_source=='hjandrews'), aes(x=doy_observed, y=doy_estimated_mean, group=parameter_source, color=parameter_source)) +
   geom_point() +
