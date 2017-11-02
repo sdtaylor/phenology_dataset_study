@@ -212,23 +212,41 @@ whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc,
 
 ggsave('param_comparison.png', plot=whole_plot, height=40, width=80, units = 'cm')
 
-####################################################33
-#Test for normality among parameters
-normality_test = function(x){
-  stats::shapiro.test(x)$p.value
-}
-is_normal = all_parameters %>%
-  group_by(dataset, model, parameter_name, species) %>%
-  summarize(normality_p_value =  normality_test(value))
+#####################################################
+#####################################################
+#####################################################
+# Normality tests for individual parameters
+# some parameters are log transformed for this since they are
+# bounded to either positive or negative
 
-is_normal = arrange(is_normal, normality_p_value)
-for(i in 1:50){
-  x = all_parameters %>% 
-    filter(dataset==is_normal$dataset[i],model==is_normal$model[i], parameter_name==is_normal$parameter_name[i], 
-           species==is_normal$species[i])
-  plot_title = paste(is_normal$dataset[i], is_normal$model[i], is_normal$parameter_name[i], is_normal$species[i], sep='-')
-  hist(x$value, breaks=100, main=plot_title)
-  try(hist(log(abs(x$value)), main=paste0(plot_title,'-log')))
-}
+# parameters_to_log_transform = read.table(header=TRUE, sep=',', stringsAsFactors = FALSE, text='
+# model,parameter_name,transform 
+# uniforc,b,yes
+# uniforc,F,yes
+# gdd,F,yes
+# alternating,c,yes
+# gdd_fixed,F,yes')
+# 
+# 
+# #Test for normality among parameters
+# normality_test = function(x){
+#   stats::shapiro.test(x)$p.value
+# }
+# is_normal = all_parameters %>%
+#   left_join(parameters_to_log_transform, by=c('model','parameter_name')) %>%
+#   mutate(transform = ifelse(is.na(transform),'no', transform)) %>%
+#   mutate(log_value = ifelse(transform=='yes', log1p(value), value)) %>%
+#   group_by(dataset, model, parameter_name, species, phenophase) %>%
+#   summarize(normality_p_value =  normality_test(value))
+# 
+# is_normal = arrange(is_normal, normality_p_value)
+# for(i in 1:50){
+#   x = all_parameters %>%
+#     filter(dataset==is_normal$dataset[i],model==is_normal$model[i], parameter_name==is_normal$parameter_name[i],
+#            species==is_normal$species[i])
+#   plot_title = paste(is_normal$dataset[i], is_normal$model[i], is_normal$parameter_name[i], is_normal$species[i], sep='-')
+#   hist(x$value, breaks=100, main=plot_title)
+#   try(hist(log(abs(x$value)), main=paste0(plot_title,'-log')))
+# }
 
 
