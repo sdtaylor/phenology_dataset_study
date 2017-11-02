@@ -88,47 +88,49 @@ model_errors$parameter_source = factor(model_errors$parameter_source, levels=dat
 
 point_size=3
 point_shapes = c(17,13)
+r2_lower_limit = 0
+rmse_upper_limit = 20
 color_pallete=c("grey42", "#E69F00", "#56B4E9", "#CC79A7", "#009E73")
 
 npn_r2_error_plot = model_errors %>%
-  filter(observation_source == 'npn', parameter_source!='NPN', error_type=='r2') %>%
+  filter(observation_source == 'npn', error_type=='r2') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   # scale_size_continuous(breaks=c(100,200,500,5000)) + 
-  ylim(0,1) +
+  #ylim(0,1) +
   scale_shape_manual(values=point_shapes) +
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
   labs(y = 'R^2', x='') 
 
 npn_rmse_error_plot = model_errors %>%
-  filter(observation_source == 'npn', parameter_source!='NPN', error_type=='rmse') %>%
+  filter(observation_source == 'npn', error_type=='rmse') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   # scale_size_continuous(breaks=c(100,200,500,5000)) + 
-  ylim(0,100) +
+  #ylim(0,100) +
   scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
-  labs(y='RMSE', x='') 
+  labs(y='RMSE', x='')
 
 lts_r2_error_plot = model_errors %>%
-  filter(observation_source != 'npn', parameter_source=='NPN', error_type=='r2') %>%
+  filter(observation_source != 'npn', error_type=='r2') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   # scale_size_continuous(breaks=c(100,200,500,5000)) + 
-  ylim(0,1) +
+  #ylim(0,1) +
   scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
   labs(y = 'R^2', x='') 
 
 lts_rmse_error_plot = model_errors %>%
-  filter(observation_source != 'npn', parameter_source=='NPN', error_type=='rmse') %>%
+  filter(observation_source != 'npn', error_type=='rmse') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   # scale_size_continuous(breaks=c(100,200,500,5000)) + 
-  ylim(0,40) +
+  #ylim(0,40) +
   scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
