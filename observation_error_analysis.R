@@ -37,6 +37,7 @@ oos_estimates$phenophase = as.numeric(oos_estimates$phenophase)
 phenophase_types = read.table(header=TRUE, sep=',', stringsAsFactors = FALSE, text='
                               phenophase,phenophase_type
                               371,Budburst
+                              496,Budburst
                               480,Budburst
                               488,Budburst
                               501,Flowers')
@@ -71,84 +72,68 @@ r2=function(actual, predicted){
 
 model_errors = oos_estimates %>%
   group_by(model_name, observation_source, parameter_source, species, phenophase) %>%
-  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)),
-            r2   = r2(doy_observed, doy_estimated), n=n()) %>%
+  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2))) %>%
   ungroup() %>%
-  gather(error_type, error_value, rmse, r2) %>%
-  mutate(error_value = round(error_value,2))
+  gather(error_type, error_value, rmse) %>%
+  mutate(error_value = round(error_value,2)) %>%
+  mutate(is_lts_model = parameter_source!='npn')
 
 # Apply more pleasing names to everything for figures
-model_names = c('gdd','gdd_fixed','linear_temp','naive','unichill','uniforc')
-pretty_model_names = c('GDD','Fixed GDD','Linear Temp','Naive','Unichill','Uniforc')
+model_names = c('gdd','gdd_fixed','linear_temp','naive','uniforc','alternating')
+pretty_model_names = c('GDD','Fixed GDD','Linear Temp','Naive','Uniforc','Alternating')
 datasets = c('harvard','hjandrews','hubbard','jornada','npn')
 pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornada','NPN')
 
 model_errors$model_name = factor(model_errors$model_name, levels = model_names, labels = pretty_model_names)
 model_errors$parameter_source = factor(model_errors$parameter_source, levels=datasets, labels = pretty_dataset_names)
 
-point_size=3
+point_size=4
 point_shapes = c(17,13)
 r2_lower_limit = 0
 rmse_upper_limit = 20
 color_pallete=c("grey42", "#E69F00", "#56B4E9", "#CC79A7", "#009E73")
 
-npn_r2_error_plot = model_errors %>%
-  filter(observation_source == 'npn', error_type=='r2') %>%
-  ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
-  geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
-  # scale_size_continuous(breaks=c(100,200,500,5000)) + 
-  #ylim(0,1) +
-  scale_shape_manual(values=point_shapes) +
-  scale_color_manual(values=color_pallete) +
-  theme_linedraw() +
-  labs(y = 'R^2', x='') 
+model_errors = model_errors %>%
+  mutate(zoomed_subset = ifelse(error_type == 'r2', error_value > r2_lower_limit,
+                                error_value < rmse_upper_limit))
 
-npn_rmse_error_plot = model_errors %>%
+npn_rmse_plot = model_errors %>%
   filter(observation_source == 'npn', error_type=='rmse') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
-  # scale_size_continuous(breaks=c(100,200,500,5000)) + 
-  #ylim(0,100) +
+  geom_boxplot(inherit.aes = FALSE, aes(x=model_name, y=error_value), alpha=0, outlier.shape = NA, size=0.8) +
   scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
-  labs(y='RMSE', x='')
+  theme(plot.margin = unit(c(1,0,0,0),'cm')) +
+  labs(y='RMSE', x='') + 
+  facet_zoom(y = zoomed_subset==TRUE) 
 
-lts_r2_error_plot = model_errors %>%
-  filter(observation_source != 'npn', error_type=='r2') %>%
-  ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
-  geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
-  # scale_size_continuous(breaks=c(100,200,500,5000)) + 
-  #ylim(0,1) +
-  scale_shape_manual(values=point_shapes) + 
-  scale_color_manual(values=color_pallete) +
-  theme_linedraw() +
-  labs(y = 'R^2', x='') 
-
-lts_rmse_error_plot = model_errors %>%
+lts_rmse_plot = model_errors %>%
   filter(observation_source != 'npn', error_type=='rmse') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
-  # scale_size_continuous(breaks=c(100,200,500,5000)) + 
-  #ylim(0,40) +
+  geom_boxplot(inherit.aes = FALSE, aes(x=model_name, y=error_value), alpha=0, outlier.shape = NA, size=0.8) +
   scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
   labs(y = 'RMSE', x='', color='Parameter Source', shape='Phenophase') +
   theme(legend.position = 'bottom',
         legend.direction = 'horizontal',
-        legend.background = element_rect(color='black'))
+        legend.background = element_rect(color='black'),
+        plot.margin = unit(c(1,0,0,0),'cm')) +
+  facet_zoom(y = zoomed_subset==TRUE)
 
-legend_alone = get_legend(lts_rmse_error_plot)
+legend_alone = get_legend(lts_rmse_plot)
 remove_legend = theme(legend.position = 'none')
 
-top_row = plot_grid(npn_r2_error_plot + remove_legend, npn_rmse_error_plot + remove_legend)
-bottom_row = plot_grid(lts_r2_error_plot + remove_legend, lts_rmse_error_plot + remove_legend)
+top_row = plot_grid(npn_rmse_plot + remove_legend)
+bottom_row = plot_grid(lts_rmse_plot + remove_legend)
 
-top_row_text = 'A. Model error metrics for observations in NPN dataset'
-bottom_row_text = 'B. Model error metrics for observations in LTS datasets'
+top_row_text = 'A. Model error for observations in NPN dataset'
+bottom_row_text = 'B. Model error for observations in LTS datasets'
 plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_text, bottom_row_text, ''), 
-          rel_heights = c(1,1,0.2), hjust=-0.07, vjust=0.5, label_size=12)
+          rel_heights = c(1,1,0.2), hjust=-0.07, vjust=2.7, label_size=12)
 
 
 #write_csv(error_analysis, 'observation_errors.csv')
