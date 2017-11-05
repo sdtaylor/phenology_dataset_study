@@ -32,13 +32,13 @@ observations = observations %>%
 observations = observations %>%
   mutate(doy = yday(date)) %>%
   select(-date) %>%
-  process_phenology_observations()
-
-
+  process_phenology_observations() %>%
+  group_sites_together() %>%
+  apply_minimum_observation_threshold(min_num_obs = 30)
 
 write_csv(observations, './cleaned_data/hjandrews_observations.csv')
 
-species_counts = observations %>%
+species_counts = observations1 %>%
   group_by(species, Phenophase_ID) %>%
   tally()
 
