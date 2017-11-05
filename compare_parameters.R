@@ -12,14 +12,14 @@ all_parameters = all_parameters %>%
 
 all_parameters$phenophase = as.numeric(all_parameters$phenophase)
 
-#Keep only species that are present in NPN dataset
+#Keep only species/phenophases that are present in NPN dataset
 npn_species = all_parameters %>%
   filter(dataset == 'npn') %>%
-  select(species) %>%
+  select(species, phenophase) %>%
   distinct()
 
 all_parameters = all_parameters %>% 
-  filter(species %in% npn_species$species)
+  filter(species %in% npn_species$species, phenophase %in% npn_species$phenophase)
 
 # This is the final numbers put into the Table 1
 # lts_sample_sizes = all_parameters %>% 
