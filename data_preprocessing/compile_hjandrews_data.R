@@ -38,7 +38,7 @@ observations = observations %>%
 
 write_csv(observations, './cleaned_data/hjandrews_observations.csv')
 
-species_counts = observations1 %>%
+species_counts = observations %>%
   group_by(species, Phenophase_ID) %>%
   tally()
 
