@@ -48,7 +48,7 @@ observations = observations %>%
   filter(!species %in% c("amelanchier sp", "crataegus sp", "aronia sp", "rhododendron sp"))
 
 observations = observations %>%
-  group_sites_together() %>%
+  #group_sites_together() %>%
   apply_minimum_observation_threshold(min_num_obs = 20)
 
 write_csv(observations, './cleaned_data/harvard_observations.csv')
