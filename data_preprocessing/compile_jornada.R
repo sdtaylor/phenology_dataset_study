@@ -46,10 +46,10 @@ observations = observations %>%
 subset_jornada_data = function(this_species, this_phenophase){
   if(this_phenophase==371){
     obs_subset = observations %>%
-      mutate(status = (PercentDORMANT<75)*1, Phenophase_ID=371)
+      mutate(status = (PercentDORMANT<90)*1, Phenophase_ID=371)
   } else if(this_phenophase==501){
     obs_subset = observations %>%
-      mutate(status = (PercentFLOWER>25)*1, Phenophase_ID=501) 
+      mutate(status = (PercentFLOWER>10)*1, Phenophase_ID=501) 
   }
   obs_subset = obs_subset %>%
     filter(species==this_species)
