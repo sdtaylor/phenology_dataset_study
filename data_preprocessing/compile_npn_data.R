@@ -62,7 +62,7 @@ processed_data = processed_data %>%
   filter(doy <= doy_cutoff)
 
 processed_data = processed_data %>%
-  group_sites_together() %>%
+  #group_sites_together() %>%
   apply_minimum_observation_threshold(min_num_obs = 30)
 
 observations_per_species = processed_data %>%

@@ -69,7 +69,7 @@ processed_data = species %>%
   process_phenology_observations()
 
 processed_data = processed_data %>%
-  group_sites_together() %>%
+  #group_sites_together() %>%
   apply_minimum_observation_threshold(min_num_obs = 30)
 
 write_csv(processed_data, './cleaned_data/jornada_observations.csv')

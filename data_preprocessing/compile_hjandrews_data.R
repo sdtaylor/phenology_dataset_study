@@ -33,7 +33,7 @@ observations = observations %>%
   mutate(doy = yday(date)) %>%
   select(-date) %>%
   process_phenology_observations() %>%
-  group_sites_together() %>%
+  #group_sites_together() %>%
   apply_minimum_observation_threshold(min_num_obs = 30)
 
 write_csv(observations, './cleaned_data/hjandrews_observations.csv')
