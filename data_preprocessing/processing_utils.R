@@ -64,6 +64,26 @@ process_phenology_observations = function(df, prior_obs_cutoff=-1){
   return(df_subset)
 }
 
+#######################################################33
+#More than 1 individual observed at a site in year? Take  the average value
+group_sites_together = function(df){
+  df = df %>%
+    group_by(species, Site_ID, year, Phenophase_ID) %>%
+    summarise(doy = round(mean(doy),0)) %>%
+    ungroup()
+  return(df)
+}
+
+########################################################
+# A minimum number of observations required for each species
+# and phenophase after all prior filtering
+apply_minimum_observation_threshold = function(df, min_num_obs=0){
+  df = df %>%
+    group_by(species, Phenophase_ID) %>%
+    filter(n() >= min_num_obs) %>%
+    ungroup()
+  return(df)
+}
 
 ##########################################################
 #Keep a list of all the unique species and their phenophases for

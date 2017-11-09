@@ -31,7 +31,7 @@ observations$Site_ID = 1
 #Set the status based on thresholds in the % observed of flower or budbreak
 observations = observations %>%
   mutate(vegetative = (budbreak_percent > 10)*1,
-         reproductive = (flower_percent > 20)*1)
+         reproductive = (flower_percent > 10)*1)
 
 #Put in the format needed for processing code.
 #Assign some species phenophase_id's for conifers
@@ -46,6 +46,10 @@ observations = observations %>%
 #Don't want trees not identified to species
 observations = observations %>%
   filter(!species %in% c("amelanchier sp", "crataegus sp", "aronia sp", "rhododendron sp"))
+
+observations = observations %>%
+  group_sites_together() %>%
+  apply_minimum_observation_threshold(min_num_obs = 20)
 
 write_csv(observations, './cleaned_data/harvard_observations.csv')
 
