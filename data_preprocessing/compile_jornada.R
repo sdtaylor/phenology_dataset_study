@@ -46,10 +46,10 @@ observations = observations %>%
 subset_jornada_data = function(this_species, this_phenophase){
   if(this_phenophase==371){
     obs_subset = observations %>%
-      mutate(status = (PercentDORMANT<75)*1, Phenophase_ID=371)
+      mutate(status = (PercentDORMANT<90)*1, Phenophase_ID=371)
   } else if(this_phenophase==501){
     obs_subset = observations %>%
-      mutate(status = (PercentFLOWER>25)*1, Phenophase_ID=501) 
+      mutate(status = (PercentFLOWER>10)*1, Phenophase_ID=501) 
   }
   obs_subset = obs_subset %>%
     filter(species==this_species)
@@ -68,6 +68,9 @@ processed_data = species %>%
   mutate(individual_id=1) %>% #Dummy variable for individual_id
   process_phenology_observations()
 
+processed_data = processed_data %>%
+  group_sites_together() %>%
+  apply_minimum_observation_threshold(min_num_obs = 30)
 
 write_csv(processed_data, './cleaned_data/jornada_observations.csv')
 

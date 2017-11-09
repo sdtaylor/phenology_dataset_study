@@ -61,23 +61,14 @@ processed_data = processed_data %>%
   left_join(doy_cutoffs, by='Phenophase_ID') %>%
   filter(doy <= doy_cutoff)
 
-#More than 1 individual observed at a site in year? Take  the average value
 processed_data = processed_data %>%
-  group_by(species, Site_ID, year, Phenophase_ID) %>%
-  summarise(doy = round(mean(doy),0)) %>%
-  ungroup()
+  group_sites_together() %>%
+  apply_minimum_observation_threshold(min_num_obs = 30)
 
 observations_per_species = processed_data %>%
   group_by(species, Phenophase_ID) %>%
   tally() %>%
   left_join(non_npn_species, by=c('species','Phenophase_ID'))
-
-
-#Minimum 30 observations for each species after all prior filtering
-processed_data = processed_data %>%
-  group_by(species, Phenophase_ID) %>%
-  filter(n() > 30) %>%
-  ungroup()
 
 write_csv(processed_data, './cleaned_data/npn_observations.csv') 
 
