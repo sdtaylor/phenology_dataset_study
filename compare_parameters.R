@@ -1,8 +1,9 @@
 library(tidyverse)
 library(broom)
 library(cowplot)
+config = yaml::yaml.load_file('config.yaml')
 
-all_parameters = read_csv('./results/model_parameters.csv') %>%
+all_parameters = read_csv(config$model_parameter_file) %>%
   filter(parameter_name!='run_time') 
 
 #Pull out phenophase
