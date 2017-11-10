@@ -33,3 +33,4 @@ num_bootstrap: 250
 percent_test_data: 0.2
 
 model_parameter_file: ./results/model_parameters.csv
+predictions_file: ./results/predictions.csv
