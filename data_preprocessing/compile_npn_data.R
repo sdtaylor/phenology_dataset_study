@@ -60,7 +60,8 @@ Phenophase_ID,doy_cutoff
 
 processed_data = processed_data %>%
   left_join(doy_cutoffs, by='Phenophase_ID') %>%
-  filter(doy <= doy_cutoff)
+  filter(doy <= doy_cutoff) %>%
+  select(-doy_cutoff)
 
 processed_data = processed_data %>%
   #group_sites_together() %>%
