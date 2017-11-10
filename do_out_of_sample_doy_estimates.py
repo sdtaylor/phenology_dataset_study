@@ -72,7 +72,7 @@ for dataset in config['dataset_configs']:
                                         'year_observed':       year_observed[i],
                                         'site_observed':       site_observed[i],
                                         'doy_estimated':      doy_estimated[i],
-                                        'data_type':          doy_data_type})
+                                        'data_type':          doy_data_type[i]})
 
 
 results = pd.DataFrame(results)
