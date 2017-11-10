@@ -47,10 +47,8 @@ for dataset in config['dataset_configs']:
                 #Spread the parameters out to columns. Number of columns is different for each model
                 parameter_values = parameter_values.pivot_table(index=['bootstrap_num'], columns='parameter_name', values='value').reset_index()
 
-                #sanity check, bootstrap numbers are sometimes low. possibly due to the optimizer erroring out?
-                #Should be fixed with the latest updates
-                #TODO: figure that out
-                assert parameter_values.shape[0] == (config['num_bootstrap']), 'number of bootstraps too low'
+                #sanity check, bootstrap numbers should be exact
+                assert parameter_values.shape[0] == (config['num_bootstrap']), 'Bootstrap number incorrect in predictions'
 
                 for bootstrap_iteration in parameter_values.to_dict('records'):
                     bootstrap_num=bootstrap_iteration.pop('bootstrap_num')
@@ -74,6 +72,19 @@ for dataset in config['dataset_configs']:
                                         'doy_estimated':      doy_estimated[i],
                                         'data_type':          doy_data_type[i]})
 
-
+# list of dictionaries to pandas df
 results = pd.DataFrame(results)
-results.to_csv('results/out_of_sample_doy_estimates.csv', index=False)
+
+# Summarize the 250 bootstrapped models to a single prediction
+
+grouping_columns = ['data_type', 'model_name', 'observation_id', \
+                 'observation_source','parameter_source', \
+                 'site_observed', 'species', 'year_observed']
+
+# Sanity check again for the number of bootstraps being correct
+sanity_check = results.groupby(grouping_columns)['doy_estimated'].count().reset_index()
+assert np.all(sanity_check.doy_estimated.values == config['num_bootstrap']), 'Bootstrap number incorrect in summarization'
+
+results_combined = results.groupby(grouping_columns)['doy_estimated','doy_observed'].mean().reset_index()
+
+results_combined.to_csv(config['predictions_file'], index=False)
