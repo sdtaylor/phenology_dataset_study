@@ -1,37 +1,23 @@
 library(tidyverse)
 #Compare out of sample verification between datasets
+config = yaml::yaml.load_file('config.yaml')
 
-
-oos_data = read_csv('./results/out_of_sample_doy_estimates.csv')
+predictions = read_csv(config$predictions_file)
 #Keep only species that are present in NPN dataset
-npn_species = oos_data %>%
+npn_species = predictions %>%
   filter(observation_source == 'npn') %>%
   select(species) %>%
   distinct()
 
-oos_data = oos_data %>%
+predictions = predictions %>%
   filter(species %in% npn_species$species)
 
-#Compress the bootstrapped estimates down to a single estimate
-oos_estimates = oos_data %>%
-  group_by(model_name, observation_source, parameter_source, species, observation_id) %>%
-  summarise(n=n(), doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed), doy_observed_max = max(doy_observed)) %>%
-  ungroup()
-
-#Sanity checks. this should all equal (ie. only one unique observed value per site/model/species/observation_id/etc)
-if(!with(oos_estimates, all(doy_observed==doy_observed_max))){stop('more than 1 observation/observation_id')}
-#And only 250 estimates (from 250 bootstraps) per observation id
-if(unique(oos_estimates$n) != 250){stop('Too many samples per observation_id')}
-
-oos_estimates = oos_estimates %>%
-  select(-doy_observed_max, -n)
-
 #Pull out phenophase and identify as leaf or flower instead of numbers
-oos_estimates = oos_estimates %>% 
+predictions = predictions %>% 
   mutate(phenophase = stringr::word(species,2,2, ' - '),
          species = stringr::word(species,1,1,' - '))
 
-oos_estimates$phenophase = as.numeric(oos_estimates$phenophase)
+predictions$phenophase = as.numeric(predictions$phenophase)
 
 phenophase_types = read.table(header=TRUE, sep=',', stringsAsFactors = FALSE, text='
 phenophase,phenophase_type
@@ -40,26 +26,19 @@ phenophase,phenophase_type
 488,Budburst
 501,Flowers')
 
-oos_estimates = oos_estimates %>%
+predictions = predictions %>%
   left_join(phenophase_types, by='phenophase') %>%
   select(-phenophase) %>%
   rename(phenophase = phenophase_type)
 
-
-############################################################
-############################################################
-# Error Analsys
-
-
-
 ############################################################
 
-npn_model_estimates = oos_estimates %>%
+npn_model_estimates = predictions %>%
   filter(parameter_source == 'npn') %>%
   select(-doy_observed, -parameter_source) %>%
   rename(doy_estimated_npn_model = doy_estimated)
 
-observation_estimate_comparison = oos_estimates %>%
+observation_estimate_comparison = predictions %>%
   filter(parameter_source != 'npn') %>%
   rename(doy_estimated_non_npn_model = doy_estimated, non_npn_parameter_source = parameter_source) %>%
   left_join(npn_model_estimates, by=c('model_name','observation_source','species','observation_id','phenophase')) %>%

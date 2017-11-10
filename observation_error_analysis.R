@@ -1,38 +1,24 @@
 library(tidyverse)
 library(cowplot)
 #Compare out of sample verification between datasets
+config = yaml::yaml.load_file('config.yaml')
 
-
-oos_data = read_csv('./results/out_of_sample_doy_estimates.csv')
+predictions = read_csv(config$predictions_file)
 #Keep only species that are present in NPN dataset
-npn_species = oos_data %>%
+npn_species = predictions %>%
   filter(observation_source == 'npn') %>%
   select(species) %>%
   distinct()
 
-oos_data = oos_data %>%
+predictions = predictions %>%
   filter(species %in% npn_species$species)
 
-#Compress the bootstrapped estimates down to a single estimate
-oos_estimates = oos_data %>%
-  group_by(model_name, observation_source, parameter_source, species, observation_id) %>%
-  summarise(n=n(), doy_estimated = mean(doy_estimated), doy_observed = mean(doy_observed), doy_observed_max = max(doy_observed)) %>%
-  ungroup()
-
-#Sanity checks. this should all equal (ie. only one unique observed value per site/model/species/observation_id/etc)
-if(!with(oos_estimates, all(doy_observed==doy_observed_max))){stop('more than 1 observation/observation_id')}
-#And only 250 estimates (from 250 bootstraps) per observation id
-if(unique(oos_estimates$n) != 250){stop('Too many samples per observation_id')}
-
-oos_estimates = oos_estimates %>%
-  select(-doy_observed_max, -n)
-
 #Pull out phenophase and identify as leaf or flower instead of numbers
-oos_estimates = oos_estimates %>% 
+predictions = predictions %>% 
   mutate(phenophase = stringr::word(species,2,2, ' - '),
          species = stringr::word(species,1,1,' - '))
 
-oos_estimates$phenophase = as.numeric(oos_estimates$phenophase)
+predictions$phenophase = as.numeric(predictions$phenophase)
 
 phenophase_types = read.table(header=TRUE, sep=',', stringsAsFactors = FALSE, text='
                               phenophase,phenophase_type
@@ -42,7 +28,7 @@ phenophase_types = read.table(header=TRUE, sep=',', stringsAsFactors = FALSE, te
                               488,Budburst
                               501,Flowers')
 
-oos_estimates = oos_estimates %>%
+predictions = predictions %>%
   left_join(phenophase_types, by='phenophase') %>%
   select(-phenophase) %>%
   rename(phenophase = phenophase_type)
@@ -51,12 +37,12 @@ oos_estimates = oos_estimates %>%
 # Skill scores using the corrosponding LTS dataset as the base estimate
 # > 0 means that the NPN datset did better than LTS dataset (the  LTS datset)
 
-# npn_estimates = oos_estimates %>%
+# npn_estimates = predictions %>%
 #   filter(parameter_source=='npn') %>%
 #   rename(npn_doy_estimated = doy_estimated) %>%
 #   select(-doy_observed, -parameter_source)
 # 
-# me_values = oos_estimates %>%
+# me_values = predictions %>%
 #   filter(parameter_source != 'npn') %>%
 #   left_join(npn_estimates, by=c('model_name','observation_source','species','observation_id','phenophase')) %>%
 #   group_by(model_name, observation_source, parameter_source, species, phenophase) %>%
@@ -70,7 +56,7 @@ r2=function(actual, predicted){
   1 - (sum((actual - predicted) ** 2) / sum((actual - mean(actual)) ** 2))
 }
 
-model_errors = oos_estimates %>%
+model_errors = predictions %>%
   group_by(model_name, observation_source, parameter_source, species, phenophase) %>%
   summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2))) %>%
   ungroup() %>%
@@ -162,7 +148,7 @@ plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_text, bott
 #   theme(axis.text.x = element_text(vjust = 0.99, hjust=0, angle=-45, debug = F))
 
 ############################################################
-x=ggplot(filter(oos_estimates, observation_source=='hjandrews'), aes(x=doy_observed, y=doy_estimated_mean, group=parameter_source, color=parameter_source)) +
+x=ggplot(filter(predictions, observation_source=='hjandrews'), aes(x=doy_observed, y=doy_estimated_mean, group=parameter_source, color=parameter_source)) +
   geom_point() +
   geom_smooth(method='lm', se=FALSE, size=1) +
   geom_abline(intercept=0, slope=1) + 
@@ -189,7 +175,7 @@ site_info = read_csv('~/data/phenology/npn/observations_top_20.csv') %>%
   dplyr::select(Site_ID, Latitude, Longitude) %>%
   dplyr::distinct()
 
-npn_observations = oos_estimates %>%
+npn_observations = predictions %>%
   filter(observation_source=='npn', parameter_source=='npn') %>%
   left_join(site_info, by=c('site_observed'='Site_ID'))
 
