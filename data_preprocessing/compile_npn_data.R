@@ -22,6 +22,7 @@ data_dir = '~/data/phenology/npn_core/'
 
 #Some species are in > dataset, so only get distinct species/phenophases
 non_npn_species = read_csv('./cleaned_data/non_npn_species_list.csv') %>%
+  select(-dataset) %>%
   distinct()
 
 
