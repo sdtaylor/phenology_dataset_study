@@ -58,6 +58,7 @@ for dataset in config['dataset_configs']:
                     doy_observed  = model_estimator.doy_observations
                     year_observed = model_estimator.year_observations
                     site_observed = model_estimator.site_observations
+                    doy_data_type = model_estimator.doy_data_type
 
                     print(dataset['dataset_name']+', '+species+', '+parameter_source+', '+str(bootstrap_num))
                     for i in range(doy_observed.shape[0]):
@@ -70,7 +71,8 @@ for dataset in config['dataset_configs']:
                                         'observation_id':     i,
                                         'year_observed':       year_observed[i],
                                         'site_observed':       site_observed[i],
-                                        'doy_estimated':      doy_estimated[i]})
+                                        'doy_estimated':      doy_estimated[i],
+                                        'data_type':          doy_data_type})
 
 
 results = pd.DataFrame(results)

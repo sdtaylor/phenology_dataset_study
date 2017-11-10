@@ -34,7 +34,6 @@ class data_store:
         
         #Use only training data
         self.observation_data = self.observation_data[self.observation_data.data_type=='train']
-        self.observation_data.drop('data_type', axis=1, inplace=True)
         
         #Paste the species and phenophse_id together so different models will be made
         #when a single species has multiple phases (ie. budburst  vs flowering)
