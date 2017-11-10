@@ -25,7 +25,6 @@ models_to_use:
     - gdd
     - gdd_fixed
     - alternating
-    - unichill
     - naive
     - linear_temp
 
