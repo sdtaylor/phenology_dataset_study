@@ -31,6 +31,11 @@ class data_store:
         dataset_config = self.all_dataset_configs.pop()
 
         self.observation_data = pd.read_csv(dataset_config['observations_data_file'])
+        
+        #Use only training data
+        self.observation_data = self.observation_data[self.observation_data.data_type=='train']
+        self.observation_data.drop('data_type', axis=1, inplace=True)
+        
         #Paste the species and phenophse_id together so different models will be made
         #when a single species has multiple phases (ie. budburst  vs flowering)
         self.observation_data.species = self.observation_data.species.map(str) + ' - ' + self.observation_data.Phenophase_ID.map(str)
