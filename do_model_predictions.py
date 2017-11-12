@@ -75,6 +75,8 @@ for dataset in config['dataset_configs']:
 # list of dictionaries to pandas df
 results = pd.DataFrame(results)
 
+results.to_csv(config['predictions_file_large'], index=False)
+
 # Summarize the 250 bootstrapped models to a single prediction
 
 grouping_columns = ['data_type', 'model_name', 'observation_id', \
@@ -85,7 +87,10 @@ grouping_columns = ['data_type', 'model_name', 'observation_id', \
 sanity_check = results.groupby(grouping_columns)['doy_estimated'].count().reset_index()
 assert np.all(sanity_check.doy_estimated.values == config['num_bootstrap']), 'Bootstrap number incorrect in summarization'
 
+# Drop predictions where the event was not actually predicted to occure
+# see https://github.com/sdtaylor/phenology_dataset_study/issues/27
+results = results[results.doy_estimated < 1000]
+
 results_combined = results.groupby(grouping_columns)['doy_estimated','doy_observed'].mean().reset_index()
 
 results_combined.to_csv(config['predictions_file'], index=False)
-results.to_csv(config['predictions_file_large'], index=False)
