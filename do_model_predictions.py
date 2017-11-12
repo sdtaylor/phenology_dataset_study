@@ -88,3 +88,4 @@ assert np.all(sanity_check.doy_estimated.values == config['num_bootstrap']), 'Bo
 results_combined = results.groupby(grouping_columns)['doy_estimated','doy_observed'].mean().reset_index()
 
 results_combined.to_csv(config['predictions_file'], index=False)
+results.to_csv(config['predictions_file_large'], index=False)

@@ -34,3 +34,5 @@ percent_test_data: 0.2
 
 model_parameter_file: ./results/model_parameters.csv
 predictions_file: ./results/predictions.csv
+# The predictions file with all 250 bootstrapped estimates
+predictions_file_large: ./results/predictions_large.csv
