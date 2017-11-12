@@ -155,7 +155,7 @@ lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=m
   scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_bw() +
-  theme(legend.position = c(0.25,0.8),
+  theme(legend.position = c(0.35,0.8),
         legend.box = 'horizontal',
         legend.text = element_text(size=15),
         legend.title = element_text(size=15),
