@@ -50,12 +50,6 @@ predictions = predictions %>%
 #   summarize(me = 1 - (sum((npn_doy_estimated - doy_observed)^2) / sum((doy_estimated - doy_observed)^2)))
 
 ##########################################################
-#R^2 from a 1:1 line
-r2=function(actual, predicted){
-  actual=actual
-  predicted=predicted
-  1 - (sum((actual - predicted) ** 2) / sum((actual - mean(actual)) ** 2))
-}
 
 model_errors = predictions %>%
   filter(data_type=='test') %>%
@@ -64,7 +58,7 @@ model_errors = predictions %>%
   ungroup() %>%
   gather(error_type, error_value, rmse) %>%
   mutate(error_value = round(error_value,2)) %>%
-  mutate(is_lts_model = parameter_source!='npn')
+  mutate(is_lts_model = parameter_source!='npn', is_lts_obs = observation_source != 'npn')
 
 # Apply more pleasing names to everything for figures
 model_names = c('gdd','gdd_fixed','linear_temp','naive','uniforc','alternating')
@@ -75,17 +69,23 @@ pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornad
 model_errors$model_name = factor(model_errors$model_name, levels = model_names, labels = pretty_model_names)
 model_errors$parameter_source = factor(model_errors$parameter_source, levels=datasets, labels = pretty_dataset_names)
 
+
+###########################################################
+
+model_error_jitterplot_data = model_errors
+
+
 point_size=4
 point_shapes = c(17,13)
 r2_lower_limit = 0
 rmse_upper_limit = 20
 color_pallete=c("grey42", "#E69F00", "#56B4E9", "#CC79A7", "#009E73")
 
-model_errors = model_errors %>%
+model_error_jitterplot_data = model_error_jitterplot_data %>%
   mutate(zoomed_subset = ifelse(error_type == 'r2', error_value > r2_lower_limit,
                                 error_value < rmse_upper_limit))
 
-npn_rmse_plot = model_errors %>%
+npn_rmse_plot = model_error_jitterplot_data %>%
   filter(observation_source == 'npn', error_type=='rmse') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
@@ -97,7 +97,7 @@ npn_rmse_plot = model_errors %>%
   labs(y='RMSE', x='') + 
   facet_zoom(y = zoomed_subset==TRUE) 
 
-lts_rmse_plot = model_errors %>%
+lts_rmse_plot = model_error_jitterplot_data %>%
   filter(observation_source != 'npn', error_type=='rmse') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
@@ -125,6 +125,46 @@ plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_text, bott
 
 
 #write_csv(error_analysis, 'observation_errors.csv')
+
+
+########################################################################################
+# Pairwise comparison between LTS and NPN models
+npn_model_errors = model_errors %>%
+  filter(!is_lts_model) %>%
+  select(-error_type, -is_lts_model, -parameter_source) %>%
+  rename(npn_error_value = error_value)
+
+pairwise_comparison_data = model_errors %>%
+  filter(is_lts_model) %>%
+  rename(lts_error_value = error_value) %>%
+  select(-error_type, -is_lts_model, -parameter_source) %>%
+  left_join(npn_model_errors, by=c('model_name','observation_source','species','phenophase','is_lts_obs')) %>%
+  mutate(model_difference = npn_error_value - lts_error_value)
+
+pairwise_comparison_data$is_lts_obs = ifelse(pairwise_comparison_data$is_lts_obs, 'LTS Observations','NPN Observations')
+
+y_pos_line=0.15
+indicator_lines=data.frame(x=c(-10, 10), xend=c(-25, 25), 
+                           y=c(y_pos_line,y_pos_line), yend=c(y_pos_line,y_pos_line),
+                           is_lts_obs='NPN Observations', model_name='GDD')
+y_pos_text=0.13
+indicator_text=data.frame(x=c(-23, 26), y=y_pos_text, t=c('NPN Models\n Better','LTS Models\n Better'),
+                          is_lts_obs='NPN Observations', model_name='GDD')
+
+ggplot(pairwise_comparison_data, aes(model_difference)) + 
+  geom_density(alpha=0.8,fill='grey50', size=0.1) +
+  #geom_density(alpha=0.5) +
+  #geom_histogram(bins=50) +
+  geom_vline(xintercept = 0, size=1) +
+  facet_grid(is_lts_obs~model_name, scales = 'free_y') +
+  geom_segment(data=indicator_lines, aes(x=x, xend=xend, y=y, yend=yend), size=0.8, arrow = arrow(length=unit(0.25,'cm')),
+               inherit.aes = FALSE) +
+  geom_text(data=indicator_text, aes(x=x,y=y, label=t),size=3.5, inherit.aes = F) +
+  labs(y='',x='Difference between NPN and LTS derived errors') +
+  theme_bw() +
+  theme(strip.text = element_text(size=10),
+        strip.background = element_rect(fill='grey95'))
+
 
 
 ###########################################################
