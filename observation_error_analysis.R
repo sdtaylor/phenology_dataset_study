@@ -1,5 +1,6 @@
 library(tidyverse)
 library(cowplot)
+library(ggforce)
 #Compare out of sample verification between datasets
 config = yaml::yaml.load_file('config.yaml')
 
@@ -57,6 +58,7 @@ r2=function(actual, predicted){
 }
 
 model_errors = predictions %>%
+  filter(data_type=='test') %>%
   group_by(model_name, observation_source, parameter_source, species, phenophase) %>%
   summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2))) %>%
   ungroup() %>%
