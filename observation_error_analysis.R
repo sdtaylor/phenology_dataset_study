@@ -62,7 +62,7 @@ model_errors = predictions %>%
 
 # Apply more pleasing names to everything for figures
 model_names = c('gdd','gdd_fixed','linear_temp','naive','uniforc','alternating')
-pretty_model_names = c('GDD','Fixed GDD','Linear Temp','Naive','Uniforc','Alternating')
+pretty_model_names = c('GDD','Fixed GDD','Linear','Naive','Uniforc','Alternating')
 datasets = c('harvard','hjandrews','hubbard','jornada','npn')
 pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornada','NPN')
 
