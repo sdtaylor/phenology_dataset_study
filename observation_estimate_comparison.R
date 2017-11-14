@@ -117,7 +117,7 @@ estimate_differences_npn_observations = observation_estimate_comparison %>%
 
 # Apply more pleasing names to everything for figures
 model_names = c('gdd','gdd_fixed','linear_temp','naive','alternating','uniforc')
-pretty_model_names = c('GDD','Fixed GDD','Linear Temp','Naive','Alternating','Uniforc')
+pretty_model_names = c('GDD','Fixed GDD','Linear','Naive','Alternating','Uniforc')
 datasets = c('harvard','hjandrews','hubbard','jornada','npn')
 pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornada','NPN')
 
@@ -133,7 +133,9 @@ point_shapes = c(17,13)
 color_pallete=c("grey42", "#E69F00", "#56B4E9", "#CC79A7")
 
 common_theme_elements = theme(axis.text = element_text(size=18),
-                              axis.title.x = element_text(size=20))
+                              axis.title.x = element_text(size=20),
+                              panel.grid.major.y = element_line(colour = "grey80", size=0.5),
+                              panel.grid.minor.y = element_line(colour = "grey85", size=0.5))
 
 npn_estimate_differences = ggplot(estimate_differences_npn_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
