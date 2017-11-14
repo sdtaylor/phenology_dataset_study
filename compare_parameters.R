@@ -23,11 +23,12 @@ all_parameters = all_parameters %>%
   filter(species %in% npn_species$species, phenophase %in% npn_species$phenophase)
 
 # This is the final numbers put into the Table 1
-# lts_sample_sizes = all_parameters %>% 
-#   filter(dataset!='npn') %>% 
-#   select(dataset, species, phenophase) %>% 
-#   distinct() %>% group_by(dataset, phenophase) %>% 
-#   summarize(n_species = n_distinct(species))
+lts_sample_sizes = all_parameters %>%
+  filter(dataset!='npn') %>%
+  select(dataset, species, phenophase) %>%
+  distinct() %>% group_by(dataset, phenophase) %>%
+  summarize(n_species = n_distinct(species))
+print(paste0('total species/phenophase comparisons: ',sum(lts_sample_sizes$n_species)))
 
 
 ############################################################################
