@@ -141,7 +141,7 @@ pairwise_comparison_data = model_errors %>%
   left_join(npn_model_errors, by=c('model_name','observation_source','species','phenophase','is_lts_obs')) %>%
   mutate(model_difference = npn_error_value - lts_error_value)
 
-pairwise_comparison_data$is_lts_obs = ifelse(pairwise_comparison_data$is_lts_obs, 'LTS Observations','NPN Observations')
+pairwise_comparison_data$is_lts_obs = factor(pairwise_comparison_data$is_lts_obs, levels = c(FALSE, TRUE), labels = c('NPN Observations','LTS Observations'))
 
 y_pos_line=0.15
 indicator_lines=data.frame(x=c(-10, 10), xend=c(-25, 25), 
