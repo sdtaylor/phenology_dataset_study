@@ -54,7 +54,7 @@ predictions = predictions %>%
 model_errors = predictions %>%
   filter(data_type=='test') %>%
   group_by(model_name, observation_source, parameter_source, species, phenophase) %>%
-  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2))) %>%
+  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)), sample_size=n()) %>%
   ungroup() %>%
   gather(error_type, error_value, rmse) %>%
   mutate(error_value = round(error_value,2)) %>%
@@ -131,7 +131,7 @@ plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_text, bott
 # Pairwise comparison between LTS and NPN models
 npn_model_errors = model_errors %>%
   filter(!is_lts_model) %>%
-  select(-error_type, -is_lts_model, -parameter_source) %>%
+  select(-error_type, -is_lts_model, -parameter_source, sample_size) %>%
   rename(npn_error_value = error_value)
 
 pairwise_comparison_data = model_errors %>%
@@ -164,8 +164,6 @@ ggplot(pairwise_comparison_data, aes(model_difference)) +
   theme_bw() +
   theme(strip.text = element_text(size=10),
         strip.background = element_rect(fill='grey95'))
-
-
 
 ###########################################################
 # Straight up model comparison to ask "Whats the best NPN model to predict LTS obs.?"
