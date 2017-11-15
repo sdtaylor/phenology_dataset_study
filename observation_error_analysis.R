@@ -85,6 +85,11 @@ model_error_jitterplot_data = model_error_jitterplot_data %>%
   mutate(zoomed_subset = ifelse(error_type == 'r2', error_value > r2_lower_limit,
                                 error_value < rmse_upper_limit))
 
+common_theme_attr = theme(axis.text = element_text(size=15),
+                          legend.title = element_text(size=22),
+                          legend.text = element_text(size=20),
+                          legend.key.size = unit(10, 'mm'))
+
 npn_rmse_plot = model_error_jitterplot_data %>%
   filter(observation_source == 'npn', error_type=='rmse') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
@@ -93,6 +98,7 @@ npn_rmse_plot = model_error_jitterplot_data %>%
   scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
+  common_theme_attr +
   theme(plot.margin = unit(c(1,0,0,0),'cm')) +
   labs(y='RMSE', x='') + 
   facet_zoom(y = zoomed_subset==TRUE) 
@@ -105,6 +111,7 @@ lts_rmse_plot = model_error_jitterplot_data %>%
   scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
+  common_theme_attr +
   labs(y = 'RMSE', x='', color='Parameter Source', shape='Phenophase') +
   theme(legend.position = 'bottom',
         legend.direction = 'horizontal',
@@ -147,8 +154,8 @@ y_pos_line=0.15
 indicator_lines=data.frame(x=c(-10, 10), xend=c(-25, 25), 
                            y=c(y_pos_line,y_pos_line), yend=c(y_pos_line,y_pos_line),
                            is_lts_obs='NPN Observations', model_name='GDD')
-y_pos_text=0.13
-indicator_text=data.frame(x=c(-23, 26), y=y_pos_text, t=c('NPN Models\n Better','LTS Models\n Better'),
+y_pos_text=0.12
+indicator_text=data.frame(x=c(-22, 26), y=y_pos_text, t=c('NPN Models\n Better','LTS Models\n Better'),
                           is_lts_obs='NPN Observations', model_name='GDD')
 
 ggplot(pairwise_comparison_data, aes(model_difference)) + 
@@ -159,10 +166,13 @@ ggplot(pairwise_comparison_data, aes(model_difference)) +
   facet_grid(is_lts_obs~model_name, scales = 'free_y') +
   geom_segment(data=indicator_lines, aes(x=x, xend=xend, y=y, yend=yend), size=0.8, arrow = arrow(length=unit(0.25,'cm')),
                inherit.aes = FALSE) +
-  geom_text(data=indicator_text, aes(x=x,y=y, label=t),size=3.5, inherit.aes = F) +
+  geom_text(data=indicator_text, aes(x=x,y=y, label=t),size=4.5, inherit.aes = F) +
   labs(y='',x='Difference between NPN and LTS derived errors') +
   theme_bw() +
-  theme(strip.text = element_text(size=10),
+  theme(strip.text.x = element_text(size=20),
+        strip.text.y = element_text(size=16),
+        axis.text = element_text(size=15),
+        axis.title.x = element_text(size=20),
         strip.background = element_rect(fill='grey95'))
 
 ###########################################################
