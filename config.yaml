@@ -2,22 +2,27 @@ dataset_configs:
     - dataset_name: harvard
       observations_data_file: ./cleaned_data/harvard_observations.csv
       temp_data_file: ./cleaned_data/harvard_temp.csv
+      site_info_file: ./cleaned_data/harvard_site_info.csv
       add_site_dummy_var: False
     - dataset_name: jornada
       observations_data_file: ./cleaned_data/jornada_observations.csv
       temp_data_file: ./cleaned_data/jornada_temp.csv
+      site_info_file: ./cleaned_data/jornada_site_info.csv
       add_site_dummy_var: False
     - dataset_name: hubbard
       observations_data_file: ./cleaned_data/hubbardbrook_observations.csv
       temp_data_file: ./cleaned_data/hubbard_temp.csv
+      site_info_file: ./cleaned_data/hubbard_site_info.csv
       add_site_dummy_var: False
     - dataset_name: hjandrews
       observations_data_file: ./cleaned_data/hjandrews_observations.csv
       temp_data_file: ./cleaned_data/hjandrews_temp.csv
+      site_info_file: ./cleaned_data/hjandrews_site_info.csv
       add_site_dummy_var: False
     - dataset_name: npn
       observations_data_file: ./cleaned_data/npn_observations.csv
       temp_data_file: ./cleaned_data/npn_temp.csv
+      site_info_file: ./cleaned_data/npn_site_info.csv
       add_site_dummy_var: False
 
 models_to_use:
