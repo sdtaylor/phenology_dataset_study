@@ -7,7 +7,7 @@ import numpy as np
 #accepts a set of temperature data and observations of phenological event
 #as the doy. 
 class phenology_model:
-    def __init__(self, temp_data, plant_data, model_name, error_type='rmse'):
+    def __init__(self, temp_data, plant_data, site_data, model_name, error_type='rmse'):
         #Create a ['Site_ID','year'] x 'doy' matrix with daily temp as the value
         #This is done to calculate the GDD info for all sites/years at once
         temp_data = temp_data.pivot_table(index=['Site_ID','year'], columns='doy', values='temp').reset_index()
@@ -54,6 +54,12 @@ class phenology_model:
         elif self.model_name=='msb':
             self.model = self.msb
             self.calculate_mean_spring_temps(spring_start=1, spring_end=60)
+        elif self.model_name=='m1':
+            self.model = self.m1
+            # This model requires daylength
+            plant_data = plant_data.merge(site_data, on='Site_ID', how='left')
+            self.daylength_observations = daylength(doy=plant_data.doy.values,
+                                                    lat=plant_data.lat.values)
         else:
             print('unknown model type: ' + model_name)
 
@@ -183,6 +189,32 @@ class phenology_model:
 
         return self.doy_estimator(all_site_daily_gdd, self.temp_doy, F)
 
+    #GDD model with a photoperiod (daylength) parameter. 
+    # Blumel & Chmielewski 2012
+    #t1: day gdd accumulation begins
+    #T: temperature cutoff for GDD
+    #F: total gdd required
+    #K: exponent for daylength adjustment
+    def m1(self, t1, T, F, k, **kwargs):
+        all_site_temps = self.temp_observations.copy()
+
+        #Temperature cutoff
+        all_site_temps[all_site_temps<T]=0
+
+        #Only accumulate forcing after t1
+        all_site_temps[:,self.temp_doy<t1]=0
+
+        all_site_daily_gdd=self.gdd_calculator(all_site_temps)
+
+        daylength_adjustment = (self.daylength_observations / 24) ** k
+        # Make it the same shape as gdd for easy adjustment
+        num_days = all_site_daily_gdd.shape[1]
+        daylength_adjustment =  np.tile(np.expand_dims(daylength_adjustment, 1), num_days)
+
+        all_site_daily_gdd *= daylength_adjustment
+
+        return self.doy_estimator(all_site_daily_gdd, self.temp_doy, F)
+
     #uniforc model from Chuine 2000
     #t1: day forcing accumulation begins
     #b,c: daily temp fitting paramters
@@ -252,6 +284,9 @@ class phenology_model:
         elif self.model_name=='gdd':
             #           t1         T         F*
             return [(-67,298), (-25,25), (0,1000)]
+        elif self.model_name=='m1':
+            #           t1         T         F*       k
+            return [(-67,298), (-25,25), (0,1000), (-50,50)]
         elif self.model_name=='alternating':
             #           a         b         c
             return [(-5000,5000), (-5000,5000), (0,100)]
@@ -277,6 +312,8 @@ class phenology_model:
             o['t0'], o['a_c'], o['b_c'], o['c_c'], o['C'], o['b_f'], o['c_f'], o['F'] = x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7]
         elif self.model_name=='gdd':
             o['t1'], o['T'], o['F'] = x[0], x[1], x[2]
+        elif self.model_name=='m1':
+            o['t1'], o['T'], o['F'], o['k'] = x[0], x[1], x[2], x[3]
         elif self.model_name=='alternating':
             o['a'], o['b'], o['c'] = x[0], x[1], x[2]
         elif self.model_name=='msb':
@@ -299,6 +336,8 @@ class phenology_model:
             kargs={'t0':x[0], 'a_c':x[1], 'b_c':x[2], 'c_c':x[3], 'C':x[4], 'b_f':x[5], 'c_f':x[6], 'F':x[7]}
         elif self.model_name=='gdd':
             kargs={'t1':x[0], 'T':x[1], 'F':x[2]}
+        elif self.model_name=='m1':
+            kargs={'t1':x[0], 'T':x[1], 'F':x[2], 'k':x[3]}
         elif self.model_name=='alternating':
             kargs={'a':x[0], 'b':x[1], 'c':x[2]}
         elif self.model_name=='msb':
@@ -313,6 +352,7 @@ class phenology_model:
         return self.get_error(**kargs)
 
 def daylength(doy, latitude):
+    # From https://github.com/khufkens/phenor
     assert isinstance(doy, np.ndarray), 'doy should be np array'
     assert isinstance(latitude, np.ndarray) , 'latitude should be np array'
     assert doy.shape == latitude.shape, 'latitude and doy should be equal lengths'
