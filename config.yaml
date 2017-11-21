@@ -32,6 +32,8 @@ models_to_use:
     - alternating
     - naive
     - linear_temp
+    - m1
+    - msb
 
 num_bootstrap: 250
 
