@@ -59,7 +59,7 @@ class phenology_model:
             # This model requires daylength
             plant_data = plant_data.merge(site_data, on='Site_ID', how='left')
             self.daylength_observations = daylength(doy=plant_data.doy.values,
-                                                    lat=plant_data.lat.values)
+                                                    latitude=plant_data.lat.values)
         else:
             print('unknown model type: ' + model_name)
 
@@ -286,7 +286,7 @@ class phenology_model:
             return [(-67,298), (-25,25), (0,1000)]
         elif self.model_name=='m1':
             #           t1         T         F*       k
-            return [(-67,298), (-25,25), (0,1000), (-50,50)]
+            return [(-67,298), (-25,25), (0,1000), (0,50)]
         elif self.model_name=='alternating':
             #           a         b         c
             return [(-5000,5000), (-5000,5000), (0,100)]
