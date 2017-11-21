@@ -39,6 +39,7 @@ class data_store:
         #when a single species has multiple phases (ie. budburst  vs flowering)
         self.observation_data.species = self.observation_data.species.map(str) + ' - ' + self.observation_data.Phenophase_ID.map(str)
         self.temp_data = pd.read_csv(dataset_config['temp_data_file'])
+        self.site_data = pd.read_csv(dataset_config['site_info_file'])
         self.dataset_name=dataset_config['dataset_name']
 
         #The model framework differentiates by site to accomidate the NPN dataset.
@@ -70,7 +71,8 @@ class data_store:
         #Temperature data at sites where this species occures
         sp_temp_data = self.temp_data[self.temp_data.Site_ID.isin(data_sample.Site_ID.unique())].copy()
 
-        model=phenology_model(temp_data=sp_temp_data, plant_data=data_sample, model_name=job_info['model'])
+        model=phenology_model(temp_data=sp_temp_data, plant_data=data_sample,
+                              site_data = self.site_data, model_name=job_info['model'])
         model_bounds = model.get_scipy_parameter_bounds()
 
         #all model components to be recieved the by the work process
