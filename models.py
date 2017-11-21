@@ -50,12 +50,20 @@ class phenology_model:
             self.model = self.naive
         elif self.model_name=='linear_temp':
             self.model = self.linear_temp
-            #Do some preprocessing for this one
-            spring_days = np.logical_and(self.temp_doy>=1,self.temp_doy<=90)
-            all_site_temps = self.temp_observations[:,spring_days].copy()
-            self.mean_spring_temps = all_site_temps.mean(axis=1)
+            self.calculate_mean_spring_temps(spring_start=1, spring_end=90)
+        elif self.model_name=='msb':
+            self.model = self.msb
+            self.calculate_mean_spring_temps(spring_start=1, spring_end=60)
         else:
             print('unknown model type: ' + model_name)
+
+    # For models which require the mean spring temperature. This calculates it once
+    # instead of doing it everytime the model is run. spring_start and spring_end
+    # are doy where Jan 1 = 0
+    def calculate_mean_spring_temps(self, spring_start, spring_end):
+        spring_days = np.logical_and(self.temp_doy>=spring_start,self.temp_doy<=spring_end)
+        all_site_temps = self.temp_observations[:,spring_days].copy()
+        self.mean_spring_temps = all_site_temps.mean(axis=1)
 
     #Get a site/year x doy boolean array of the days meeting the F* requirement
     #This is for all site/year combinations, which needs to match up exactly
@@ -81,6 +89,33 @@ class phenology_model:
     #return the accumulated forcing/gdd for each doy for each observation
     def gdd_calculator(self, temps):
         return temps.cumsum(axis=1)
+
+    # Macro scale budburst (MSB) model. Extension of the alternating model
+    # with a correction (d) for spring (Jan-Feb) mean temp. Jeong et al. 2013
+    def msb(self, a, b, c, d, threshold=5, **kwargs):
+        # Number of days below threshold from Jan 1
+        chill_days = ((self.temp_observations < threshold)*1).copy()
+        chill_days[:,self.temp_doy < 0]=0
+        chill_days = self.gdd_calculator(chill_days)
+
+        # Accumulated growing degree days from Jan 1
+        gdd = self.temp_observations.copy()
+        gdd[gdd < threshold]=0
+        gdd[:,self.temp_doy < 0]=0
+        gdd = self.gdd_calculator(gdd)
+
+        chill_day_curve = a + b * np.exp( c * chill_days)
+
+        # Make the spring temps the same shape as chill_day_curve
+        # for easy addition.
+        num_days = chill_day_curve.shape[1]
+        spring_temps = np.tile(np.expand_dims(self.mean_spring_temps, 1), num_days)
+        # Add in correction based on per site spring temperature
+        chill_day_curve += (spring_temps * d)
+
+        # Phenological event happens the first day gdd is > chill_day curve
+        difference = gdd - chill_day_curve
+        return self.doy_estimator(difference, self.temp_doy, F=0)
 
     # Alternating model, originally defined in Cannell & Smith 1983
     # Phenological event happens the first day that GDD (above 5C)
@@ -220,6 +255,9 @@ class phenology_model:
         elif self.model_name=='alternating':
             #           a         b         c
             return [(-5000,5000), (-5000,5000), (0,100)]
+        elif self.model_name=='msb':
+            #              a         b            c          d
+            return [(-5000,5000), (-5000,5000), (0,100), (-100,100)]
         elif self.model_name=='gdd_fixed':
             #          F*
             return [(0,2500)]
@@ -241,6 +279,8 @@ class phenology_model:
             o['t1'], o['T'], o['F'] = x[0], x[1], x[2]
         elif self.model_name=='alternating':
             o['a'], o['b'], o['c'] = x[0], x[1], x[2]
+        elif self.model_name=='msb':
+            o['a'], o['b'], o['c'], o['d'] = x[0], x[1], x[2], x[3]
         elif self.model_name=='gdd_fixed':
             o['F'] = x[0]
         elif self.model_name=='naive':
@@ -261,6 +301,8 @@ class phenology_model:
             kargs={'t1':x[0], 'T':x[1], 'F':x[2]}
         elif self.model_name=='alternating':
             kargs={'a':x[0], 'b':x[1], 'c':x[2]}
+        elif self.model_name=='msb':
+            kargs={'a':x[0], 'b':x[1], 'c':x[2], 'd':x[3]}
         elif self.model_name=='gdd_fixed':
             kargs={'F':x[0]}
         elif self.model_name=='naive':
