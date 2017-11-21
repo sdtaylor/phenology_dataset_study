@@ -311,3 +311,33 @@ class phenology_model:
             kargs={'intercept':x[0], 'slope':x[1]}
 
         return self.get_error(**kargs)
+
+def daylength(doy, latitude):
+    assert isinstance(doy, np.ndarray), 'doy should be np array'
+    assert isinstance(latitude, np.ndarray) , 'latitude should be np array'
+    assert doy.shape == latitude.shape, 'latitude and doy should be equal lengths'
+    assert len(doy.shape)==1, 'doy should be 1 dimensional'
+    
+    # set constants
+    latitude = (np.pi / 180) * latitude
+    
+    # Correct for winter solistice
+    doy += 11
+    
+    # earths ecliptic
+    j = np.pi / 182.625
+    axis = (np.pi / 180) * 23.439
+    
+    m = 1 - np.tan(latitude) * np.tan(axis * np.cos(j * doy))
+    
+    # sun never appears or disappears
+    m = np.maximum(m, 0)
+    m = np.minimum(m, 2)
+    
+    # Exposed fraction of the sun's circle
+    b = np.arccos(1 - m) / np.pi
+    
+    # Daylength (lat,day)
+    b *= 24
+    
+    return b
