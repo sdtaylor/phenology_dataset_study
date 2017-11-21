@@ -14,5 +14,8 @@ Rscript data_preprocessing/compile_npn_data.R
 #for testing/training splits
 Rscript data_preprocessing/mark_out_of_sample_data.R
 
+#Site specific information such at lat, longs
+Rscript data_preprocessing/compile_site_info.R
+
 #This step takes a few hours and 400mb of disk space
 Rscript data_preprocessing/extract_prism_temps.R
