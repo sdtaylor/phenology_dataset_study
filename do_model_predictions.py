@@ -3,11 +3,43 @@ import numpy as np
 from models import *
 import yaml
 
-
+###################################
 #Get the doy estimates for budburst of the NPN dataset using paramters from harvard and vice versa
-
 with open('config.yaml', 'r') as f:
     config = yaml.load(f)
+
+######################################
+    
+# This appends csv's while keeping the header intact
+def pandas_update_csv(df, filename):
+    with open(filename, 'a') as f:
+        df.to_csv(f, index=False, header=f.tell()==0)
+
+def update_predictions_file(predictions):
+    # list of dictionaries to pandas df
+    predictions_df = pd.DataFrame(predictions)
+    
+    pandas_update_csv(predictions_df, filename = config['predictions_file_large'])
+    
+    # Summarize the 250 bootstrapped models to a single prediction
+    
+    grouping_columns = ['data_type', 'model_name', 'observation_id', \
+                     'observation_source','parameter_source', \
+                     'site_observed', 'species', 'year_observed']
+    
+    # Sanity check again for the number of bootstraps being correct
+    sanity_check = predictions_df.groupby(grouping_columns)['doy_estimated'].count().reset_index()
+    assert np.all(sanity_check.doy_estimated.values == config['num_bootstrap']), 'Bootstrap number incorrect in summarization'
+    
+    # Drop predictions where the event was not actually predicted to occure
+    # see https://github.com/sdtaylor/phenology_dataset_study/issues/27
+    predictions_df = predictions_df[predictions_df.doy_estimated < 1000]
+    
+    predictions_df_combined = predictions_df.groupby(grouping_columns)['doy_estimated','doy_observed'].mean().reset_index()
+    
+    pandas_update_csv(predictions_df_combined, filename = config['predictions_file'])
+
+#######################################
 
 all_model_parameters=pd.read_csv(config['model_parameter_file'])
 
@@ -73,26 +105,9 @@ for dataset in config['dataset_configs']:
                                         'site_observed':       site_observed[i],
                                         'doy_estimated':      doy_estimated[i],
                                         'data_type':          doy_data_type[i]})
+    
+        # Update the results file incrementally to save on ram
+        update_predictions_file(results)
+        results=[]
 
-# list of dictionaries to pandas df
-results = pd.DataFrame(results)
 
-results.to_csv(config['predictions_file_large'], index=False)
-
-# Summarize the 250 bootstrapped models to a single prediction
-
-grouping_columns = ['data_type', 'model_name', 'observation_id', \
-                 'observation_source','parameter_source', \
-                 'site_observed', 'species', 'year_observed']
-
-# Sanity check again for the number of bootstraps being correct
-sanity_check = results.groupby(grouping_columns)['doy_estimated'].count().reset_index()
-assert np.all(sanity_check.doy_estimated.values == config['num_bootstrap']), 'Bootstrap number incorrect in summarization'
-
-# Drop predictions where the event was not actually predicted to occure
-# see https://github.com/sdtaylor/phenology_dataset_study/issues/27
-results = results[results.doy_estimated < 1000]
-
-results_combined = results.groupby(grouping_columns)['doy_estimated','doy_observed'].mean().reset_index()
-
-results_combined.to_csv(config['predictions_file'], index=False)
