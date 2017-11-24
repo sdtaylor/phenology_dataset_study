@@ -16,6 +16,7 @@ results=[]
 for dataset in config['dataset_configs']:
     observation_data = pd.read_csv(dataset['observations_data_file'])
     temperature_data = pd.read_csv(dataset['temp_data_file'])
+    site_data        = pd.read_csv(dataset['site_info_file'])
     dataset_obs_name = dataset['dataset_name']
 
     #Combine phenophase + species since each has their own models. 
@@ -34,7 +35,8 @@ for dataset in config['dataset_configs']:
         sp_temp_data = temperature_data[temperature_data.Site_ID.isin(sp_observations.Site_ID.unique())].copy()
 
         for model_name in config['models_to_use']:
-            model_estimator = phenology_model(temp_data=sp_temp_data, plant_data=sp_observations, model_name=model_name)
+            model_estimator = phenology_model(temp_data=sp_temp_data, plant_data=sp_observations,
+                                              site_data = site_data, model_name=model_name)
 
             for parameter_source in all_model_parameters.dataset.unique():
                 #Parameters for a specific model, species, and dataset source
