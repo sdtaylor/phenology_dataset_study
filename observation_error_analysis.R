@@ -43,8 +43,7 @@ predictions = predictions %>%
 ##########################################################
 
 model_errors = predictions %>%
-  filter(data_type=='test') %>%
-  group_by(model_name, observation_source, parameter_source, species, phenophase) %>%
+  group_by(data_type, model_name, observation_source, parameter_source, species, phenophase) %>%
   summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)), sample_size=n()) %>%
   ungroup() %>%
   gather(error_type, error_value, rmse) %>%
@@ -63,7 +62,8 @@ model_errors$parameter_source = factor(model_errors$parameter_source, levels=dat
 
 ###########################################################
 
-model_error_jitterplot_data = model_errors
+model_error_jitterplot_data = model_errors %>%
+  filter(data_type=='test')
 
 
 point_size=4
@@ -128,14 +128,14 @@ plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_text, bott
 ########################################################################################
 # Pairwise comparison between LTS and NPN models
 npn_model_errors = model_errors %>%
-  filter(!is_lts_model) %>%
-  select(-error_type, -is_lts_model, -parameter_source, sample_size) %>%
+  filter(!is_lts_model, data_type=='test') %>%
+  select(-error_type, -is_lts_model, -parameter_source, -sample_size, -data_type) %>%
   rename(npn_error_value = error_value)
 
 pairwise_comparison_data = model_errors %>%
-  filter(is_lts_model) %>%
+  filter(is_lts_model, data_type=='test') %>%
   rename(lts_error_value = error_value) %>%
-  select(-error_type, -is_lts_model, -parameter_source) %>%
+  select(-error_type, -is_lts_model, -parameter_source, -data_type) %>%
   left_join(npn_model_errors, by=c('model_name','observation_source','species','phenophase','is_lts_obs')) %>%
   mutate(model_difference = npn_error_value - lts_error_value)
 
@@ -167,3 +167,11 @@ ggplot(pairwise_comparison_data, aes(model_difference)) +
         strip.background = element_rect(fill='grey95'))
 
 ###########################################################
+
+
+
+
+
+
+
+
