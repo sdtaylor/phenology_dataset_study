@@ -58,6 +58,7 @@ pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornad
 
 model_errors$model_name = factor(model_errors$model_name, levels = model_names, labels = pretty_model_names)
 model_errors$parameter_source = factor(model_errors$parameter_source, levels=datasets, labels = pretty_dataset_names)
+model_errors$observation_source = factor(model_errors$observation_source, levels=datasets, labels = pretty_dataset_names)
 
 
 ###########################################################
@@ -82,7 +83,7 @@ common_theme_attr = theme(axis.text = element_text(size=15),
                           legend.key.size = unit(10, 'mm'))
 
 npn_rmse_plot = model_error_jitterplot_data %>%
-  filter(observation_source == 'npn', error_type=='rmse') %>%
+  filter(!is_lts_obs, error_type=='rmse') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   geom_boxplot(inherit.aes = FALSE, aes(x=model_name, y=error_value), alpha=0, outlier.shape = NA, size=0.8) +
@@ -95,7 +96,7 @@ npn_rmse_plot = model_error_jitterplot_data %>%
   facet_zoom(y = zoomed_subset==TRUE) 
 
 lts_rmse_plot = model_error_jitterplot_data %>%
-  filter(observation_source != 'npn', error_type=='rmse') %>%
+  filter(is_lts_obs, error_type=='rmse') %>%
   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
   geom_boxplot(inherit.aes = FALSE, aes(x=model_name, y=error_value), alpha=0, outlier.shape = NA, size=0.8) +
@@ -167,11 +168,40 @@ ggplot(pairwise_comparison_data, aes(model_difference)) +
         strip.background = element_rect(fill='grey95'))
 
 ###########################################################
+# Write a standalone latex file for a table
+make_table_pdf = function(df, latex_file){
+  sink(latex_file)
+  cat("\\documentclass{article}\n")
+  cat("\\begin{document}\n")
+  cat("\\makebox[\\textwidth]{\n")
+  print.xtable(xtable(df),
+               size="\\fontsize{5pt}{6pt}\\selectfont",
+               floating = FALSE, include.rownames = TRUE,
+               tabular.environment = 'longtable')
+  cat("}\n")
+  cat("\\end{document}")
+}
 
+###########################################################
 
+library(xtable)
+# Suppliment table with all errorss
+suppliment_table_data = model_errors %>%
+  select(-is_lts_model, -is_lts_obs, -error_type) %>%
+  rename(n=sample_size) %>%
+  spread(model_name, error_value) 
 
+# Appreviate species names
+genus_abbr = paste0(toupper(substr(suppliment_table_data$species, 1,1)), '. ')
+specific_epithet = stringr::word(suppliment_table_data$species, 2,2)
+suppliment_table_data$species = paste0(genus_abbr, specific_epithet)
 
+# Table layout
+suppliment_table_data = suppliment_table_data %>%
+  select(species,phenophase,observation_source, data_type,n, parameter_source, everything()) %>%
+  arrange(species,phenophase,observation_source, parameter_source, data_type)
 
+make_table_pdf(suppliment_table_data, 'test.tex')
 
 
 
