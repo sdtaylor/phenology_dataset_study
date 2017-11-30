@@ -83,13 +83,6 @@ npn_parameters = all_parameters %>%
 ###############################################################################
 #scatter plots of npn vs long term datasets
 
-#Setup colors for 20+ species
-#color_count = length(unique(parameter_means$species))
-#getPalette = colorRampPalette(RColorBrewer::brewer.pal(9, "Set1"))
-#set.seed(1)
-#graph_palette = sample(getPalette(color_count))
-
-
 budburst_phenophases = c(371, 496, 488)
 flower_phenophases = c(501)
 
