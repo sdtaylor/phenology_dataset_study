@@ -78,9 +78,11 @@ model_error_jitterplot_data = model_error_jitterplot_data %>%
                                 error_value < rmse_upper_limit))
 
 common_theme_attr = theme(axis.text = element_text(size=15),
+                          axis.title.y = element_text(size=20),
                           legend.title = element_text(size=22),
                           legend.text = element_text(size=20),
-                          legend.key.size = unit(10, 'mm'))
+                          legend.key.size = unit(10, 'mm'),
+                          plot.margin = margin(0,0.5,0.5,0, unit = 'cm'))
 
 npn_rmse_plot = model_error_jitterplot_data %>%
   filter(!is_lts_obs, error_type=='rmse') %>%
@@ -119,13 +121,10 @@ bottom_row = plot_grid(lts_rmse_plot + remove_legend)
 
 top_row_text = 'A. Model error for observations in NPN dataset'
 bottom_row_text = 'B. Model error for observations in LTS datasets'
-plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_text, bottom_row_text, ''), 
+fig3 = plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_text, bottom_row_text, ''), 
           rel_heights = c(1,1,0.2), hjust=-0.07, vjust=2.7, label_size=12)
 
-
-#write_csv(error_analysis, 'observation_errors.csv')
-
-
+ggsave(fig3, filename = 'manuscript/fig_3_error_compare.png', width = 48, height = 24, units = 'cm')
 ########################################################################################
 # Pairwise comparison between LTS and NPN models
 npn_model_errors = model_errors %>%
@@ -150,7 +149,7 @@ y_pos_text=0.12
 indicator_text=data.frame(x=c(-22, 26), y=y_pos_text, t=c('NPN Models\n Better','LTS Models\n Better'),
                           is_lts_obs='NPN Observations', model_name='GDD')
 
-ggplot(pairwise_comparison_data, aes(model_difference)) + 
+fig4=ggplot(pairwise_comparison_data, aes(model_difference)) + 
   geom_density(alpha=0.8,fill='grey50', size=0.1) +
   #geom_density(alpha=0.5) +
   #geom_histogram(bins=50) +
@@ -166,6 +165,8 @@ ggplot(pairwise_comparison_data, aes(model_difference)) +
         axis.text = element_text(size=15),
         axis.title.x = element_text(size=20),
         strip.background = element_rect(fill='grey95'))
+
+ggsave(fig4, filename = 'manuscript/fig_4_pairwise_error.png', width = 45, height = 15, units = 'cm')
 
 ###########################################################
 # Write a standalone latex file for a table
