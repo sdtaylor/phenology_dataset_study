@@ -180,28 +180,52 @@ make_table_pdf = function(df, latex_file){
                tabular.environment = 'longtable')
   cat("}\n")
   cat("\\end{document}")
+  sink()
 }
 
-###########################################################
+abbreviate_species_names = function(s){
+  genus_abbr = paste0(toupper(substr(s, 1,1)), '. ')
+  specific_epithet = stringr::word(s, 2,2)
+  return(paste0(genus_abbr, specific_epithet))
+}
 
+
+###########################################################
+# Suppliment tables of error values
+##########################################################
 library(xtable)
-# Suppliment table with all errorss
-suppliment_table_data = model_errors %>%
-  select(-is_lts_model, -is_lts_obs, -error_type) %>%
+suppliment_error_data = model_errors %>%
+  select(-error_type) %>%
   rename(n=sample_size) %>%
   spread(model_name, error_value) 
 
-# Appreviate species names
-genus_abbr = paste0(toupper(substr(suppliment_table_data$species, 1,1)), '. ')
-specific_epithet = stringr::word(suppliment_table_data$species, 2,2)
-suppliment_table_data$species = paste0(genus_abbr, specific_epithet)
+suppliment_error_data$species = abbreviate_species_names(suppliment_error_data$species)
 
+###########################################
+# Suppliment table 1. All errors.
 # Table layout
-suppliment_table_data = suppliment_table_data %>%
-  select(species,phenophase,observation_source, data_type,n, parameter_source, everything()) %>%
+suppliment_table1 = suppliment_error_data %>%
+  select(species,phenophase,observation_source, data_type,n, parameter_source,everything()) %>%
+  select(-is_lts_model, -is_lts_obs) %>%
   arrange(species,phenophase,observation_source, parameter_source, data_type)
 
-make_table_pdf(suppliment_table_data, 'test.tex')
+make_table_pdf(suppliment_table1, 'test.tex')
+############################################
+# Suppliment figure 1. Only NPN errors. 
+# or, if using  NPN data which model is best for each species/phenophase?
 
+suppliment_fig1_data = model_errors %>%
+  filter(!is_lts_model, !is_lts_obs) %>%
+  select(species, phenophase, model_name, error_value, data_type)
 
+suppliment_fig1_data$species = abbreviate_species_names(suppliment_fig1_data$species)
+
+suppliment_fig1 = ggplot(suppliment_fig1_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
+  geom_point() +
+  geom_line() +
+  facet_wrap(species~phenophase, scales='free') +
+  theme(axis.text.x = element_text(size=10,angle=90, debug = TRUE))
+
+ggsave(suppliment_fig1, filename = 'manuscript/fig_s1_best_npn_models.png',
+       width = 40, height = 50, units = 'cm')
 
