@@ -34,6 +34,12 @@ predictions = predictions %>%
   select(-phenophase) %>%
   rename(phenophase = phenophase_type)
 
+#########################################################
+# # Leave out the new models for now
+predictions = predictions %>%
+  filter(!model_name %in% c('m1','msb'))
+
+
 ##################################################################
 # Skill scores using the corrosponding LTS dataset as the base estimate
 # > 0 means that the NPN datset did better than LTS dataset (the  LTS datset)
@@ -61,8 +67,8 @@ model_errors = predictions %>%
   mutate(is_lts_model = parameter_source!='npn', is_lts_obs = observation_source != 'npn')
 
 # Apply more pleasing names to everything for figures
-model_names = c('gdd','gdd_fixed','linear_temp','naive','uniforc','alternating')
-pretty_model_names = c('GDD','Fixed GDD','Linear','Naive','Uniforc','Alternating')
+model_names = c('gdd','gdd_fixed','linear_temp','naive','uniforc','alternating','m1','msb')
+pretty_model_names = c('GDD','Fixed GDD','Linear','Naive','Uniforc','Alternating','M1','MSB')
 datasets = c('harvard','hjandrews','hubbard','jornada','npn')
 pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornada','NPN')
 

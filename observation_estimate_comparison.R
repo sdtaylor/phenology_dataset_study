@@ -31,6 +31,11 @@ predictions = predictions %>%
   select(-phenophase) %>%
   rename(phenophase = phenophase_type)
 
+#########################################################
+# # Leave out the new models for now
+predictions = predictions %>%
+  filter(!model_name %in% c('m1','msb'))
+
 ############################################################
 
 npn_model_estimates = predictions %>%
@@ -116,8 +121,8 @@ estimate_differences_npn_observations = observation_estimate_comparison %>%
 # Graph of RMSD model, phenophase, lts dataset
 
 # Apply more pleasing names to everything for figures
-model_names = c('gdd','gdd_fixed','linear_temp','naive','alternating','uniforc')
-pretty_model_names = c('GDD','Fixed GDD','Linear','Naive','Alternating','Uniforc')
+model_names = c('gdd','gdd_fixed','linear_temp','naive','alternating','uniforc','m1','msb')
+pretty_model_names = c('GDD','Fixed GDD','Linear','Naive','Alternating','Uniforc','M1','MSB')
 datasets = c('harvard','hjandrews','hubbard','jornada','npn')
 pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornada','NPN')
 
