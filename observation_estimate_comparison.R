@@ -118,9 +118,9 @@ lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=m
 
 npn_label = 'A. Root mean square difference between NPN and LTS estimates when compared over all NPN sites'
 lts_label = 'B. Root mean square difference between NPN and LTS estimates when compared at local LTS sites'
-cowplot::plot_grid(npn_estimate_differences, lts_estimate_differences, labels=c(npn_label, lts_label), ncol=1,
-                   hjust=-0.08, vjust=1.1, label_size=12)
+fig2 = cowplot::plot_grid(npn_estimate_differences, lts_estimate_differences, labels=c(npn_label, lts_label), ncol=1,
+                   hjust=-0.08, vjust=1.1, label_size=14)
 
-
+ggsave(fig2, filename = 'manuscript/fig_2_estimate_compare.png', height = 25, width = 40, units = 'cm')
 
 
