@@ -221,10 +221,13 @@ suppliment_fig1_data = model_errors %>%
 suppliment_fig1_data$species = abbreviate_species_names(suppliment_fig1_data$species)
 
 suppliment_fig1 = ggplot(suppliment_fig1_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
-  geom_point() +
-  geom_line() +
+  geom_point(size=1.5) +
+  geom_line(size=1) +
+  scale_color_manual(values = c("#CC6666", "#66CC99")) +
   facet_wrap(species~phenophase, scales='free') +
-  theme(axis.text.x = element_text(size=10,angle=90, debug = TRUE))
+  labs(y='Root Mean Square Error', x='Model', color='Data Type') +
+  theme(axis.text.x = element_text(size=10,angle=90, debug = FALSE),
+        axis.title = element_text(size=15)) 
 
 ggsave(suppliment_fig1, filename = 'manuscript/fig_s1_best_npn_models.png',
        width = 40, height = 50, units = 'cm')
