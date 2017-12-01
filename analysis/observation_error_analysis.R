@@ -212,12 +212,17 @@ suppliment_table1 = suppliment_error_data %>%
 
 make_table_pdf(suppliment_table1, 'test.tex')
 ############################################
+############################################
 # Suppliment figure 1. Only NPN errors. 
 # or, if using  NPN data which model is best for each species/phenophase?
 
+suppliment_fig_12_theme =  theme(axis.text.x = element_text(size=10,angle=90, debug = FALSE),
+                                 axis.title = element_text(size=15),
+                                 strip.text = element_text(size=6.5)) 
+  
 suppliment_fig1_data = model_errors %>%
   filter(!is_lts_model, !is_lts_obs) %>%
-  select(species, phenophase, model_name, error_value, data_type)
+  select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
 
 suppliment_fig1_data$species = abbreviate_species_names(suppliment_fig1_data$species)
 
@@ -225,11 +230,34 @@ suppliment_fig1 = ggplot(suppliment_fig1_data, aes(x=model_name, y=error_value, 
   geom_point(size=1.5) +
   geom_line(size=1) +
   scale_color_manual(values = c("#CC6666", "#66CC99")) +
-  facet_wrap(species~phenophase, scales='free') +
+  facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
   labs(y='Root Mean Square Error', x='Model', color='Data Type') +
-  theme(axis.text.x = element_text(size=10,angle=90, debug = FALSE),
-        axis.title = element_text(size=15)) 
+  suppliment_fig_12_theme
 
 ggsave(suppliment_fig1, filename = 'manuscript/fig_s1_best_npn_models.png',
        width = 40, height = 50, units = 'cm')
 
+############################################
+# Suppliment figure 2. Only LTS errors. 
+# or, if using  LTS data which model is best for each species/phenophase?
+
+suppliment_fig2_data = model_errors %>%
+  filter(is_lts_model, is_lts_obs) %>%
+  filter(parameter_source==observation_source) %>%
+  select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
+
+suppliment_fig2_data$species = abbreviate_species_names(suppliment_fig2_data$species)
+
+suppliment_fig2 = ggplot(suppliment_fig2_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
+  geom_point(size=1.5) +
+  geom_line(size=1) +
+  scale_color_manual(values = c("#CC6666", "#66CC99")) +
+  facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
+  labs(y='Root Mean Square Error', x='Model', color='Data Type') +
+  suppliment_fig_12_theme
+
+
+ggsave(suppliment_fig2, filename = 'manuscript/fig_s2_best_lts_models.png',
+       width = 40, height = 50, units = 'cm')
+############################################
+############################################
