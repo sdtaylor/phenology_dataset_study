@@ -82,7 +82,9 @@ common_theme_attr = theme(axis.text = element_text(size=15),
                           legend.title = element_text(size=22),
                           legend.text = element_text(size=20),
                           legend.key.size = unit(10, 'mm'),
-                          plot.margin = margin(0,0.5,0.5,0, unit = 'cm'))
+                          plot.margin = margin(0,0.5,0.5,0, unit = 'cm'),
+                          panel.grid.major.y = element_line(size=0.75, color='grey70'),
+                          panel.grid.minor.y = element_line(size=0.5, color='grey70'))
 
 npn_rmse_plot = model_error_jitterplot_data %>%
   filter(!is_lts_obs, error_type=='rmse') %>%
@@ -92,6 +94,7 @@ npn_rmse_plot = model_error_jitterplot_data %>%
   scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
+  ylim(0,NA) +
   common_theme_attr +
   theme(plot.margin = unit(c(1,0,0,0),'cm')) +
   labs(y='RMSE', x='') + 
@@ -105,6 +108,7 @@ lts_rmse_plot = model_error_jitterplot_data %>%
   scale_shape_manual(values=point_shapes) + 
   scale_color_manual(values=color_pallete) +
   theme_linedraw() +
+  ylim(0,NA) +
   common_theme_attr +
   labs(y = 'RMSE', x='', color='Parameter Source', shape='Phenophase') +
   theme(legend.position = 'bottom',
