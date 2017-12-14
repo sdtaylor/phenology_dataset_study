@@ -183,7 +183,7 @@ def worker():
         #If some error happens in the fitting process. "model_error" will show up
         #as the single parameter for this model run.
         try:
-            optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=None, popsize=100, mutation=1.5, recombination=0.25)
+            optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=10000, popsize=100, mutation=1.5, recombination=0.25)
             return_data = model.translate_scipy_parameter_output(optimize_output['x'])
         except:
             return_data = {'model_error' : 0}
