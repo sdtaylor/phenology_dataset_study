@@ -185,6 +185,7 @@ def worker():
         try:
             optimize_output = optimize.differential_evolution(model.scipy_error,bounds=bounds, disp=False, maxiter=10000, popsize=100, mutation=1.5, recombination=0.25)
             return_data = model.translate_scipy_parameter_output(optimize_output['x'])
+            return_data['num_iterations'] = optimize_output['nit']
         except:
             return_data = {'model_error' : 0}
         #quicker testing optimizer
