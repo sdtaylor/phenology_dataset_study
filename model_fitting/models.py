@@ -277,10 +277,10 @@ class phenology_model:
     def get_scipy_parameter_bounds(self):
         if self.model_name=='uniforc':
             #           t1         b         c       F*
-            return [(-67,298), (-20,0), (-100,100), (0,200)]
+            return [(-67,298), (-20,0), (-50,50), (0,200)]
         elif self.model_name=='unichill':
             #           t0         a_c     b_c     c_c        C        b_f      c_f       F
-            return [(-67,298), (0,20), (-100,100), (-50,50), (0,300), (-20,0), (-100,100), (0,200)]
+            return [(-67,298), (0,20), (-20,20), (-50,50), (0,300), (-20,0), (-50,50), (0,200)]
         elif self.model_name=='gdd':
             #           t1         T         F*
             return [(-67,298), (-25,25), (0,1000)]
@@ -289,10 +289,10 @@ class phenology_model:
             return [(-67,298), (-25,25), (0,1000), (0,50)]
         elif self.model_name=='alternating':
             #           a         b         c
-            return [(-5000,5000), (-5000,5000), (0,100)]
+            return [(-1000,1000), (0,5000), (-5,0)]
         elif self.model_name=='msb':
             #              a         b            c          d
-            return [(-5000,5000), (-5000,5000), (0,100), (-100,100)]
+            return [(-1000,1000), (0,5000), (-5,0), (-100,100)]
         elif self.model_name=='gdd_fixed':
             #          F*
             return [(0,2500)]
