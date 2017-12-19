@@ -30,7 +30,34 @@ lts_sample_sizes = all_parameters %>%
   summarize(n_species = n_distinct(species))
 print(paste0('total species/phenophase comparisons: ',sum(lts_sample_sizes$n_species)))
 
+############################################################################
+# Organize the two spatial models, MSB and M1
+# These models add a correction to the Alternating and GDD models, respectivaely,
+# to hopefully account for spatial variation. Since fitting these models to LTS
+# sites doesn't make sense (as there is no spatial variation in them ) I'll
+# compare them to LTS datasets fitted to the original Alternating and GDD models.
 
+# Remove spatial models fit to LTS data
+all_parameters = all_parameters %>%
+  filter(!(dataset!='npn' & model %in% c('msb','m1')))
+
+# Copy the LTS GDD and Alternating model to compare with the
+# corrected NPN ones.
+lts_models_parameters = all_parameters %>%
+  filter(dataset!='npn', model %in% c('gdd','alternating'))
+lts_models_parameters$model = with(lts_models_parameters, ifelse(model=='gdd','m1',
+                                                                 ifelse(model=='alternating','msb','unk')))
+if(any(lts_models_parameters$model=='unk')){stop('unknown model in lts subset')}  
+
+all_parameters = all_parameters %>%
+  bind_rows(lts_models_parameters)
+
+# Remove the additional parameters which are only in the corrected models
+all_parameters = all_parameters %>%
+  filter(!(model=='msb' & parameter_name=='d')) %>%
+  filter(!(model=='m1' & parameter_name=='k'))
+
+rm(lts_models_parameters)
 ############################################################################
 #The distribution of all parameters derived using bootstrapping
 make_parameter_histograms = FALSE
