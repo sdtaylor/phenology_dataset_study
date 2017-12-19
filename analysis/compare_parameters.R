@@ -149,7 +149,7 @@ alternating=ggplot(filter(parameter_means, model=='alternating'), aes(x=npn, y=p
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Alternating \n", x='') +
+  labs(y = "Alternating\n", x='') +
   common_plot_theme 
 uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -159,7 +159,7 @@ uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mea
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Uniforc \n", x='') + 
+  labs(y = "Uniforc\n", x='') + 
   common_plot_theme
 gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -169,7 +169,7 @@ gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "GDD \n", x='') + 
+  labs(y = "GDD\n", x='') + 
   common_plot_theme
 gdd_fixed=ggplot(filter(parameter_means, model=='gdd_fixed'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -179,7 +179,7 @@ gdd_fixed=ggplot(filter(parameter_means, model=='gdd_fixed'), aes(x=npn, y=param
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Fixed GDD \n", x='') + 
+  labs(y = "Fixed GDD\n", x='') + 
   common_plot_theme
 linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -189,7 +189,7 @@ linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=p
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Linear \n", x='') + 
+  labs(y = "Linear\n", x='') + 
   common_plot_theme
 naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -199,7 +199,7 @@ naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, c
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Naive \n", x='') + 
+  labs(y = "Naive\n", x='') + 
   common_plot_theme
 m1=ggplot(filter(parameter_means, model=='m1'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -209,7 +209,7 @@ m1=ggplot(filter(parameter_means, model=='m1'), aes(x=npn, y=param_mean, color=d
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "GDD \n Corrected", x='') + 
+  labs(y = "GDD\nCorrected", x='') + 
   common_plot_theme
 msb=ggplot(filter(parameter_means, model=='msb'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -219,7 +219,7 @@ msb=ggplot(filter(parameter_means, model=='msb'), aes(x=npn, y=param_mean, color
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Alternating \n Corrected", x='') + 
+  labs(y = "Alternating\nCorrected", x='') + 
   common_plot_theme
 
 
