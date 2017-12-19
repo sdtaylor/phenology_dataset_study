@@ -4,7 +4,7 @@ library(cowplot)
 config = yaml::yaml.load_file('config.yaml')
 
 all_parameters = read_csv(config$model_parameter_file) %>%
-  filter(parameter_name!='run_time') 
+  filter(!parameter_name %in% c('run_time','num_iterations')) 
 
 #Pull out phenophase
 all_parameters = all_parameters %>% 
