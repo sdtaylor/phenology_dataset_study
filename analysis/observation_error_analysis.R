@@ -243,12 +243,18 @@ suppliment_fig_12_theme =  theme(axis.text.x = element_text(size=10,angle=90, de
 suppliment_fig1_data = model_errors %>%
   filter(!is_lts_model, !is_lts_obs) %>%
   select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
-
 suppliment_fig1_data$species = abbreviate_species_names(suppliment_fig1_data$species)
+
+winning_models = suppliment_fig1_data %>% 
+  group_by(species, phenophase, observation_source, parameter_source, data_type) %>% 
+  top_n(1, -error_value) %>%
+  ungroup()
+
 
 suppliment_fig1 = ggplot(suppliment_fig1_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
+  geom_point(data = winning_models, color='black', shape=4, size=2) +
   scale_color_manual(values = c("#CC6666", "#66CC99")) +
   facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
   labs(y='Root Mean Square Error', x='Model', color='Data Type') +
@@ -267,12 +273,17 @@ suppliment_fig2_data = model_errors %>%
   filter(!model_name %in% c('M1','MSB')) %>%
   filter(parameter_source==observation_source) %>%
   select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
-
 suppliment_fig2_data$species = abbreviate_species_names(suppliment_fig2_data$species)
+
+winning_models = suppliment_fig2_data %>% 
+  group_by(species, phenophase, observation_source, parameter_source, data_type) %>% 
+  top_n(1, -error_value) %>%
+  ungroup()
 
 suppliment_fig2 = ggplot(suppliment_fig2_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
+  geom_point(data = winning_models, color='black', shape=4, size=2) +
   scale_color_manual(values = c("#CC6666", "#66CC99")) +
   facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
   labs(y='Root Mean Square Error', x='Model', color='Data Type') +
