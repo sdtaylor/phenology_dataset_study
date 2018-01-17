@@ -30,7 +30,34 @@ lts_sample_sizes = all_parameters %>%
   summarize(n_species = n_distinct(species))
 print(paste0('total species/phenophase comparisons: ',sum(lts_sample_sizes$n_species)))
 
+############################################################################
+# Organize the two spatial models, MSB and M1
+# These models add a correction to the Alternating and GDD models, respectivaely,
+# to hopefully account for spatial variation. Since fitting these models to LTS
+# sites doesn't make sense (as there is no spatial variation in them ) I'll
+# compare them to LTS datasets fitted to the original Alternating and GDD models.
 
+# Remove spatial models fit to LTS data
+all_parameters = all_parameters %>%
+  filter(!(dataset!='npn' & model %in% c('msb','m1')))
+
+# Copy the LTS GDD and Alternating model to compare with the
+# corrected NPN ones.
+lts_models_parameters = all_parameters %>%
+  filter(dataset!='npn', model %in% c('gdd','alternating'))
+lts_models_parameters$model = with(lts_models_parameters, ifelse(model=='gdd','m1',
+                                                                 ifelse(model=='alternating','msb','unk')))
+if(any(lts_models_parameters$model=='unk')){stop('unknown model in lts subset')}  
+
+all_parameters = all_parameters %>%
+  bind_rows(lts_models_parameters)
+
+# Remove the additional parameters which are only in the corrected models
+all_parameters = all_parameters %>%
+  filter(!(model=='msb' & parameter_name=='d')) %>%
+  filter(!(model=='m1' & parameter_name=='k'))
+
+rm(lts_models_parameters)
 ############################################################################
 #The distribution of all parameters derived using bootstrapping
 make_parameter_histograms = FALSE
@@ -122,7 +149,7 @@ alternating=ggplot(filter(parameter_means, model=='alternating'), aes(x=npn, y=p
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Alternating", x='') +
+  labs(y = "Alternating\n", x='') +
   common_plot_theme 
 uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -132,7 +159,7 @@ uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mea
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Uniforc", x='') + 
+  labs(y = "Uniforc\n", x='') + 
   common_plot_theme
 gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -142,7 +169,7 @@ gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "GDD", x='') + 
+  labs(y = "GDD\n", x='') + 
   common_plot_theme
 gdd_fixed=ggplot(filter(parameter_means, model=='gdd_fixed'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -152,7 +179,7 @@ gdd_fixed=ggplot(filter(parameter_means, model=='gdd_fixed'), aes(x=npn, y=param
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Fixed GDD", x='') + 
+  labs(y = "Fixed GDD\n", x='') + 
   common_plot_theme
 linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -162,7 +189,7 @@ linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=p
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Linear", x='') + 
+  labs(y = "Linear\n", x='') + 
   common_plot_theme
 naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
   geom_point(size=point_size, aes(shape = phenophase)) +
@@ -172,8 +199,29 @@ naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, c
   facet_wrap(~parameter_name, scales='free', nrow=1) + 
   theme_bw() +
   theme(legend.position = "none") +
-  labs(y = "Naive", x='') + 
+  labs(y = "Naive\n", x='') + 
   common_plot_theme
+m1=ggplot(filter(parameter_means, model=='m1'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
+  geom_point(size=point_size, aes(shape = phenophase)) +
+  scale_shape_manual(values=point_shapes) +
+  scale_color_manual(values=color_pallete) +
+  geom_abline(intercept=0, slope=1) +
+  facet_wrap(~parameter_name, scales='free', nrow=1) + 
+  theme_bw() +
+  theme(legend.position = "none") +
+  labs(y = "GDD\nCorrected", x='') + 
+  common_plot_theme
+msb=ggplot(filter(parameter_means, model=='msb'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
+  geom_point(size=point_size, aes(shape = phenophase)) +
+  scale_shape_manual(values=point_shapes) +
+  scale_color_manual(values=color_pallete) +
+  geom_abline(intercept=0, slope=1) +
+  facet_wrap(~parameter_name, scales='free', nrow=1) + 
+  theme_bw() +
+  theme(legend.position = "none") +
+  labs(y = "Alternating\nCorrected", x='') + 
+  common_plot_theme
+
 
 legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset))+
                                geom_point(size=4, aes(shape = phenophase)) +
@@ -191,17 +239,19 @@ complex_layout = rbind(c(2,1,7,7),
                        c(8,1,7,7),
                        c(3,3,1,1),
                        c(4,4,4,1),
+                       c(9,9,9,1),
                        c(6,6,6,1),
+                       c(10,10,10,1),
                        c(5,5,5,5))
 
-#                                      1       2(1)     3(2)       4(3)  5(4)      6(3)         7        8       
-whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, alternating, legend, gdd_fixed, layout_matrix=complex_layout,
+#                                      1       2(1)     3(2)       4(3)  5(4)      6(3)         7        8(1)    9(3) 10(3)
+whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, alternating, legend, gdd_fixed, m1, msb, layout_matrix=complex_layout,
                         left = 'Long Term Dataset Derived Parameter Estimates',
                         bottom = 'NPN Derived Parameter Estimates')
 
 
 
-ggsave('manuscript/fig_1_param_comparison.png', plot=whole_plot, height=24, width=25, units = 'cm')
+ggsave('manuscript/fig_1_param_comparison.png', plot=whole_plot, height=30, width=28, units = 'cm')
 
 
 #####################################################

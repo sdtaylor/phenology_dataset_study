@@ -35,9 +35,25 @@ predictions = predictions %>%
   rename(phenophase = phenophase_type)
 
 #########################################################
-# # Leave out the new models for now
+# Account for spatially corrected models. See note in
+# compare_parameters.R
+
+# Remove spatial models fit to LTS data
 predictions = predictions %>%
-  filter(!model_name %in% c('m1','msb'))
+  filter(!(parameter_source!='npn' & model_name %in% c('msb','m1')))
+
+# Copy the LTS GDD and Alternating model to compare with the
+# corrected NPN ones.
+lts_models = predictions %>%
+  filter(parameter_source!='npn', model_name %in% c('gdd','alternating'))
+lts_models$model_name = with(lts_models, ifelse(model_name=='gdd','m1',
+                                                ifelse(model_name=='alternating','msb','unk')))
+if(any(lts_models$model_name=='unk')){stop('unknown model in lts subset')}  
+
+predictions = predictions %>%
+  bind_rows(lts_models)
+
+rm(lts_models)
 
 
 ##########################################################
@@ -51,8 +67,8 @@ model_errors = predictions %>%
   mutate(is_lts_model = parameter_source!='npn', is_lts_obs = observation_source != 'npn')
 
 # Apply more pleasing names to everything for figures
-model_names = c('gdd','gdd_fixed','linear_temp','naive','uniforc','alternating','m1','msb')
-pretty_model_names = c('GDD','Fixed GDD','Linear','Naive','Uniforc','Alternating','M1','MSB')
+model_names = c('gdd','m1','gdd_fixed','linear_temp','naive','alternating','msb','uniforc')
+pretty_model_names = c('GDD','M1','Fixed GDD','Linear','Naive','Alternating','MSB','Uniforc')
 datasets = c('harvard','hjandrews','hubbard','jornada','npn')
 pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornada','NPN')
 
@@ -128,7 +144,7 @@ bottom_row_text = 'B. Model error for observations in LTS datasets'
 fig3 = plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_text, bottom_row_text, ''), 
           rel_heights = c(1,1,0.2), hjust=-0.07, vjust=2.7, label_size=12)
 
-ggsave(fig3, filename = 'manuscript/fig_3_error_compare.png', width = 48, height = 24, units = 'cm')
+ggsave(fig3, filename = 'manuscript/fig_3_error_compare.png', width = 55, height = 24, units = 'cm')
 ########################################################################################
 # Pairwise comparison between LTS and NPN models
 npn_model_errors = model_errors %>%
@@ -150,7 +166,7 @@ indicator_lines=data.frame(x=c(-10, 10), xend=c(-25, 25),
                            y=c(y_pos_line,y_pos_line), yend=c(y_pos_line,y_pos_line),
                            is_lts_obs='NPN Observations', model_name='GDD')
 y_pos_text=0.12
-indicator_text=data.frame(x=c(-22, 26), y=y_pos_text, t=c('NPN Models\n Better','LTS Models\n Better'),
+indicator_text=data.frame(x=c(-22, 20), y=y_pos_text, t=c('NPN Models\n Better','LTS Models\n Better'),
                           is_lts_obs='NPN Observations', model_name='GDD')
 
 fig4=ggplot(pairwise_comparison_data, aes(model_difference)) + 
@@ -170,7 +186,7 @@ fig4=ggplot(pairwise_comparison_data, aes(model_difference)) +
         axis.title.x = element_text(size=20),
         strip.background = element_rect(fill='grey95'))
 
-ggsave(fig4, filename = 'manuscript/fig_4_pairwise_error.png', width = 45, height = 15, units = 'cm')
+ggsave(fig4, filename = 'manuscript/fig_4_pairwise_error.png', width = 60, height = 15, units = 'cm')
 
 ###########################################################
 # Write a standalone latex file for a table
@@ -227,12 +243,18 @@ suppliment_fig_12_theme =  theme(axis.text.x = element_text(size=10,angle=90, de
 suppliment_fig1_data = model_errors %>%
   filter(!is_lts_model, !is_lts_obs) %>%
   select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
-
 suppliment_fig1_data$species = abbreviate_species_names(suppliment_fig1_data$species)
+
+winning_models = suppliment_fig1_data %>% 
+  group_by(species, phenophase, observation_source, parameter_source, data_type) %>% 
+  top_n(1, -error_value) %>%
+  ungroup()
+
 
 suppliment_fig1 = ggplot(suppliment_fig1_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
+  geom_point(data = winning_models, color='black', shape=4, size=2) +
   scale_color_manual(values = c("#CC6666", "#66CC99")) +
   facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
   labs(y='Root Mean Square Error', x='Model', color='Data Type') +
@@ -244,17 +266,24 @@ ggsave(suppliment_fig1, filename = 'manuscript/fig_s1_best_npn_models.png',
 ############################################
 # Suppliment figure 2. Only LTS errors. 
 # or, if using  LTS data which model is best for each species/phenophase?
+# No point in using the spatial models, M1 and MSB, here
 
 suppliment_fig2_data = model_errors %>%
   filter(is_lts_model, is_lts_obs) %>%
+  filter(!model_name %in% c('M1','MSB')) %>%
   filter(parameter_source==observation_source) %>%
   select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
-
 suppliment_fig2_data$species = abbreviate_species_names(suppliment_fig2_data$species)
+
+winning_models = suppliment_fig2_data %>% 
+  group_by(species, phenophase, observation_source, parameter_source, data_type) %>% 
+  top_n(1, -error_value) %>%
+  ungroup()
 
 suppliment_fig2 = ggplot(suppliment_fig2_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
+  geom_point(data = winning_models, color='black', shape=4, size=2) +
   scale_color_manual(values = c("#CC6666", "#66CC99")) +
   facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
   labs(y='Root Mean Square Error', x='Model', color='Data Type') +

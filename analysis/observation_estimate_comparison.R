@@ -32,10 +32,25 @@ predictions = predictions %>%
   rename(phenophase = phenophase_type)
 
 #########################################################
-# # Leave out the new models for now
-predictions = predictions %>%
-  filter(!model_name %in% c('m1','msb'))
+# Account for spatially corrected models. See note in
+# compare_parameters.R
 
+# Remove spatial models fit to LTS data
+predictions = predictions %>%
+  filter(!(parameter_source!='npn' & model_name %in% c('msb','m1')))
+
+# Copy the LTS GDD and Alternating model to compare with the
+# corrected NPN ones.
+lts_models = predictions %>%
+  filter(parameter_source!='npn', model_name %in% c('gdd','alternating'))
+lts_models$model_name = with(lts_models, ifelse(model_name=='gdd','m1',
+                                                ifelse(model_name=='alternating','msb','unk')))
+if(any(lts_models$model_name=='unk')){stop('unknown model in lts subset')}  
+
+predictions = predictions %>%
+  bind_rows(lts_models)
+
+rm(lts_models)
 ############################################################
 
 npn_model_estimates = predictions %>%
@@ -66,8 +81,8 @@ estimate_differences_npn_observations = observation_estimate_comparison %>%
 # Graph of RMSD model, phenophase, lts dataset
 
 # Apply more pleasing names to everything for figures
-model_names = c('gdd','gdd_fixed','linear_temp','naive','alternating','uniforc','m1','msb')
-pretty_model_names = c('GDD','Fixed GDD','Linear','Naive','Alternating','Uniforc','M1','MSB')
+model_names = c('gdd','m1','gdd_fixed','linear_temp','naive','alternating','msb','uniforc')
+pretty_model_names = c('GDD','M1','Fixed GDD','Linear','Naive','Alternating','MSB','Uniforc')
 datasets = c('harvard','hjandrews','hubbard','jornada','npn')
 pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornada','NPN')
 
@@ -86,6 +101,8 @@ common_theme_elements = theme(axis.text = element_text(size=18),
                               axis.title.x = element_text(size=20),
                               panel.grid.major.y = element_line(colour = "grey80", size=0.5),
                               panel.grid.minor.y = element_line(colour = "grey85", size=0.5))
+
+set.seed(7)
 
 npn_estimate_differences = ggplot(estimate_differences_npn_observations, aes(x=model_name, y=rmsd, group=non_npn_parameter_source, color=non_npn_parameter_source)) + 
   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
@@ -109,7 +126,7 @@ lts_estimate_differences = ggplot(estimate_differences_lts_observations, aes(x=m
   theme_bw() +
   theme(legend.position = c(0.35,0.8),
         legend.box = 'horizontal',
-        legend.text = element_text(size=15),
+        legend.text = element_text(size=14),
         legend.title = element_text(size=15),
         legend.background = element_rect(color='black'),
         plot.margin = unit(c(1,0,0.5,0),'cm')) +

@@ -11,7 +11,7 @@
 \documentclass[fleqn,10pt,lineno]{wlpeerj} % for journal submissions
 % \documentclass[fleqn,10pt]{wlpeerj} % for preprint submissions
 
-\title{Testing the usability of large scale citizen science data for phenology modeling}
+\title{Comparison of large scale citizen science data and long term study data for phenology modeling}
 
 \author[1]{Shawn D. Taylor}
 \author[2]{Ethan P. White}
@@ -32,23 +32,19 @@
 
 \section*{Introduction}
 
-Citizen science data is becoming increasingly important for ecological research, with the potential for significant impact in many fields \citep{dickinson2010, tulloch2013, kelling2009}. Citizen science efforts have helped document range shifts \citep{hitch2007}, study the effect of landscape fragmentation on amphibians \citep{cosentino2014}, and informed ecological theory of community composition \citep{locey2013}. A primary benefit of citizen science data is observations made at numerous sites across regional to continental scales. This helps researchers explain large scale patterns across natural gradients, but can also introduce new sources error because of observer skill, variation in sampling effort, and spatial bias \citep{dickinson2010}. These issues can be accounted for in models but first must be identified and quantified. As new citizen science datasets are made available, they must be evaluated for their own biases and limitations.  
 
-The National Phenology Network (NPN) is an organization which accepts observations of phenology from volunteers throughout North America and makes the data freely available \citep{schwartz2012a}. Plant phenology is important for studies of ecosystem function, carbon dynamics, pollination, and community ecology \citep{richardson2013, cleland2007, tang2016}. Robust phenology models are necessary for forecasting the future state of the climate as well as the impacts on plant communities. At the largest scale variation in the timing of spring leaf out and fall senescence account for a significant amount of error in the carbon budget of earth system models, which has implications for correctly accounting for biosphere-atmosphere feedbacks in long term forecasts \citep{richardson2012}. At local scales, because of species specific responses to temperature and precipitation, changes in phenology can alter the flower community available to pollinators and seed predators throughout the growing season \citep{diez2012, caradonna2014, ogilvie2017, theobald2017}. 
+Plant phenology affects many fields of ecological research such as ecosystem function, carbon dynamics, pollination, and community ecology \citep{richardson2013, cleland2007, tang2016}. Robust phenology models are necessary for forecasting the future state of the climate as well as the impacts on plant and animal communities. At the largest scale variation in the timing of spring leaf out and fall senescence account for a significant amount of error in the carbon budget of earth system models, which has implications for correctly accounting for biosphere-atmosphere feedbacks in long term forecasts \citep{richardson2012}. At local scales, because of species specific responses to temperature and precipitation, changes in phenology can alter the flower community available to pollinators and seed predators throughout the growing season, potentially causing a cascade of affects on abundance, species richness, and interspecific interactions. \citep{diez2012, caradonna2014, ogilvie2017, theobald2017}. 
 
-The NPN dataset has already being used to study, among many things, variation in oak phenology \citep{gerst2017}, large scale community phenology models \citep{melaas2016}, and forecasting long term phenology trends \citep{jeong2013}. While there has been several studies looking at best practices when using this dataset \citep{crimmins2017, gerst2016} no study to date has looked a the underlying validity of the data. With hundreds of observers across North America, the observer and sampling bias for species identification and the true date of phenological events is potentially high. Thought volunteers can be very accurate at distinguishing different phenophases \citep{fuccillo2015} observations can still be made sporadically throughout the growing season, some years skipped, or visits to a particular site discontinued entirely. These biases could adversely affect process based phenology models, which are species specific and depend on high precision in the data \citep{chuine2000}.
+Many phenological studies in the past have relied upon datasets collected at a single location over a long time-frame by a single group \citep{cook2012, roberts2015, iler2013, wolkovich2012}. These datasets have high temporal coverage, with some approaching several decades, and represent the species and climate variability at their respective sites extremely well. Yet it is common for phenology models built with observations from a single site to not transfer well to other sites \citep{garcia-mozo2008, xu2013, olsson2014, basler2016}. Phenology models are species specific, thus this lack of transferability across space can be driven by, among other factors, plasticity in phenology requirements, local adaptation, microclimates, plant age, or population density \citep{kramer1995,diez2012}. Models fit to only a single site can easily be overfit, and being able to generalize across a species range will be important for improving phenology forecasts \citep{richardson2013}. To accomplish this phenology observations will be needed from as much of the full range of species as possible. 
 
-The NPN dataset is complicated further by the spatial variation of the temperature response within species. Phenology models currently have trouble capturing the spatial variation in warming requirements \citep{garcia-mozo2008, xu2013, olsson2014, basler2016}. Most phenology models are process based and designed to reflect physological processes driving phenological events. Yet models parameterized using observations from one site rarely  transfer to other sites, and models using pooled data from many sites do not transfer well to individual sites \citep{garcia-mozo2008, basler2016}. This variation within species can be driven by, among other factors, plasticity in phenology requirements, local adaptation, microclimates, plant age, or population density \citep{kramer1995,diez2012}. While this complicates further any testing of dataset validity, it's worth it because there is a large opportunity with this dataset for further study of phenology across spatial gradients. 
+The National Phenology Network (NPN) is an organization which accepts phenology observations from volunteers throughout North America and makes the data freely available \citep{schwartz2012a}. Citizen science data such as this is becoming increasingly important for ecological research, with the potential for significant impact in many fields \citep{dickinson2010, tulloch2013, kelling2009}. Citizen science efforts have helped document range shifts \citep{hitch2007}, study the effect of landscape fragmentation on amphibians \citep{cosentino2014}, and informed ecological theory of community composition \citep{locey2013}. The NPN dataset has already being used to study, among many things, variation in oak phenology \citep{gerst2017}, large scale community phenology models \citep{melaas2016}, and forecasting long term phenology trends \citep{jeong2013}. A primary benefit of citizen science data is observations made at numerous sites across regional to continental scales. This helps researchers explain large scale patterns across natural gradients, but can also introduce new sources error from observer skill, variation in sampling effort, and spatial bias \citep{dickinson2010}. These issues can be accounted for in models but first must be identified and quantified. While there has been several studies looking at best practices when using the NPN dataset \citep{crimmins2017, gerst2016} no study to date has looked a the underlying validity of the data. With hundreds of observers across North America, the observer and sampling bias for species identification and the true date of phenological events is potentially high. Though volunteers can be very accurate at distinguishing different phenophases \citep{fuccillo2015}, observations can still be made sporadically throughout the growing season, some years skipped, or visits to a particular site discontinued entirely. 
 
-Many phenological studies in the past have relied upon datasets with observations collected at a single location over a long timeframe by a single group \citep{cook2012, roberts2015, clark2014}. These datasets are assumed to not suffer from the potential biases mentioned above, and many also have high temporal coverage of several decades. They are disadvantageous as the inference from the models can only be applied to species located at the site, and only to local climate variability. These datasets have been invaluable for ecology for several decades, but datasets with a larger spatial extent and more complete species pool will be needed to model the complex phenology dynamics of ecosystems \citep{richardson2012, diez2012, caradonna2014}. The NPN datasets has the potential to meet these needs, and to date no study has assessed how well NPN data compares to long term study phenology datasets. 
-
-Here we will compare process based phenology models built using only the NPN data with models built with data from Long Term Study (LTS) datasets. We will also attempt to explain the differences in esimates of phenological events. The specific research questions are:
+Data from long term studies have been invaluable for phenology research for several decades, but datasets with a larger spatial extent and more complete species pool will be needed to model the complex phenology dynamics of ecosystems \citep{richardson2012, diez2012, caradonna2014}. Such datasets from China and Europe have already contributed considerably to phenological research \citep{olsson2014, basler2016, xu2013, zhang2017}, and the NPN dataset has the potential to meet these needs for North America. To date no study has assessed how well the NPN dataset compares to long term study phenology datasets. Here we will compare process based phenology models built using only the NPN data with models built with data from Long Term Study (LTS) datasets. The specific research questions are:
 \begin{enumerate}
 \item Do parameter estimates of species level models differ when they are built with the NPN dataset versus an LTS dataset?
 \item Do estimates of phenological events differ between the NPN and LTS derived models?
 \item How well do models built with the NPN dataset transfer to LTS observations, and vice verse?
 \end{enumerate}
-
 
 \section*{Methods}
 
@@ -56,14 +52,14 @@ Here we will compare process based phenology models built using only the NPN dat
 
 The National Phenology Network collections began in 2009 and continue to the present. Observations are based on status-based monitoring, where observers answer “yes”, “no”, or “unsure” when asked if a plant has a specific phenological phase present \citep{denny2014}. We downloaded all NPN observations from 2009-2016 for the phenophases Breaking Leaf Buds, Breaking Needle Buds, Emerging Needles, and Open Flowers. These phenophases apply to deciduous broadleafs, evergreen conifers, pines, and all angiosperms, respectively. Hereafter we will refer to these as either Flowers for the Open Flower phenophase, or Leaves for all other phenophases. We used moderately strict subsetting of NPN phenology observations as outlined in \cite{crimmins2017}. First, "yes" observations for individual plants were only kept if they were preceded by a "no" observation within 30 days. Observations for Leaves past day of year (DOY) 172 and for Flowers past DOY 213 were dropped. Finally only species that had greater than 30 total observations were kept. \cite{crimmins2017} only kept observations that were preceded by a "no" within 15 days, and also grouped multiple observations at single sites in a year to a single observations. We used 30 days to allow for a greater number of species to be compared. We did not group together multiple individuals at a single site to better incorporate intra-site variability. In addition to these steps we also inferred the date of each phenophase as the midpoint between each "yes" observation and the preceding "no" observation. 
 
-Notes on LTS data preproccesing
+To compare against the NPN dataset we used four LTS datasets from North America (Table 1). Three major ecosystem types and 24 species are represented in these datasets. Observation metrics varied among these four datasets due to different protocols, so were first converted to binary "yes" and "no" observations for each phenophase (see supplement for details). As with the NPN dataset we infer the date for each phenophase as the midpoint between the first "yes" observation and most recent "no" observation. 
 
 \renewcommand{\arraystretch}{2}\tabcolsep=5pt
 \begin{center}
     \begin{tabular}{ | l | l | l | l |}
     \hline
     Dataset Name & Habitat &  Phenological Event\newline (Num. Species) & Reference \\ \hline
-    Harvard & N.E. Deciduous\newline Forest & Budburst (16)\newline Flowering (15) & ... \\
+    Harvard & N.E. Deciduous\newline Forest & Budburst (16)\newline Flowering (15) & \citep{okeefe2000} \\
     Jornada & Chihuahuan Desert & Flowering (2) & ... \\
     HJ Andrews \newline Experimental Forest & N.W. Wet Coniferous \newline Forest & Budburst (6)\newline Flowering (6) & ... \\
     Hubbard Brook & N.E. Deciduous \newline Forest & Budburst (3) & ... \\
@@ -71,14 +67,11 @@ Notes on LTS data preproccesing
     \end{tabular}
 \end{center}
 
-To compare against the NPN dataset we used four LTS datasets from North America (Table 1). Three major ecosystem types and 24 species are represented in these datasets. As all four have been collected by single groups we make the assumption that they are free of any bias in species identification or sampling effort. Observation metrics varied among these four datasets due to different protocols, so were first converted to binary "yes" and "no" observations for each phenophase (see supplement for details). As with the NPN dataset we infer the date for each phenophase as the midpoint between the first "yes" observation and most recent "no" observation. 
-
-
 \subsection*{Models}
 
 For each species/phenophase in each of the five datasets we fit a range of phenology models from a naive mean day of year estimate to a more complex two phase forcing model (Table 2). With the exception of two models (naive and linear) the general model form predicts that a phenological event will happen when sufficient forcing units, \(F^{*}\), accumulate from a particular start day of the year. The day forcing accumulation begins, $t_{1}$, can either be estimated or fixed. For the growing degree day model (GDD) forcing units are the degrees in Celsius above an estimated threshold. The Fixed GDD model uses the same form but has fixed values for start day (Jan 1) and temperature threshold (0C). The Alternating model has a variable number of required forcing units defined as function of the total number of days below 0C (NCD). The Uniforc model is similar to the GDD model but has forcing units derived a sigmoid function. 
 
-The naive model uses only the mean DOY from all prior observations as the estimated DOY. The linear model uses a regression with the mean spring (Jan. - March) temperature as the only independent variable and DOY as the response variable. 
+The naive model uses only the mean DOY from all prior observations as the estimated DOY. The linear model uses a regression with the mean spring (Jan. - March) temperature as the only independent variable and DOY as the response variable. Finally two models attempt to explain the spatial variation in phenological requirements. The first spatial model, M1, is an extension of the GDD model which adds a correction in the required forcing using the photoperiod ($L$). The second, the Macroscale Species-specific Budburst model (MSB), uses the mean spring temperature as a linear correction on the total forcing required in the Alternating model. Since there is little to no spatial variation in the LTS datasets, the two spatial models were fit using only the NPN dataset. The resulting parameters, estimates, and errors for the NPN derived M1 and MSB models were compared to the LTS GDD and Alternating models, respectively, for each species and phenophase.  
 
 \begin{center}
 {\def\arraystretch{2}\tabcolsep=5pt
@@ -86,37 +79,38 @@ The naive model uses only the mean DOY from all prior observations as the estima
     \hline
     Name & DOY Estimator & Forcing Equations & Total\newline Parameters & Reference \\ \hline
     Naive & \( \overline{DOY} \) & - & 1 & - \\
-    Fixed GDD &$\sum_{t=0}^{DOY}R_{f}(x_{t})\geq F* $  & $R_{f}(x_{t}) = min(T, 0)$ & 1 & - \\
+    Fixed GDD &$\sum_{t=0}^{DOY}R_{f}(T_{i})\geq F^{*} $  & $R_{f}(T_{i}) = min(T_{i}, 0)$ & 1 & - \\
     Linear & \( DOY = \beta_{1} + \beta_{2}T_{mean} \) & - & 2 & - \\
-    GDD & $\sum_{t=t_{1}}^{DOY}R_{f}(x_{t})\geq F* $ & $ R_{f}(x_{t}) = max(T - T^{*}, 0) $  & 3 & - \\
-    Alternating & $\sum_{t=0}^{DOY}R_{f}(x_{t})\geq a + be^{cNCD(t)} $ & $R_{f}(x_{t}) = min(T, 0) $ & 3 & \citep{cannell1983} \\
-    Uniforc &  $\sum_{t=t_{1}}^{DOY}R_{f}(x_{t})\geq F* $ & $ R_{f}(x_{t}) = \frac{1}{1 + e^{b(x-c)}} $ & 4 & \citep{chuine2000} \\
+    GDD & $\sum_{t=t_{1}}^{DOY}R_{f}(T_{i})\geq F^{*} $ & $ R_{f}(T_{i}) = max(T_{i} - T^{*}, 0) $  & 3 & - \\
+    M1 & $\sum_{t=t_{1}}^{DOY}R_{f}(T_{i})\geq (\frac{L_{i}}{24})^{k} F^{*} $ & $ R_{f}(T_{i}) = max(T_{i}-T^{*}, 5) $  & 4 & \citep{blumel2012} \\
+    Alternating & $\sum_{t=0}^{DOY}R_{f}(T_{i})\geq a + be^{cNCD(t)} $ & $R_{f}(T_{i}) = max(T_{i}-5, 0) $ & 3 & \citep{cannell1983} \\
+    MSB & $\sum_{t=0}^{DOY}R_{f}(T_{i})\geq a + be^{cNCD_{i}} +dT_{mean} $ & $R_{f}(T_{i}) = max(T_{i}-5, 0) $ & 4 & \citep{jeong2013} \\
+    Uniforc &  $\sum_{t=t_{1}}^{DOY}R_{f}(T_{i})\geq F^{*} $ & $ R_{f}(T_{i}) = \frac{1}{1 + e^{b(T_{i}-c)}} $ & 4 & \citep{chuine2000} \\
 
     \hline
     \end{tabular}
     }
 \end{center}
 
-Parameterization was done using differential evolution to minimize the root mean square error (RMSE) of the estimated day of year of the phenological event. Differential evolution is a global optimization algorithm similar to simulated annealing, which has traditionally been used to fit complex phenology models \citep{storn1997, chuine2000}. Initial testing showed that differential evolution produced more consistent results than simulated annealing and other similar algorithms. Confidence intervals for parameters were obtained by bootstrapping, where individual models were re-fit 250 times using a random sample, with replacement, of the data. A random 20\% of all data was held out from model fitting for use in later evaluation. 
-
+All models were parameterized using differential evolution to minimize the root mean square error (RMSE) of the estimated day of year of the phenological event. Differential evolution is a global optimization algorithm similar to simulated annealing, which has traditionally been used to fit complex phenology models \citep{storn1997, chuine2000}. Initial testing showed that differential evolution produced more consistent results than simulated annealing and other similar algorithms. Confidence intervals for parameters were obtained by bootstrapping, where individual models were re-fit 250 times using a random sample, with replacement, of the data. A random 20\% of all data was held out from model fitting for use in later evaluation. Predictions were made by taking the mean DOY from the 250 bootstrapped models. 
 
 \subsection*{Analysis}
 
-As described above, for each species and phenophase two sets of models were produced: one set of models parameterized using only NPN data, and one set of parameterized using only LTS data. The distribution for each parameter in each model could then be compared between the two sets using a Mann-Whitney test. This was chosen due to the majority of parameters having non-normal distributions derived from the bootstrapped estimates. Statistically signficiant differences in these parameters, which are designed to represent biological mechanisms, would imply that the NPN dataset does not match 
+As described above, for each species and phenophase two sets of models were produced: one set of models parameterized using only NPN data, and one set parameterized using only LTS data (with the exception of the M1 and MSB models, see above). The distribution for each parameter in each species/phenophase model was then compared between the two sets using a Mann-Whitney test. This was chosen due to the majority of parameters having non-normal distributions derived from the bootstrapped estimates. 
 
-
-To compare estimates of LTS and NPN derived models we calculated the root mean squre difference (RMSD) between the two estimates as:
+Even models with entirely different structures can produce similar estimates of phenological events \citep{basler2016}. Thus we also compared estimates of the phenological events between LTS and NPN derived models using the root mean square difference (RMSD) between the two estimates:
 
 $$ RMSD = \sqrt[]{ \frac{\sum_{i=1}^{n}(\widehat{DOY_{NPN,i}} - \widehat{DOY_{LTS,i}})^{2}}{n}} $$
 
-where $n$ is the number of estimates produced for a single species and phenophase, and $LTS_{i}$ and $NPN_{i}$ are DOY estimates produced from the respective models. A RMSD value close to 0 implies that an NPN model produced very similar estimates to the corresponding LTS model. For each species and phenophase 12 RMSD values were calculated from the 6 phenology models as well as 2 spatial extents. The first spatial extent used only estimates from the all the species/phenophase observations from the NPN datasets, thus representing a large spatial extent. The second was from all observations from the LTS datasets, representing a single site. The RMSD does not consider actual observations as it is meant to infer the correspondence of the NPN and LTS datasets beyond parameter comparison. 
+where $n$ is the number of estimates produced for a single species and phenophase, and $LTS_{i}$ and $NPN_{i}$ are DOY estimates produced from the respective models. A RMSD value close to 0 implies that the LTS and NPN derived models produced very similar estimates. For each species and phenophase 12 RMSD values were calculated from the 6 phenology models and 2 scales. We calculated the RMSD for estimates at the first scale of the extent of the NPN observations, thus representing a large spatial extent. The second scale used estimates from the localities of the LTS datasets, thus representing a single site. The RMSD does not consider actual observations as it is meant to infer the correspondence of the NPN and LTS datasets beyond parameter comparison. 
 
-For all models the actual error was calculated using the 20\% of held out data. 
+For all models the observation error of the held out data was calculated using the using the RMSE:
 
 $$ RMSE = \sqrt[]{ \frac{\sum_{i=1}^{n}(\widehat{DOY_{i}} - DOY_{i})^{2}}{n}} $$
 
+For each species and phenophase this was calculated for all combinations of LTS and NPN derived models, the six phenology models, and the two scales described above. 
 
-Pairwise model error comparison
+TODO: Pairwise model error comparison
 
 $$ RMSE_{difference} = \widehat{RMSE_{NPN,s}} - RMSE_{LTS,s} $$
 
@@ -131,7 +125,7 @@ for all $$S = s_{1},...,s_{39}$$ species
 
 \section*{Results}
 
-All parameters had statistically different distributions between LTS and NPN derived estimates when tested with a Mann-Whitney U test. When comparing the mean values of parameters among all species and phenophases there was correspondence among the simple models with 1-2 parameters (Fig. 1). As model complexity increased this correspondence between the two datasets decreased. The Naive model showed a distinct late bias in the mean DOY for phenologcial events, likely resulting from the LTS datasets being mostly in the northern United States. The Fixed GDD model had the best correspondence between the two datasets. The outlier for this model, \textit{Larrea tridentata}, has phenology largely driven by precipitation, which is not considered in the Fixed GDD model \citep{beatley1974}. 
+All parameters had statistically different distributions between LTS and NPN derived estimates when tested with a Mann-Whitney U test. Visually comparing the mean values of parameters among all species and phenophases showed a correspondence among the simple models with 1-2 parameters (Fig. 1). As model complexity increased this correspondence between the two datasets decreased. The Naive model showed a distinct late bias in the mean DOY for phenologcial events, likely resulting from the LTS datasets being mostly in the northern United States. Though it still has a small bias the Fixed GDD model had the best correspondence between the two datasets (see suppliment for zoomed in figure). The outlier for this model, \textit{Larrea tridentata}, has phenology largely driven by precipitation, which is not considered in the Fixed GDD model \citep{beatley1974}. 
 
 \begin{figure}
 	\centering
@@ -139,14 +133,17 @@ All parameters had statistically different distributions between LTS and NPN der
 	\caption{Difference between NPN and LTS derived estimates. Each point is, for a single species/phenophase, the root mean square difference between LTS and NPN derived estimates for a specified model. A shows the RMSD over the extent of the NPN dataset, B shows the RMSD at the single sites represented by the LTS datasets.}
 \end{figure}
 
-When comparing estimates of phenological events between the two sets of models, many NPN models produced similar estimates to LTS models (Fig. 2). When estimating at local LTS sites, NPN models produced estimates within 10 days, on average, of LTS models except when using the Naive model (Fig. 2b). When estimating across the spatial extent of NPN data, except when using the Linear and Naive model, most NPN models produced estimates within 20 days of LTS models (Fig. 2a). 
+When comparing estimates of phenological events between the two sets of models, many NPN models produced similar estimates to LTS models (Fig. 2). When estimating at local LTS sites, NPN models produced estimates within 10 days, on average, of LTS models except when using the Naive model (Fig. 2b). When estimating across the spatial extent of NPN data, except when using the Linear and Naive model, most NPN and LTS models produced estimates within 20 days of each other (Fig. 2a). 
 
-Figure 3 shows the errors for all different model types when tested against the held out data. Models predicting NPN observations (Fig. 3a) has higher error rates than predictions for LTS observations (Fig. 3b). For the former models derived from NPN data made the best predictions, while LTS derived models performed best for the latter. Figure 4 shows the pairwise comparison of LTS and NPN errors. Similar to Figure 3, the NPN modeld performed best on NPN observations and LTS models performed best on LTS observations. 
+Figure 3 shows the errors for all different model types when tested against the held out data. Models predicting NPN observations (Fig. 3a) have higher error rates than predictions for LTS observations (Fig. 3b). For the former models derived from NPN data made the best predictions, while LTS derived models performed best for the latter. Figure 4 shows the pairwise comparison of LTS and NPN errors. Similar to Figure 3, the NPN models performed best on NPN observations and LTS models performed best on LTS observations.
+
 \begin{figure}
 	\centering
 		\includegraphics[width=1\textwidth]{fig_3_error_compare.png}
 	\caption{Root mean square error of model predictions compared to observations. The top plot is for all held out observations in the NPN dataset. The bottom plot is for all held out observations in the LTS datasets.}
 \end{figure}
+
+TODO: figure 4 results
 
 \begin{figure}
 	\centering
@@ -154,25 +151,43 @@ Figure 3 shows the errors for all different model types when tested against the 
 	\caption{Density plots for pairwise RMSE comparison. The x axis shows the distribution for $RMSE_{NPN} - RMSE_{LTS}$  for the  39 species/phenophase combinations.}
 \end{figure}
 
--Even with different parameter values, some species/models had extremely similar
-estimates, suggesting these models had 
 
 \section*{Discussion}
 
-Despite having statistically different parameters to LTS derived models, many NPN derived models were able to produce similar estimates for phenological events. This is (likely) due to models having a non-linear parameter space and being non-identifiable. For example two GDD models with parameters of $t_{1}$=1, $F$=10, $T*$=0 and $t_{1}$=5, $F$=5, $T*$=0 can produce nearly identical results in many, but not all, scenarios. As model complexity icnreases the ability to produce similar estimates increases. Indeed, the Uniforic models with NPN derived parameters still had estimates within 10 days of LTS derived parameters for most species (Fig. 2) despite having very different parameters (Fig. 1). 
+Despite having statistically different parameters to LTS derived models, many NPN derived models were able to produce similar estimates for phenological events. This is (likely) due to models having a non-linear parameter space and being non-identifiable. For example two GDD models with parameters of $t_{1}$=1, $F$=10, $T*$=0 and $t_{1}$=5, $F$=5, $T*$=0 can produce nearly identical results in many, but not all, scenarios. As model complexity increases the ability to produce similar estimates increases. Indeed, the Uniforic models with NPN derived parameters still had estimates within 10 days of LTS derived parameters for most species (Fig. 2) despite having very different parameters (Fig. 1). 
 
-This makes the interpretation of these parameters questionable, which is troublesome as they are designed to be biologically relevant. \cite{chuine2016} found similar issues, where models estimating endodormancy break using only observed budbreak did not match direct measurements of endodormancy break, suggesting that phenology models which are fit using only the observed phenophase cannot accurately infer the internal mechanisms described in the models. \cite{basler2016} suggests that the thermal forcing in models is responsible for most of the accuracy, while any additional parameters are only fit to residuals and sensitive to over fitting. Here our simplest model, the Fixed GDD model which uses only a warming component, had reasonable (thought statistically different) correspondence between LTS and NPN datasets. This correspondence decreases as more parameters are added to models, suggesting only simple models should be used when using the NPN dataset to make inferences about plant physiology. Parameter estimates of more complex models do not agree with models from the same species in LTS datasets, and it is possible even the LTS datasets are over fitting these models. 
+This makes the interpretation of these parameters questionable, which is troublesome as they are designed to be biologically relevant. \cite{chuine2016} found similar issues, where models estimating endodormancy break using only observed budbreak did not match direct measurements of endodormancy break, suggesting that phenology models which are fit using only the observed phenophase cannot accurately infer the internal mechanisms described in the models. \cite{basler2016} suggests that the thermal forcing in models is responsible for most of the accuracy, while any additional parameters are only fit to residuals and sensitive to over fitting. Here our simplest model, the Fixed GDD model which uses only a warming component, had reasonable (thought statistically different) correspondence between LTS and NPN datasets. This correspondence decreases as more parameters are added to models, suggesting that if the NPN dataset is being used to make inferences about plant physology simple models could give a more consistent results. Parameter estimates of more complex models do not agree with models from the same species in LTS datasets, and it is possible even the LTS datasets are over fitting these models. 
 
-Even with similar parameters, the Fixed GDD model was not the best performing model when tested on out of sample data. While the values of additional parameters may be incorrect in the above sense, they nonetheless provide more predictive power. Considering only NPN derived models predicting out of sample NPN observations the GDD and Uniforc models were the best performing across all species and phenophases, and commonly had nearly identical error values (Fig S1). The GDD and Uniforc models have three and four parameters, respectively. Thus the simpler GDD model shows promise for building models with the NPN dataset and making forecasts across large scales.
+Even with similar parameters, the Fixed GDD model was not the best performing model when tested on out of sample data. While the values of additional parameters may be incorrect in the above sense, they nonetheless provide more predictive power. Across the two scales the GDD, Uniforc, and Alternating model were generally the best performing (Fig. 3). Considering only NPN derived models predicting NPN observations the GDD and Uniforc models were the best performing across all species and phenophases, and commonly had nearly identical error values (Fig S1). One goal of ecological forecasting is to inform decision makers about the future state of systems \citep{dietz2017}. Thus the best performing model should be used in these cases to give the best possible forecast. The GDD and Uniforc models have three and four parameters, respectively, therefore the simpler GDD model shows promise for building models with the NPN dataset and making forecasts across large scales.
 
-Other models show promise for forecasting under different scenarios. For example if using data from a large spatial extent to make predictions at single site our results show the Fixed GDD model is the best option, as performance under this scenario is very similar to performance of Fixed GDD models built from LTS data (Fig. 4). In the opposite scenario of making large scale predictions using only data from a single site the Alternating is likely the best option, as most LTS derived models have a RMSE only 5 days greater on average than the corresponding NPN model when tested on out of sample NPN data (Fig. 4). The Alternating model is also one of the best performing model overall for large scale NPN data (Fig. 3a). 
+Other models show promise for forecasting under different scenarios. For example if using data from a large spatial extent to make predictions at single sites our results show the Fixed GDD model is the best option, as performance under this scenario is very similar to performance of Fixed GDD models built from LTS data (Fig. 4). In the opposite scenario of making large scale predictions using only data from a single site the Alternating model is likely the best option, as most LTS derived models have a RMSE only 5 days greater on average than the corresponding NPN model when tested on out of sample NPN data (Fig. 4). The Alternating model is also one of the best performing model overall for large scale NPN data (Fig. 3a). 
 
-Conclusion
-Despite being collected across a large spatial extend and by hundreds of observers the NPN dataset can be used to build phenology models which make comparable predictions to LTS datasets. Indeed, if making predictions across a large spatial extent the NPN derived models are preferable to LTS derived models. If using the NPN dataset to make inferences about plant physiology researchers should take not to use overly complicated models, as parameter estimates from complex NPN derived models do not agree with LTS derived models. Whether this disagreement stems from the spatial variation in plant phenology requirements, or in the irregular sampling of the NPN dataset is an avenue for future study. 
+The models which incorporate a spatial component did not improve over their base models. Correspondence between parameter estimates, estimates of phenological events, and out of sample error rates for the MSB and M1 models were essentially the same as the Alternating and GDD models, respectively. The MSB and M1 models had the lowest error in 9 out of 39 occasions, but never by more than a single day over other models (Fig S1). Spatial variation in phenological requirements is known to exist in plants \citep{zhang2017}, yet here models which attempt to account for this variation did not improve estimates overall. This could be caused either by models not adequately capturing the process driving the spatial variation, the NPN dataset having biases from variation in sampling effort and/or spatial auto-correlation, or some combination of these factors. \cite{basler2016} used the M1 model to predict budburst on six species across Europe and found it was usually among the best models in terms of RMSE, albeit never by more than a single day. Their result was strengthened by a 40 year timeseries across a large region.
+
+\section*{Conclusion}
+
+Currently the best phenology model for a single location will always be those fit using data from only that location, yet these single site models do not transfer well to large scales. Making large scale phenology forecasts will require incorporating large scale observations such as those from the NPN dataset. Here we have shown that the NPN dataset is capable of parameterizing phenology models which make comparable predictions to LTS datasets. Indeed, if making forecasts across a large spatial extent the NPN derived models are preferable to LTS derived models. If using the NPN dataset to make inferences about plant physiology researchers should not use overly complicated models, as parameter estimates from complex NPN derived models do not agree with LTS derived models. Whether this disagreement stems from the spatial variation in plant phenology requirements, the irregular sampling of the NPN dataset, or the non-identifiability of models is an avenue for future study. 
+
+The National Phenology Network dataset will likely be an important resource for studying phenology.  The addition of numerous species and observations from across a range of conditions is important for informing large scale processes, as similar datasets have shown in Europe \citep{olsson2014, basler2016} and Asia \citep{xu2013, zhang2017}. Research from long term small scale studies has been invaluable and should no doubt be continued, but can now be complimented by using large scale NPN data (ie. \citep{jeong2013, melaas2016}).
 
 \section*{Acknowledgments}
 
-
 \bibliography{refs}
+
+
+\setcounter{figure}{0}    
+\section*{Suppliment}
+\begin{figure}
+	\centering
+		\includegraphics[width=1\textwidth]{fig_s1_best_npn_models.png}
+	\caption{Model error for specific species and phenophases of the NPN dataset. X marks the best performing models for the respective data type.}
+\end{figure}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=1\textwidth]{fig_s3_site_map.png}
+	\caption{Locations of National Phenology Network sites used (black points) and Long Term Study sites (labeled circles).}
+\end{figure}
+
 
 \end{document}

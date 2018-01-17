@@ -52,6 +52,6 @@ site_map = ggplot() +
         panel.border = element_blank(),
         legend.position = 'none')
 print(site_map)
-ggsave('manuscript/site_map.png', plot=site_map, height=20, width=50, units = 'cm')
+ggsave('manuscript/fig_s3_site_map.png', plot=site_map, height=20, width=50, units = 'cm')
 
 
