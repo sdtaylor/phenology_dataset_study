@@ -145,6 +145,7 @@ fig3 = plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_tex
           rel_heights = c(1,1,0.2), hjust=-0.07, vjust=2.7, label_size=12)
 
 ggsave(fig3, filename = 'manuscript/fig_3_error_compare.png', width = 55, height = 24, units = 'cm')
+
 ########################################################################################
 # Pairwise comparison between LTS and NPN models
 npn_model_errors = model_errors %>%
@@ -245,7 +246,7 @@ suppliment_fig1_data = model_errors %>%
   select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
 suppliment_fig1_data$species = abbreviate_species_names(suppliment_fig1_data$species)
 
-winning_models = suppliment_fig1_data %>% 
+winning_models_npn = suppliment_fig1_data %>% 
   group_by(species, phenophase, observation_source, parameter_source, data_type) %>% 
   top_n(1, -error_value) %>%
   ungroup()
@@ -254,7 +255,7 @@ winning_models = suppliment_fig1_data %>%
 suppliment_fig1 = ggplot(suppliment_fig1_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
-  geom_point(data = winning_models, color='black', shape=4, size=2) +
+  geom_point(data = winning_models_npn, color='black', shape=4, size=2) +
   scale_color_manual(values = c("#CC6666", "#66CC99")) +
   facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
   labs(y='Root Mean Square Error', x='Model', color='Data Type') +
@@ -275,7 +276,7 @@ suppliment_fig2_data = model_errors %>%
   select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
 suppliment_fig2_data$species = abbreviate_species_names(suppliment_fig2_data$species)
 
-winning_models = suppliment_fig2_data %>% 
+winning_models_lts = suppliment_fig2_data %>% 
   group_by(species, phenophase, observation_source, parameter_source, data_type) %>% 
   top_n(1, -error_value) %>%
   ungroup()
@@ -283,7 +284,7 @@ winning_models = suppliment_fig2_data %>%
 suppliment_fig2 = ggplot(suppliment_fig2_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
-  geom_point(data = winning_models, color='black', shape=4, size=2) +
+  geom_point(data = winning_models_lts, color='black', shape=4, size=2) +
   scale_color_manual(values = c("#CC6666", "#66CC99")) +
   facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
   labs(y='Root Mean Square Error', x='Model', color='Data Type') +
@@ -294,3 +295,27 @@ ggsave(suppliment_fig2, filename = 'manuscript/fig_s2_best_lts_models.png',
        width = 40, height = 50, units = 'cm')
 ############################################
 ############################################
+
+###
+# Stats for manuscript
+# Median scores from fig 3
+model_error_jitterplot_data %>%
+  group_by(model_name, is_lts_obs) %>%
+  summarize(median_error = median(error_value), n=n()) %>%
+  View()
+
+# Winning model percentages for NPN observations
+winning_models_npn %>%
+  group_by(model_name, data_type) %>%
+  summarize(n=n()) %>%
+  group_by(data_type) %>%
+  mutate(freq = n/sum(n)) %>%
+  View()
+
+# Winning model percentages for LTS observations
+winning_models_lts %>%
+  group_by(model_name, data_type) %>%
+  summarize(n=n()) %>%
+  group_by(data_type) %>%
+  mutate(freq = n/sum(n)) %>%
+  View()
