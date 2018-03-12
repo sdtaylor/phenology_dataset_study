@@ -20,7 +20,7 @@ npn_species = all_parameters %>%
   distinct()
 
 all_parameters = all_parameters %>% 
-  filter(species %in% npn_species$species, phenophase %in% npn_species$phenophase)
+  filter(paste(species,phenophase) %in% paste(npn_species$species,npn_species$phenophase) )
 
 # This is the final numbers put into the Table 1
 lts_sample_sizes = all_parameters %>%
@@ -60,51 +60,50 @@ all_parameters = all_parameters %>%
 rm(lts_models_parameters)
 ############################################################################
 #The distribution of all parameters derived using bootstrapping
-make_parameter_histograms = FALSE
+# make_parameter_histograms = FALSE
 
-save_histogram = function(r){
-  histogram_data = all_parameters %>%
-    filter(species==r$species, phenophase==r$phenophase, model==r$model, parameter_name==r$parameter_name, dataset==r$dataset)
-  plot_name = paste0('parameter_histograms/parameter_',r$id,'.png')
-  histogram = ggplot(histogram_data, aes(value)) +
-    geom_histogram(bins=50) +
-    facet_wrap(species~phenophase~model~parameter_name~dataset)
-  ggsave(plot_name, plot=histogram, height=20, width=20, units = 'cm', limitsize = FALSE)
-}
-
-if(make_parameter_histograms){
-  possible_histograms = all_parameters %>% 
-    select(species,phenophase,model,parameter_name,dataset) %>%
-    distinct() %>%
-    mutate(id = 1:n()) %>%
-    purrrlyr::by_row(save_histogram)
-}
-
-#Comparison of parameters in npn vs other datasets
-x = all_parameters %>%
-  filter(dataset %in% c('hjandrews','npn'),model=='gdd_fixed')
-
-ggplot(x, aes(x=value, group=dataset, fill=dataset)) +
-  geom_histogram(bins=50, position = 'identity', alpha=0.7) +
-  scale_fill_brewer(palette='Set2') +
-  facet_wrap(parameter_name~model~species~phenophase, scales = 'free')
+# save_histogram = function(r){
+#   histogram_data = all_parameters %>%
+#     filter(species==r$species, phenophase==r$phenophase, model==r$model, parameter_name==r$parameter_name, dataset==r$dataset)
+#   plot_name = paste0('parameter_histograms/parameter_',r$id,'.png')
+#   histogram = ggplot(histogram_data, aes(value)) +
+#     geom_histogram(bins=50) +
+#     facet_wrap(species~phenophase~model~parameter_name~dataset)
+#   ggsave(plot_name, plot=histogram, height=20, width=20, units = 'cm', limitsize = FALSE)
+# }
+# 
+# if(make_parameter_histograms){
+#   possible_histograms = all_parameters %>% 
+#     select(species,phenophase,model,parameter_name,dataset) %>%
+#     distinct() %>%
+#     mutate(id = 1:n()) %>%
+#     purrrlyr::by_row(save_histogram)
+# }
+# 
+# #Comparison of parameters in npn vs other datasets
+# x = all_parameters %>%
+#   filter(dataset %in% c('hjandrews','npn'),model=='gdd_fixed')
+# 
+# ggplot(x, aes(x=value, group=dataset, fill=dataset)) +
+#   geom_histogram(bins=50, position = 'identity', alpha=0.7) +
+#   scale_fill_brewer(palette='Set2') +
+#   facet_wrap(parameter_name~model~species~phenophase, scales = 'free')
 
 ############################################################################
 #Statistical test of parameters
-npn_parameters = all_parameters %>%
-  filter(dataset=='npn') %>%
-  rename(npn_value = value) %>%
-  select(-dataset)
-
-# p_values = all_parameters %>%
-#   filter(dataset!='npn') %>%
-#   rename(dataset_value = value) %>%
-#   left_join(npn_parameters, by=c('model','parameter_name','bootstrap_num','species','phenophase')) %>%
-#   group_by(dataset, model, parameter_name, species, phenophase) %>%
-#   #summarise(p_value = ks.test(.$dataset_value, .$npn_value, alternative='two.side', exact=TRUE)$p.value, n=n()) %>%
-#   summarise(p_value = wilcox.test(.$dataset_value, .$npn_value, alternative = 'two.sided')$p.value) %>%
-#   ungroup()
-
+ # npn_parameters = all_parameters %>%
+ #   filter(dataset=='npn') %>%
+ #   rename(npn_value = value) %>%
+ #   select(-dataset)
+ # 
+ # p_values = all_parameters %>%
+ #   filter(dataset!='npn') %>%
+ #   rename(dataset_value = value) %>%
+ #   left_join(npn_parameters, by=c('model','parameter_name','bootstrap_num','species','phenophase')) %>%
+ #   group_by(dataset, model, parameter_name, species, phenophase) %>%
+ #   #summarise(p_value = ks.test(.$dataset_value, .$npn_value, alternative='two.side', exact=TRUE)$p.value, n=n()) %>%
+ #   summarise(p_value = wilcox.test(.$dataset_value, .$npn_value, alternative = 'two.sided')$p.value) %>%
+ #   ungroup()
 
 
 ###############################################################################
@@ -119,111 +118,98 @@ parameter_means = all_parameters %>%
   summarise(param_mean = mean(value)) %>%
   ungroup()
 
-npn_paramters = parameter_means %>%
+npn_parameters = parameter_means %>%
   filter(dataset=='npn') %>%
-  spread(dataset, param_mean)
+  spread(dataset, param_mean) %>%
+  rename(npn_derived_parameter = npn)
 
 parameter_means = parameter_means %>%
   filter(dataset!='npn') %>%
-  left_join(npn_paramters, by=c('species','parameter_name','model', 'phenophase'))
+  rename(lts_derived_parameter = param_mean) %>%
+  left_join(npn_parameters, by=c('species','parameter_name','model', 'phenophase'))
 
 datasets = c('harvard','hjandrews','hubbard','jornada','npn')
 pretty_dataset_names = c('Harvard Forest','H.J. Andrews','Hubbard Brook','Jornada','NPN')
 parameter_means$dataset = factor(parameter_means$dataset, levels = datasets, labels = pretty_dataset_names)
 
 
-common_plot_theme = theme(strip.text = element_text(size=12),
+#################################################################################
+# R^2 values
+
+parameter_name_plotmath = tribble(
+  ~model, ~parameter_name, ~parameter_symbol,
+  'naive','mean_doy', 'widehat(DOY)',
+  'gdd_fixed','F','F',
+  'linear_temp','intercept','beta[1]',
+  'linear_temp','slope','beta[2]',
+  'gdd','F','F',
+  'gdd','t1','t[1]',
+  'gdd','T','T',
+  'm1','F','F',
+  'm1','t1','t[1]',
+  'm1','T','T',
+  'm1','k','k',
+  'alternating','a','a',
+  'alternating','b','b',
+  'alternating','c','c',
+  'msb','a','a',
+  'msb','b','b',
+  'msb','c','c',
+  'msb','d','d',
+  'uniforc','t1','t[1]',
+  'uniforc','F','F',
+  'uniforc','b','b',
+  'uniforc','c','c'
+)
+
+r2_values = parameter_means %>%
+  group_by(model, parameter_name) %>%
+  summarise(r2= 1 - (sum((npn_derived_parameter - lts_derived_parameter)**2) / sum((npn_derived_parameter - mean(npn_derived_parameter))**2)) , n=n()) %>%
+  ungroup() %>%
+  mutate(r2_text=paste('R^2 == ',round(r2,2)))
+
+# Put the r2 values in the parameter_name column so they are included in the
+# labels of the plot
+parameter_means = parameter_means %>%
+  left_join(r2_values, by=c('model','parameter_name')) %>%
+  left_join(parameter_name_plotmath, by = c('model','parameter_name')) %>%
+  mutate(parameter_name2 = paste0('list(',parameter_symbol,',', r2_text,')'))
+
+#################################################################################
+
+common_plot_theme = theme(strip.text = element_text(size=9),
                           strip.background = element_rect(fill='grey95'),
-                          axis.text = element_text(size=12),
-                          axis.title.y = element_text(size=15))
+                          axis.text = element_text(size=9),
+                          axis.title = element_text(size=12))
 
 point_size=3
 point_shapes = c(17,13)
 color_pallete=c("grey42", "#E69F00", "#56B4E9", "#CC79A7")
 
-alternating=ggplot(filter(parameter_means, model=='alternating'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=point_size, aes(shape = phenophase)) +
-  scale_shape_manual(values=point_shapes) +
-  scale_color_manual(values=color_pallete) +
-  geom_abline(intercept=0, slope=1) +
-  facet_wrap(~parameter_name, scales='free', nrow=1) + 
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(y = "Alternating\n", x='') +
-  common_plot_theme 
-uniforc=ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=point_size, aes(shape = phenophase)) +
-  scale_shape_manual(values=point_shapes) +
-  scale_color_manual(values=color_pallete) +
-  geom_abline(intercept=0, slope=1) +
-  facet_wrap(~parameter_name, scales='free', nrow=1) + 
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(y = "Uniforc\n", x='') + 
-  common_plot_theme
-gdd=ggplot(filter(parameter_means, model=='gdd'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=point_size, aes(shape = phenophase)) +
-  scale_shape_manual(values=point_shapes) +
-  scale_color_manual(values=color_pallete) +
-  geom_abline(intercept=0, slope=1) +
-  facet_wrap(~parameter_name, scales='free', nrow=1) + 
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(y = "GDD\n", x='') + 
-  common_plot_theme
-gdd_fixed=ggplot(filter(parameter_means, model=='gdd_fixed'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=point_size, aes(shape = phenophase)) +
-  scale_shape_manual(values=point_shapes) +
-  scale_color_manual(values=color_pallete) +
-  geom_abline(intercept=0, slope=1) +
-  facet_wrap(~parameter_name, scales='free', nrow=1) + 
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(y = "Fixed GDD\n", x='') + 
-  common_plot_theme
-linear_temp=ggplot(filter(parameter_means, model=='linear_temp'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=point_size, aes(shape = phenophase)) +
-  scale_shape_manual(values=point_shapes) +
-  scale_color_manual(values=color_pallete) +
-  geom_abline(intercept=0, slope=1) +
-  facet_wrap(~parameter_name, scales='free', nrow=1) + 
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(y = "Linear\n", x='') + 
-  common_plot_theme
-naive=ggplot(filter(parameter_means, model=='naive'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=point_size, aes(shape = phenophase)) +
-  scale_shape_manual(values=point_shapes) +
-  scale_color_manual(values=color_pallete) +
-  geom_abline(intercept=0, slope=1) +
-  facet_wrap(~parameter_name, scales='free', nrow=1) + 
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(y = "Naive\n", x='') + 
-  common_plot_theme
-m1=ggplot(filter(parameter_means, model=='m1'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=point_size, aes(shape = phenophase)) +
-  scale_shape_manual(values=point_shapes) +
-  scale_color_manual(values=color_pallete) +
-  geom_abline(intercept=0, slope=1) +
-  facet_wrap(~parameter_name, scales='free', nrow=1) + 
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(y = "GDD\nCorrected", x='') + 
-  common_plot_theme
-msb=ggplot(filter(parameter_means, model=='msb'), aes(x=npn, y=param_mean, color=dataset, group=dataset)) +
-  geom_point(size=point_size, aes(shape = phenophase)) +
-  scale_shape_manual(values=point_shapes) +
-  scale_color_manual(values=color_pallete) +
-  geom_abline(intercept=0, slope=1) +
-  facet_wrap(~parameter_name, scales='free', nrow=1) + 
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(y = "Alternating\nCorrected", x='') + 
-  common_plot_theme
+get_subplot = function(model_name, y_label){
+  p=ggplot(filter(parameter_means, model==model_name), aes(x=npn_derived_parameter, y=lts_derived_parameter, color=dataset, group=dataset)) +
+    geom_point(size=point_size, aes(shape = phenophase)) +
+    scale_shape_manual(values=point_shapes) +
+    scale_color_manual(values=color_pallete) +
+    geom_abline(intercept=0, slope=1) +
+    facet_wrap(~parameter_name2, scales='free', nrow=1, labeller = label_parsed) + 
+    theme_bw() +
+    theme(legend.position = "none") +
+    labs(y = y_label, x='') +
+    common_plot_theme 
+  return(p)
+}
 
+alternating=get_subplot(model_name = 'alternating', y_label = "Alternating\n")
+uniforc=get_subplot(model_name = 'uniforc', y_label = "Uniforc\n")
+gdd=get_subplot(model_name = 'gdd', y_label = "GDD\n")
+gdd_fixed=get_subplot(model_name = 'gdd_fixed', y_label = "Fixed GDD\n")
+linear_temp=get_subplot('linear_temp', y_label = "Linear\n")
+naive=get_subplot('naive', y_label = "Naive\n") 
+m1=get_subplot('m1', y_label = "GDD\nCorrected")
+msb=get_subplot('msb', y_label = "Alternating\nCorrected")
 
-legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn, y=param_mean, color=dataset, group=dataset))+
+legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn_derived_parameter, y=lts_derived_parameter, color=dataset, group=dataset))+
                                geom_point(size=4, aes(shape = phenophase)) +
                                scale_shape_manual(values=point_shapes)  + 
                                scale_color_manual(values=color_pallete) +
@@ -251,44 +237,6 @@ whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc,
 
 
 
-ggsave('manuscript/fig_1_param_comparison.png', plot=whole_plot, height=30, width=28, units = 'cm')
-
-
-#####################################################
-#####################################################
-#####################################################
-# Normality tests for individual parameters
-# some parameters are log transformed for this since they are
-# bounded to either positive or negative
-
-# parameters_to_log_transform = read.table(header=TRUE, sep=',', stringsAsFactors = FALSE, text='
-# model,parameter_name,transform 
-# uniforc,b,yes
-# uniforc,F,yes
-# gdd,F,yes
-# alternating,c,yes
-# gdd_fixed,F,yes')
-# 
-# 
-# #Test for normality among parameters
-# normality_test = function(x){
-#   stats::shapiro.test(x)$p.value
-# }
-# is_normal = all_parameters %>%
-#   left_join(parameters_to_log_transform, by=c('model','parameter_name')) %>%
-#   mutate(transform = ifelse(is.na(transform),'no', transform)) %>%
-#   mutate(log_value = ifelse(transform=='yes', log1p(value), value)) %>%
-#   group_by(dataset, model, parameter_name, species, phenophase) %>%
-#   summarize(normality_p_value =  normality_test(value))
-# 
-# is_normal = arrange(is_normal, normality_p_value)
-# for(i in 1:50){
-#   x = all_parameters %>%
-#     filter(dataset==is_normal$dataset[i],model==is_normal$model[i], parameter_name==is_normal$parameter_name[i],
-#            species==is_normal$species[i])
-#   plot_title = paste(is_normal$dataset[i], is_normal$model[i], is_normal$parameter_name[i], is_normal$species[i], sep='-')
-#   hist(x$value, breaks=100, main=plot_title)
-#   try(hist(log(abs(x$value)), main=paste0(plot_title,'-log')))
-# }
+ggsave('manuscript/fig_1_param_comparison.png', plot=whole_plot, height=33, width=20, units = 'cm')
 
 
