@@ -112,6 +112,29 @@ scenario_error = ggplot(scenarios_error_data, aes(x=species_phenophase, y=error_
 
 ggsave(scenario_error, filename = 'manuscript/scenario_error.png', width = 30, height = 20, units = 'cm')
 
+#########################################################
+# relative rankings of the different scenarios
+scenario_rankings = scenarios_error_data %>%
+  select(model_name, species_phenophase, scenario, error_value) %>%
+  group_by(model_name, species_phenophase) %>%
+  arrange(error_value) %>%
+  mutate(ranking = 1:4) %>%
+  ungroup() %>%
+  group_by(model_name, scenario) %>%
+  summarise(ranking_1 = sum(ranking==1)/n(),
+            ranking_2 = sum(ranking==2)/n(),
+            ranking_3 = sum(ranking==3)/n(),
+            ranking_4 = sum(ranking==4)/n()) %>%
+  ungroup() %>%
+  gather(ranking, rank_percent, ranking_1, ranking_2, ranking_3, ranking_4) %>%
+  group_by(scenario, ranking) %>%
+  summarize(rank_percent = round(mean(rank_percent),2)) %>%
+  spread(scenario, rank_percent)
+
+
+
+##############################################################
+
 # ###########################################################
 # model_error_jitterplot_data = model_errors %>%
 #   filter(data_type=='test')
