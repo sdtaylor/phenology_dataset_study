@@ -80,7 +80,7 @@ r2_values = observation_estimate_comparison %>%
   summarise(r2= 1 - (sum((doy_estimated_npn_model - doy_estimated_non_npn_model)**2) / sum((doy_estimated_npn_model - mean(doy_estimated_npn_model))**2))) %>%
   ungroup() %>%
   mutate(plot_text=paste('R^2 == ',round(r2,2)),
-         text_y_pos=200, text_x_pos=50)
+         text_y_pos=205, text_x_pos=60)
 
 fig2=ggplot(observation_estimate_comparison, aes(x=doy_estimated_npn_model, y=doy_estimated_non_npn_model, color=interaction(species,phenophase))) +
   geom_point(alpha=0.6) + 
