@@ -119,6 +119,7 @@ rm(hubbard_data)
 scenarios_error_data$species_phenophase = with(scenarios_error_data, paste(abbreviate_species_names(species),phenophase,sep=' - '))
 
 #########################################################
+#########################################################
 # Main figure of the two metrics (scenario A - B and C -D)
 
 rmse_metrics = scenarios_error_data %>%
@@ -154,10 +155,11 @@ rmse_metrics_figure=ggplot(rmse_metrics, aes(metric_value)) +
         axis.title.x = element_text(size=20),
         strip.background = element_rect(fill='grey95'))
 
-ggsave(rmse_metrics_figure, filename = 'manuscript/rmse_metrics.png', width = 60, height = 15, units = 'cm')
+ggsave(rmse_metrics_figure, filename = 'manuscript/rmse_metrics_density_plot.png', width = 60, height = 15, units = 'cm')
 
 ######################################################
-# Suppliment figure, absolute RMSE values of all scenarios
+######################################################
+# supplement figure, absolute RMSE values of all scenarios
 
 scenario_error = ggplot(scenarios_error_data, aes(x=species_phenophase, y=error_value, group=scenario, color=scenario)) +
   geom_point() +
@@ -168,13 +170,13 @@ scenario_error = ggplot(scenarios_error_data, aes(x=species_phenophase, y=error_
         panel.background = element_rect(fill='grey95'),
         panel.grid.major.y = element_line(size=0.3, color='black'),
         panel.grid.minor.y = element_line(size=0.15, color='grey50'),
-        legend.position = c(0.75, 0.96), 
+        legend.position = c(0.38, 0.96), 
         legend.background = element_rect(fill='grey99'),
         #legend.key.size = unit(10,'mm'),
         legend.direction = "horizontal") +
   labs(y='RMSE',x='Species & Phenophase', color='Scenario') 
 
-ggsave(scenario_error, filename = 'manuscript/scenario_absolute_rmse.png', width = 30, height = 20, units = 'cm')
+ggsave(scenario_error, filename = 'manuscript/supplement_scenario_absolute_rmse.png', width = 30, height = 20, units = 'cm')
 
 
 #########################################################
@@ -198,69 +200,69 @@ ggsave(scenario_error, filename = 'manuscript/scenario_absolute_rmse.png', width
 
 
 ###########################################################
-# Suppliment figures
+# Supplement figures
 ##########################################################
 
 ############################################
 ############################################
-# Suppliment figure 1. Only NPN errors. 
+# Supplement figure 1. Only NPN errors. 
 # or, if using  NPN data which model is best for each species/phenophase?
 
-suppliment_fig_12_theme =  theme(axis.text.x = element_text(size=10,angle=90, debug = FALSE),
+supplement_fig_12_theme =  theme(axis.text.x = element_text(size=10,angle=90, debug = FALSE),
                                  axis.title = element_text(size=15),
                                  strip.text = element_text(size=6.5)) 
   
-suppliment_fig1_data = model_errors %>%
+supplement_fig1_data = model_errors %>%
   filter(is_npn_model, is_npn_obs) %>%
   select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
-suppliment_fig1_data$species = abbreviate_species_names(suppliment_fig1_data$species)
+supplement_fig1_data$species = abbreviate_species_names(supplement_fig1_data$species)
 
-winning_models_npn = suppliment_fig1_data %>% 
+winning_models_npn = supplement_fig1_data %>% 
   group_by(species, phenophase, observation_source, parameter_source, data_type) %>% 
   top_n(1, -error_value) %>%
   ungroup()
 
 
-suppliment_fig1 = ggplot(suppliment_fig1_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
+supplement_fig1 = ggplot(supplement_fig1_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
   geom_point(data = winning_models_npn, color='black', shape=4, size=2) +
   scale_color_manual(values = c("#CC6666", "#66CC99")) +
   facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
   labs(y='Root Mean Square Error', x='Model', color='Data Type') +
-  suppliment_fig_12_theme
+  supplement_fig_12_theme
 
-ggsave(suppliment_fig1, filename = 'manuscript/fig_s1_best_npn_models.png',
+ggsave(supplement_fig1, filename = 'manuscript/supplement_best_npn_models.png',
        width = 40, height = 50, units = 'cm')
 
 ############################################
-# Suppliment figure 2. Only LTS errors. 
+# supplement figure 2. Only LTS errors. 
 # or, if using  LTS data which model is best for each species/phenophase?
 # No point in using the spatial models, M1 and MSB, here
 
-suppliment_fig2_data = model_errors %>%
+supplement_fig2_data = model_errors %>%
   filter(is_lts_model, is_lts_obs) %>%
   filter(!model_name %in% c('M1','MSB')) %>%
   filter(parameter_source==observation_source) %>%
   select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
-suppliment_fig2_data$species = abbreviate_species_names(suppliment_fig2_data$species)
+supplement_fig2_data$species = abbreviate_species_names(supplement_fig2_data$species)
 
-winning_models_lts = suppliment_fig2_data %>% 
+winning_models_lts = supplement_fig2_data %>% 
   group_by(species, phenophase, observation_source, parameter_source, data_type) %>% 
   top_n(1, -error_value) %>%
   ungroup()
 
-suppliment_fig2 = ggplot(suppliment_fig2_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
+supplement_fig2 = ggplot(supplement_fig2_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
   geom_point(data = winning_models_lts, color='black', shape=4, size=2) +
   scale_color_manual(values = c("#CC6666", "#66CC99")) +
   facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
   labs(y='Root Mean Square Error', x='Model', color='Data Type') +
-  suppliment_fig_12_theme
+  supplement_fig_12_theme
 
 
-ggsave(suppliment_fig2, filename = 'manuscript/fig_s2_best_lts_models.png',
+ggsave(supplement_fig2, filename = 'manuscript/supplement_best_lts_models.png',
        width = 40, height = 50, units = 'cm')
 ############################################
 ############################################
