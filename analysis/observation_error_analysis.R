@@ -61,7 +61,7 @@ model_errors = predictions %>%
   summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)), sample_size=n()) %>%
   ungroup() %>%
   gather(error_type, error_value, rmse) %>%
-  mutate(error_value = round(error_value,2)) %>%
+  mutate(error_value = round(error_value,4)) %>%
   mutate(is_lts_model = parameter_source!='npn', is_lts_obs = observation_source != 'npn',
          is_npn_model = !is_lts_model, is_npn_obs = !is_lts_obs)
 
@@ -214,7 +214,7 @@ supplement_fig_12_theme =  theme(axis.text.x = element_text(size=10,angle=90, de
   
 supplement_fig1_data = model_errors %>%
   filter(is_npn_model, is_npn_obs) %>%
-  select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
+  select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source, sample_size)
 supplement_fig1_data$species = abbreviate_species_names(supplement_fig1_data$species)
 
 winning_models_npn = supplement_fig1_data %>% 
@@ -222,11 +222,20 @@ winning_models_npn = supplement_fig1_data %>%
   top_n(1, -error_value) %>%
   ungroup()
 
+npn_sample_size_text = supplement_fig1_data %>%
+  group_by(species, observation_source, parameter_source) %>%
+  mutate(y_placement = max(error_value) + 1) %>%
+  ungroup() %>%
+  group_by(species, phenophase, data_type, observation_source, parameter_source) %>%
+  summarize(y_placement = mean(y_placement), sample_size = mean(sample_size)) %>%
+  ungroup() %>%
+  mutate(x_placement = ifelse(data_type=='test', 2,7))
 
 supplement_fig1 = ggplot(supplement_fig1_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
   geom_point(data = winning_models_npn, color='black', shape=4, size=2) +
+  geom_text(data=npn_sample_size_text, aes(label = paste0('n: ',sample_size), y=y_placement, x=x_placement)) +
   scale_color_manual(values = c("#CC6666", "#66CC99")) +
   facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
   labs(y='Root Mean Square Error', x='Model', color='Data Type') +
@@ -244,7 +253,7 @@ supplement_fig2_data = model_errors %>%
   filter(is_lts_model, is_lts_obs) %>%
   filter(!model_name %in% c('M1','MSB')) %>%
   filter(parameter_source==observation_source) %>%
-  select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
+  select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source, sample_size)
 supplement_fig2_data$species = abbreviate_species_names(supplement_fig2_data$species)
 
 winning_models_lts = supplement_fig2_data %>% 
@@ -252,10 +261,20 @@ winning_models_lts = supplement_fig2_data %>%
   top_n(1, -error_value) %>%
   ungroup()
 
+lts_sample_size_text = supplement_fig2_data %>%
+  group_by(species, observation_source, parameter_source) %>%
+  mutate(y_placement = max(error_value) + 1) %>%
+  ungroup() %>%
+  group_by(species, phenophase, data_type, observation_source, parameter_source) %>%
+  summarize(y_placement = mean(y_placement), sample_size = mean(sample_size)) %>%
+  ungroup() %>%
+  mutate(x_placement = ifelse(data_type=='test', 2,5))
+
 supplement_fig2 = ggplot(supplement_fig2_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
   geom_point(data = winning_models_lts, color='black', shape=4, size=2) +
+  geom_text(data=lts_sample_size_text, aes(label = paste0('n: ',sample_size), y=y_placement, x=x_placement)) +
   scale_color_manual(values = c("#CC6666", "#66CC99")) +
   facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
   labs(y='Root Mean Square Error', x='Model', color='Data Type') +
@@ -271,17 +290,17 @@ ggsave(supplement_fig2, filename = 'manuscript/supplement_best_lts_models.png',
 # Stats for manuscript
 
 # Winning model percentages for NPN observations
-winning_models_npn %>%
+npn_overal_best_models = winning_models_npn %>%
   group_by(model_name, data_type) %>%
   summarize(n=n()) %>%
+  ungroup() %>%
   group_by(data_type) %>%
-  mutate(freq = n/sum(n)) %>%
-  View()
+  mutate(freq = n/sum(n)) 
 
 # Winning model percentages for LTS observations
-winning_models_lts %>%
+lts_overal_best_modesl = winning_models_lts %>%
   group_by(model_name, data_type) %>%
   summarize(n=n()) %>%
+  ungroup() %>%
   group_by(data_type) %>%
-  mutate(freq = n/sum(n)) %>%
-  View()
+  mutate(freq = n/sum(n)) 
