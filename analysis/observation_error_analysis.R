@@ -1,7 +1,5 @@
 library(tidyverse)
-library(cowplot)
-library(ggforce)
-#Compare out of sample verification between datasets
+
 config = yaml::yaml.load_file('config.yaml')
 
 predictions = read_csv(config$predictions_file)
@@ -64,7 +62,14 @@ model_errors = predictions %>%
   ungroup() %>%
   gather(error_type, error_value, rmse) %>%
   mutate(error_value = round(error_value,2)) %>%
-  mutate(is_lts_model = parameter_source!='npn', is_lts_obs = observation_source != 'npn')
+  mutate(is_lts_model = parameter_source!='npn', is_lts_obs = observation_source != 'npn',
+         is_npn_model = !is_lts_model, is_npn_obs = !is_lts_obs)
+
+# Take out harvard/hubbard comparisons since they have species in common
+model_errors = model_errors %>%
+  filter(!(parameter_source=='hubbard' & observation_source=='harvard')) %>%
+  filter(!(parameter_source=='harvard' & observation_source=='hubbard'))
+
 
 # Apply more pleasing names to everything for figures
 model_names = c('gdd','m1','gdd_fixed','linear_temp','naive','alternating','msb','uniforc')
@@ -83,17 +88,76 @@ abbreviate_species_names = function(s){
   return(paste0(genus_abbr, specific_epithet))
 }
 ###########################################################
+
 scenarios_error_data = model_errors %>%
   filter(data_type=='test') %>%
-  filter(observation_source != 'Hubbard Brook', parameter_source!='Hubbard Brook') %>%
   mutate(scenario = case_when(
     is_lts_model & is_lts_obs ~ 'A',
-    is_lts_model & (!is_lts_obs) ~'B',
-    (!is_lts_model) & (!is_lts_obs) ~'C',
-    (!is_lts_model) & is_lts_obs ~ 'D'
+    is_npn_model & is_lts_obs ~'B',
+    is_lts_model & is_npn_obs ~'C',
+    is_npn_model & is_npn_obs ~ 'D'
   ))
 
+
+# For the scenario comparison, mark hubbard species and the associated NPN species uniquely so they don't
+# get mixed up with harvard in the scenario comparisons
+hubbard_data = scenarios_error_data %>%
+  filter(parameter_source=='Hubbard Brook' | observation_source=='Hubbard Brook')
+hubbard_data = scenarios_error_data %>%
+  filter((parameter_source=='NPN' & observation_source=='NPN') & species %in% hubbard_data$species & phenophase=='Budburst') %>%
+  bind_rows(hubbard_data)
+
+hubbard_data = hubbard_data %>%
+  mutate(species = paste0(species,'-HB'))
+
+scenarios_error_data = scenarios_error_data %>%
+  filter(!(parameter_source=='Hubbard Brook' | observation_source=='Hubbard Brook')) %>%
+  bind_rows(hubbard_data)
+
+rm(hubbard_data)
+
 scenarios_error_data$species_phenophase = with(scenarios_error_data, paste(abbreviate_species_names(species),phenophase,sep=' - '))
+
+#########################################################
+# Main figure of the two metrics (scenario A - B and C -D)
+
+rmse_metrics = scenarios_error_data %>%
+  select(model_name, species, phenophase, error_value, scenario) %>%
+  spread(scenario, error_value) %>%
+  mutate("Metric 1 (A - B)" = A-B, "Metric 2 (C - D)" = C-D) %>%
+  gather(metric, metric_value, "Metric 1 (A - B)", "Metric 2 (C - D)")
+
+# The annotated lines
+y_pos_line=0.15
+indicator_lines=data.frame(x=c(-10, 10), xend=c(-25, 25),
+                           y=c(y_pos_line,y_pos_line), yend=c(y_pos_line,y_pos_line),
+                           is_lts_obs='NPN Observations', model_name='GDD')
+y_pos_text=0.12
+indicator_text=data.frame(x=c(-21, 20), y=y_pos_text, t=c('LTS Models\n Better','NPN Models\n Better'),
+                          is_lts_obs='NPN Observations', model_name='GDD')
+
+
+rmse_metrics_figure=ggplot(rmse_metrics, aes(metric_value)) +
+  geom_density(alpha=0.8,fill='grey50', size=0.1) +
+  #geom_density(alpha=0.5) +
+  #geom_histogram(bins=50) +
+  geom_vline(xintercept = 0, size=1) +
+  facet_grid(metric~model_name, scales = 'free_y') +
+  geom_segment(data=indicator_lines, aes(x=x, xend=xend, y=y, yend=yend), size=0.8, arrow = arrow(length=unit(0.25,'cm')),
+               inherit.aes = FALSE) +
+  geom_text(data=indicator_text, aes(x=x,y=y, label=t),size=4.5, inherit.aes = F) +
+  labs(y='',x='Difference between scenarios') +
+  theme_bw() +
+  theme(strip.text.x = element_text(size=20),
+        strip.text.y = element_text(size=16),
+        axis.text = element_text(size=15),
+        axis.title.x = element_text(size=20),
+        strip.background = element_rect(fill='grey95'))
+
+ggsave(rmse_metrics_figure, filename = 'manuscript/rmse_metrics.png', width = 60, height = 15, units = 'cm')
+
+######################################################
+# Suppliment figure, absolute RMSE values of all scenarios
 
 scenario_error = ggplot(scenarios_error_data, aes(x=species_phenophase, y=error_value, group=scenario, color=scenario)) +
   geom_point() +
@@ -110,185 +174,33 @@ scenario_error = ggplot(scenarios_error_data, aes(x=species_phenophase, y=error_
         legend.direction = "horizontal") +
   labs(y='RMSE',x='Species & Phenophase', color='Scenario') 
 
-ggsave(scenario_error, filename = 'manuscript/scenario_error.png', width = 30, height = 20, units = 'cm')
+ggsave(scenario_error, filename = 'manuscript/scenario_absolute_rmse.png', width = 30, height = 20, units = 'cm')
+
 
 #########################################################
 # relative rankings of the different scenarios
-scenario_rankings = scenarios_error_data %>%
-  select(model_name, species_phenophase, scenario, error_value) %>%
-  group_by(model_name, species_phenophase) %>%
-  arrange(error_value) %>%
-  mutate(ranking = 1:4) %>%
-  ungroup() %>%
-  group_by(model_name, scenario) %>%
-  summarise(ranking_1 = sum(ranking==1)/n(),
-            ranking_2 = sum(ranking==2)/n(),
-            ranking_3 = sum(ranking==3)/n(),
-            ranking_4 = sum(ranking==4)/n()) %>%
-  ungroup() %>%
-  gather(ranking, rank_percent, ranking_1, ranking_2, ranking_3, ranking_4) %>%
-  group_by(scenario, ranking) %>%
-  summarize(rank_percent = round(mean(rank_percent),2)) %>%
-  spread(scenario, rank_percent)
-
-
-
-##############################################################
-
-# ###########################################################
-# model_error_jitterplot_data = model_errors %>%
-#   filter(data_type=='test')
-# 
-# 
-# point_size=4
-# point_shapes = c(17,13)
-# r2_lower_limit = 0
-# rmse_upper_limit = 20
-# color_pallete=c("grey42", "#E69F00", "#56B4E9", "#CC79A7", "#009E73")
-# 
-# model_error_jitterplot_data = model_error_jitterplot_data %>%
-#   mutate(zoomed_subset = ifelse(error_type == 'r2', error_value > r2_lower_limit,
-#                                 error_value < rmse_upper_limit))
-# 
-# common_theme_attr = theme(axis.text = element_text(size=15),
-#                           axis.title.y = element_text(size=20),
-#                           legend.title = element_text(size=22),
-#                           legend.text = element_text(size=20),
-#                           legend.key.size = unit(10, 'mm'),
-#                           plot.margin = margin(0,0.5,0.5,0, unit = 'cm'),
-#                           panel.grid.major.y = element_line(size=0.75, color='grey70'),
-#                           panel.grid.minor.y = element_line(size=0.5, color='grey70'))
-# 
-# npn_rmse_plot = model_error_jitterplot_data %>%
-#   filter(!is_lts_obs, error_type=='rmse') %>%
-#   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
-#   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
-#   geom_boxplot(inherit.aes = FALSE, aes(x=model_name, y=error_value), alpha=0, outlier.shape = NA, size=0.8) +
-#   scale_shape_manual(values=point_shapes) + 
-#   scale_color_manual(values=color_pallete) +
-#   theme_linedraw() +
-#   ylim(0,NA) +
-#   common_theme_attr +
-#   theme(plot.margin = unit(c(1,0,0,0),'cm')) +
-#   labs(y='RMSE', x='') + 
-#   facet_zoom(y = zoomed_subset==TRUE) 
-# 
-# lts_rmse_plot = model_error_jitterplot_data %>%
-#   filter(is_lts_obs, error_type=='rmse') %>%
-#   ggplot(aes(x=model_name, y=error_value, group=parameter_source, color=parameter_source)) + 
-#   geom_jitter(width = 0.2, size=point_size, aes(shape = phenophase)) +
-#   geom_boxplot(inherit.aes = FALSE, aes(x=model_name, y=error_value), alpha=0, outlier.shape = NA, size=0.8) +
-#   scale_shape_manual(values=point_shapes) + 
-#   scale_color_manual(values=color_pallete) +
-#   theme_linedraw() +
-#   ylim(0,NA) +
-#   common_theme_attr +
-#   labs(y = 'RMSE', x='', color='Parameter Source', shape='Phenophase') +
-#   theme(legend.position = 'bottom',
-#         legend.direction = 'horizontal',
-#         legend.background = element_rect(color='black'),
-#         plot.margin = unit(c(1,0,0,0),'cm')) +
-#   facet_zoom(y = zoomed_subset==TRUE)
-# 
-# legend_alone = get_legend(lts_rmse_plot)
-# remove_legend = theme(legend.position = 'none')
-# 
-# top_row = plot_grid(npn_rmse_plot + remove_legend)
-# bottom_row = plot_grid(lts_rmse_plot + remove_legend)
-# 
-# top_row_text = 'A. Model error for observations in NPN dataset'
-# bottom_row_text = 'B. Model error for observations in LTS datasets'
-# fig3 = plot_grid(top_row, bottom_row, legend_alone, ncol=1, labels=c(top_row_text, bottom_row_text, ''), 
-#           rel_heights = c(1,1,0.2), hjust=-0.07, vjust=2.7, label_size=12)
-# 
-# ggsave(fig3, filename = 'manuscript/fig_3_error_compare.png', width = 55, height = 24, units = 'cm')
-# 
-# ########################################################################################
-# # Pairwise comparison between LTS and NPN models
-# npn_model_errors = model_errors %>%
-#   filter(!is_lts_model, data_type=='test') %>%
-#   select(-error_type, -is_lts_model, -parameter_source, -sample_size, -data_type) %>%
-#   rename(npn_error_value = error_value)
-# 
-# pairwise_comparison_data = model_errors %>%
-#   filter(is_lts_model, data_type=='test') %>%
-#   rename(lts_error_value = error_value) %>%
-#   select(-error_type, -is_lts_model, -parameter_source, -data_type) %>%
-#   left_join(npn_model_errors, by=c('model_name','observation_source','species','phenophase','is_lts_obs')) %>%
-#   mutate(model_difference = npn_error_value - lts_error_value)
-# 
-# pairwise_comparison_data$is_lts_obs = factor(pairwise_comparison_data$is_lts_obs, levels = c(FALSE, TRUE), labels = c('NPN Observations','LTS Observations'))
-# 
-# y_pos_line=0.15
-# indicator_lines=data.frame(x=c(-10, 10), xend=c(-25, 25), 
-#                            y=c(y_pos_line,y_pos_line), yend=c(y_pos_line,y_pos_line),
-#                            is_lts_obs='NPN Observations', model_name='GDD')
-# y_pos_text=0.12
-# indicator_text=data.frame(x=c(-22, 20), y=y_pos_text, t=c('NPN Models\n Better','LTS Models\n Better'),
-#                           is_lts_obs='NPN Observations', model_name='GDD')
-# 
-# fig4=ggplot(pairwise_comparison_data, aes(model_difference)) + 
-#   geom_density(alpha=0.8,fill='grey50', size=0.1) +
-#   #geom_density(alpha=0.5) +
-#   #geom_histogram(bins=50) +
-#   geom_vline(xintercept = 0, size=1) +
-#   facet_grid(is_lts_obs~model_name, scales = 'free_y') +
-#   geom_segment(data=indicator_lines, aes(x=x, xend=xend, y=y, yend=yend), size=0.8, arrow = arrow(length=unit(0.25,'cm')),
-#                inherit.aes = FALSE) +
-#   geom_text(data=indicator_text, aes(x=x,y=y, label=t),size=4.5, inherit.aes = F) +
-#   labs(y='',x='Difference between NPN and LTS derived errors') +
-#   theme_bw() +
-#   theme(strip.text.x = element_text(size=20),
-#         strip.text.y = element_text(size=16),
-#         axis.text = element_text(size=15),
-#         axis.title.x = element_text(size=20),
-#         strip.background = element_rect(fill='grey95'))
-# 
-# ggsave(fig4, filename = 'manuscript/fig_4_pairwise_error.png', width = 60, height = 15, units = 'cm')
-
-###########################################################
-# Write a standalone latex file for a table
-make_table_pdf = function(df, latex_file){
-  sink(latex_file)
-  cat("\\documentclass{article}\n")
-  cat("\\begin{document}\n")
-  cat("\\makebox[\\textwidth]{\n")
-  print.xtable(xtable(df),
-               size="\\fontsize{5pt}{6pt}\\selectfont",
-               floating = FALSE, include.rownames = TRUE,
-               tabular.environment = 'longtable')
-  cat("}\n")
-  cat("\\end{document}")
-  sink()
-}
-
-abbreviate_species_names = function(s){
-  genus_abbr = paste0(toupper(substr(s, 1,1)), '. ')
-  specific_epithet = stringr::word(s, 2,2)
-  return(paste0(genus_abbr, specific_epithet))
-}
+# scenario_rankings = scenarios_error_data %>%
+#   select(model_name, species_phenophase, scenario, error_value) %>%
+#   group_by(model_name, species_phenophase) %>%
+#   arrange(error_value) %>%
+#   mutate(ranking = 1:4) %>%
+#   ungroup() %>%
+#   group_by(model_name, scenario) %>%
+#   summarise(ranking_1 = sum(ranking==1)/n(),
+#             ranking_2 = sum(ranking==2)/n(),
+#             ranking_3 = sum(ranking==3)/n(),
+#             ranking_4 = sum(ranking==4)/n()) %>%
+#   ungroup() %>%
+#   gather(ranking, rank_percent, ranking_1, ranking_2, ranking_3, ranking_4) %>%
+#   group_by(scenario, ranking) %>%
+#   summarize(rank_percent = round(mean(rank_percent),2)) %>%
+#   spread(scenario, rank_percent)
 
 
 ###########################################################
-# Suppliment tables of error values
+# Suppliment figures
 ##########################################################
-library(xtable)
-suppliment_error_data = model_errors %>%
-  select(-error_type) %>%
-  rename(n=sample_size) %>%
-  spread(model_name, error_value) 
 
-suppliment_error_data$species = abbreviate_species_names(suppliment_error_data$species)
-
-###########################################
-# Suppliment table 1. All errors.
-# Table layout
-suppliment_table1 = suppliment_error_data %>%
-  select(species,phenophase,observation_source, data_type,n, parameter_source,everything()) %>%
-  select(-is_lts_model, -is_lts_obs) %>%
-  arrange(species,phenophase,observation_source, parameter_source, data_type)
-
-make_table_pdf(suppliment_table1, 'test.tex')
 ############################################
 ############################################
 # Suppliment figure 1. Only NPN errors. 
@@ -299,7 +211,7 @@ suppliment_fig_12_theme =  theme(axis.text.x = element_text(size=10,angle=90, de
                                  strip.text = element_text(size=6.5)) 
   
 suppliment_fig1_data = model_errors %>%
-  filter(!is_lts_model, !is_lts_obs) %>%
+  filter(is_npn_model, is_npn_obs) %>%
   select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source)
 suppliment_fig1_data$species = abbreviate_species_names(suppliment_fig1_data$species)
 
@@ -355,11 +267,6 @@ ggsave(suppliment_fig2, filename = 'manuscript/fig_s2_best_lts_models.png',
 
 ###
 # Stats for manuscript
-# Median scores from fig 3
-model_error_jitterplot_data %>%
-  group_by(model_name, is_lts_obs) %>%
-  summarize(median_error = median(error_value), n=n()) %>%
-  View()
 
 # Winning model percentages for NPN observations
 winning_models_npn %>%
