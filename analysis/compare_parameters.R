@@ -232,7 +232,7 @@ complex_layout = rbind(c(2,1,7,7),
 
 #                                      1       2(1)     3(2)       4(3)  5(4)      6(3)         7        8(1)    9(3) 10(3)
 whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, alternating, legend, gdd_fixed, m1, msb, layout_matrix=complex_layout,
-                        left = 'Long Term Dataset Derived Parameter Estimates',
+                        left = 'Long Term Study (LTS) Derived Parameter Estimates',
                         bottom = 'NPN Derived Parameter Estimates')
 
 
