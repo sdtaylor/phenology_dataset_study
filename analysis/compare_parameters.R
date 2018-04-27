@@ -28,6 +28,7 @@ lts_sample_sizes = all_parameters %>%
   select(dataset, species, phenophase) %>%
   distinct() %>% group_by(dataset, phenophase) %>%
   summarize(n_species = n_distinct(species))
+print(paste0('total unique species: ',length(unique(all_parameters$species))))
 print(paste0('total species/phenophase comparisons: ',sum(lts_sample_sizes$n_species)))
 
 ############################################################################
@@ -60,50 +61,55 @@ all_parameters = all_parameters %>%
 rm(lts_models_parameters)
 ############################################################################
 #The distribution of all parameters derived using bootstrapping
-# make_parameter_histograms = FALSE
+make_parameter_histograms = FALSE
 
-# save_histogram = function(r){
-#   histogram_data = all_parameters %>%
-#     filter(species==r$species, phenophase==r$phenophase, model==r$model, parameter_name==r$parameter_name, dataset==r$dataset)
-#   plot_name = paste0('parameter_histograms/parameter_',r$id,'.png')
-#   histogram = ggplot(histogram_data, aes(value)) +
-#     geom_histogram(bins=50) +
-#     facet_wrap(species~phenophase~model~parameter_name~dataset)
-#   ggsave(plot_name, plot=histogram, height=20, width=20, units = 'cm', limitsize = FALSE)
-# }
-# 
-# if(make_parameter_histograms){
-#   possible_histograms = all_parameters %>% 
-#     select(species,phenophase,model,parameter_name,dataset) %>%
-#     distinct() %>%
-#     mutate(id = 1:n()) %>%
-#     purrrlyr::by_row(save_histogram)
-# }
-# 
-# #Comparison of parameters in npn vs other datasets
-# x = all_parameters %>%
-#   filter(dataset %in% c('hjandrews','npn'),model=='gdd_fixed')
-# 
-# ggplot(x, aes(x=value, group=dataset, fill=dataset)) +
-#   geom_histogram(bins=50, position = 'identity', alpha=0.7) +
-#   scale_fill_brewer(palette='Set2') +
-#   facet_wrap(parameter_name~model~species~phenophase, scales = 'free')
+save_histogram = function(r){
+  histogram_data = all_parameters %>%
+    filter(species==r$species, phenophase==r$phenophase, model==r$model, parameter_name==r$parameter_name, dataset==r$dataset)
+  plot_name = paste0('parameter_histograms/parameter_',r$id,'.png')
+  histogram = ggplot(histogram_data, aes(value)) +
+    geom_histogram(bins=50) +
+    facet_wrap(species~phenophase~model~parameter_name~dataset)
+  ggsave(plot_name, plot=histogram, height=20, width=20, units = 'cm', limitsize = FALSE)
+}
 
-############################################################################
-#Statistical test of parameters
- # npn_parameters = all_parameters %>%
- #   filter(dataset=='npn') %>%
- #   rename(npn_value = value) %>%
- #   select(-dataset)
- # 
- # p_values = all_parameters %>%
- #   filter(dataset!='npn') %>%
- #   rename(dataset_value = value) %>%
- #   left_join(npn_parameters, by=c('model','parameter_name','bootstrap_num','species','phenophase')) %>%
- #   group_by(dataset, model, parameter_name, species, phenophase) %>%
- #   #summarise(p_value = ks.test(.$dataset_value, .$npn_value, alternative='two.side', exact=TRUE)$p.value, n=n()) %>%
- #   summarise(p_value = wilcox.test(.$dataset_value, .$npn_value, alternative = 'two.sided')$p.value) %>%
- #   ungroup()
+if(make_parameter_histograms){
+  possible_histograms = all_parameters %>%
+    select(species,phenophase,model,parameter_name,dataset) %>%
+    distinct() %>%
+    mutate(id = 1:n()) %>%
+    purrrlyr::by_row(save_histogram)
+}
+
+#Comparison of parameters in npn vs other datasets
+x = all_parameters %>%
+  filter(dataset %in% c('harvard','npn'),model=='uniforc',species=='populus tremuloides', phenophase==501)
+
+ggplot(x, aes(x=value, group=dataset, fill=dataset)) +
+  geom_histogram(bins=50, position = 'identity', alpha=0.7) +
+  scale_fill_brewer(palette='Set2') +
+  facet_wrap(parameter_name~model~species~phenophase, scales = 'free')
+
+###########################################################################
+# Are these results robust to a sample size smaller than 250 bootstraps?
+# 
+# all_parameters_subset = all_parameters %>%
+#   filter(bootstrap_num %in% sample(1:250, size=20))
+# 
+# #Statistical test of parameters
+# npn_parameters = all_parameters_subset %>%
+#   filter(dataset=='npn') %>%
+#   rename(npn_value = value) %>%
+#   select(-dataset)
+# 
+# p_values = all_parameters_subset %>%
+#   filter(dataset!='npn') %>%
+#   rename(dataset_value = value) %>%
+#   left_join(npn_parameters, by=c('model','parameter_name','bootstrap_num','species','phenophase')) %>%
+#   group_by(dataset, model, parameter_name, species, phenophase) %>%
+#   #summarise(p_value = ks.test(.$dataset_value, .$npn_value, alternative='two.side', exact=TRUE)$p.value, n=n()) %>%
+#   summarise(p_value = wilcox.test(.$dataset_value, .$npn_value, alternative = 'two.sided')$p.value) %>%
+#   ungroup()
 
 
 ###############################################################################
