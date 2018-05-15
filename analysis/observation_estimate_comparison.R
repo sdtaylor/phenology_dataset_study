@@ -31,6 +31,11 @@ predictions = predictions %>%
   select(-phenophase) %>%
   rename(phenophase = phenophase_type)
 
+########################################################
+# Only use estimates for held out observations
+predictions = predictions %>%
+  filter(data_type=='test')
+
 #########################################################
 # Account for spatially corrected models. See note in
 # compare_parameters.R
