@@ -50,8 +50,10 @@ site_map = ggplot() +
         panel.grid = element_blank(),
         axis.ticks = element_blank(),
         panel.border = element_blank(),
-        legend.position = 'none')
+        legend.position = 'none',
+        plot.margin = unit(c(0,0,0,0),'mm'))
 print(site_map)
-ggsave('manuscript/fig_s3_site_map.png', plot=site_map, height=20, width=50, units = 'cm')
+# Note, I saved this manually using the export tool to get ride of uneeded whitespace in the figure.
+ggsave('manuscript/figure_site_map.png', plot=site_map, height=20, width=50, units = 'cm')
 
 

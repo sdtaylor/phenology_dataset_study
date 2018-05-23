@@ -98,6 +98,7 @@ scenarios_error_data = model_errors %>%
     is_npn_model & is_npn_obs ~ 'D'
   ))
 
+# Remove spatial models 
 
 # For the scenario comparison, mark hubbard species and the associated NPN species uniquely so they don't
 # get mixed up with harvard in the scenario comparisons
@@ -130,11 +131,11 @@ rmse_metrics = scenarios_error_data %>%
 
 # The annotated lines
 y_pos_line=0.15
-indicator_lines=data.frame(x=c(-10, 10), xend=c(-25, 25),
+indicator_lines=data.frame(x=c(-12, 12), xend=c(-27, 27),
                            y=c(y_pos_line,y_pos_line), yend=c(y_pos_line,y_pos_line),
                            is_lts_obs='NPN Observations', model_name='GDD')
 y_pos_text=0.12
-indicator_text=data.frame(x=c(-21, 20), y=y_pos_text, t=c('LTS Models\n Better','NPN Models\n Better'),
+indicator_text=data.frame(x=c(-19, 22), y=y_pos_text, t=c('LTER Models\n Better','NPN Models\n Better'),
                           is_lts_obs='NPN Observations', model_name='GDD')
 
 
@@ -155,7 +156,7 @@ rmse_metrics_figure=ggplot(rmse_metrics, aes(metric_value)) +
         axis.title.x = element_text(size=20),
         strip.background = element_rect(fill='grey95'))
 
-ggsave(rmse_metrics_figure, filename = 'manuscript/rmse_metrics_density_plot.png', width = 60, height = 15, units = 'cm')
+ggsave(rmse_metrics_figure, filename = 'manuscript/figure_rmse_metrics_density_plot.png', width = 60, height = 15, units = 'cm')
 
 ######################################################
 ######################################################
@@ -281,11 +282,12 @@ supplement_fig2 = ggplot(supplement_fig2_data, aes(x=model_name, y=error_value, 
   supplement_fig_12_theme
 
 
-ggsave(supplement_fig2, filename = 'manuscript/supplement_best_lts_models.png',
+ggsave(supplement_fig2, filename = 'manuscript/supplement_best_lter_models.png',
        width = 40, height = 50, units = 'cm')
 ############################################
 ############################################
-
+library(kableExtra)
+library(knitr)
 ###
 # Stats for manuscript
 
@@ -294,13 +296,19 @@ npn_overal_best_models = winning_models_npn %>%
   group_by(model_name, data_type) %>%
   summarize(n=n()) %>%
   ungroup() %>%
-  group_by(data_type) %>%
-  mutate(freq = n/sum(n)) 
+  mutate(data_source='NPN')
 
 # Winning model percentages for LTS observations
-lts_overal_best_modesl = winning_models_lts %>%
+lts_overal_best_models = winning_models_lts %>%
   group_by(model_name, data_type) %>%
   summarize(n=n()) %>%
   ungroup() %>%
-  group_by(data_type) %>%
-  mutate(freq = n/sum(n)) 
+  mutate(data_source='LTER')
+
+overall_best_models = npn_overal_best_models %>%
+  bind_rows(lts_overal_best_models) %>%
+  spread(model_name, n, fill=0) %>%
+  select(data_source, data_type, Naive, Linear, 'Fixed GDD', GDD, M1, Uniforc, Alternating, MSB) %>%
+  arrange(data_source, data_type)
+
+#kable(overall_best_models, 'latex')
