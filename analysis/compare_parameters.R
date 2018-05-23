@@ -223,7 +223,7 @@ legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='uniforc'), a
                                      legend.title = element_text(size = 18),
                                     
                                      legend.key.size = unit(5, units = 'mm')) +
-                               labs(colour = "LTS Dataset", 
+                               labs(colour = "LTER Dataset", 
                                     shape = "Phenophase"))
 
 empty_space = grid::textGrob('')
@@ -238,11 +238,11 @@ complex_layout = rbind(c(2,1,7,7),
 
 #                                      1       2(1)     3(2)       4(3)  5(4)      6(3)         7        8(1)    9(3) 10(3)
 whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, alternating, legend, gdd_fixed, m1, msb, layout_matrix=complex_layout,
-                        left = 'Long Term Study (LTS) Derived Parameter Estimates',
+                        left = 'LTER Derived Parameter Estimates',
                         bottom = 'NPN Derived Parameter Estimates')
 
 
 
-ggsave('manuscript/fig_1_param_comparison.png', plot=whole_plot, height=33, width=20, units = 'cm')
+ggsave('manuscript/figure_param_comparison.png', plot=whole_plot, height=33, width=20, units = 'cm')
 
 

@@ -73,7 +73,7 @@ observation_estimate_comparison = predictions %>%
 observation_estimate_comparison = observation_estimate_comparison %>%
   mutate(is_lts_obs = case_when(
     observation_source=='npn'~'At NPN Sites',
-    observation_source!='npn'~'At LTS Sites'
+    observation_source!='npn'~'At LTER Sites'
   ))
 
 model_names = c('gdd','m1','gdd_fixed','linear_temp','naive','alternating','msb','uniforc')
@@ -96,9 +96,9 @@ fig2=ggplot(observation_estimate_comparison, aes(x=doy_estimated_npn_model, y=do
   theme_bw() + 
   theme(legend.position = 'none') + 
   labs(x='Estimates from NPN derived models',
-       y='Estimates from LTS derived models')
+       y='Estimates from LTER derived models')
 
-ggsave(fig2, filename = 'manuscript/fig_2_estimate_compare.png', height = 14, width = 40, units = 'cm')
+ggsave(fig2, filename = 'manuscript/figure_estimate_compare.png', height = 14, width = 40, units = 'cm')
 ################################################################
 # Graph of root mean square different model, phenophase, lts dataset
 # Old graph that might not end up in manuscript
