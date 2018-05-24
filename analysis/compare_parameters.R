@@ -1,5 +1,4 @@
 library(tidyverse)
-library(broom)
 library(cowplot)
 config = yaml::yaml.load_file('config.yaml')
 
@@ -21,15 +20,6 @@ npn_species = all_parameters %>%
 
 all_parameters = all_parameters %>% 
   filter(paste(species,phenophase) %in% paste(npn_species$species,npn_species$phenophase) )
-
-# This is the final numbers put into the Table 1
-lts_sample_sizes = all_parameters %>%
-  filter(dataset!='npn') %>%
-  select(dataset, species, phenophase) %>%
-  distinct() %>% group_by(dataset, phenophase) %>%
-  summarize(n_species = n_distinct(species))
-print(paste0('total unique species: ',length(unique(all_parameters$species))))
-print(paste0('total species/phenophase comparisons: ',sum(lts_sample_sizes$n_species)))
 
 ############################################################################
 # Organize the two spatial models, MSB and M1
@@ -91,6 +81,7 @@ ggplot(x, aes(x=value, group=dataset, fill=dataset)) +
   facet_wrap(parameter_name~model~species~phenophase, scales = 'free')
 
 ###########################################################################
+# Mann Whitney and/or ks test for parameter distribution comparison.
 # Are these results robust to a sample size smaller than 250 bootstraps?
 # 
 # all_parameters_subset = all_parameters %>%
@@ -115,7 +106,7 @@ ggplot(x, aes(x=value, group=dataset, fill=dataset)) +
 ###############################################################################
 #scatter plots of npn vs long term datasets
 
-budburst_phenophases = c(371, 496, 488)
+budburst_phenophases = c(371, 496, 488, 480)
 flower_phenophases = c(501)
 
 parameter_means = all_parameters %>%
