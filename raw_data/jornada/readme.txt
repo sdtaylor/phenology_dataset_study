@@ -26,3 +26,10 @@ file: JornadaStudy_287_npp_perennial_plant_phenology.his
     note, has potentially important info on observations made but not recorded when everything was dormant
     nope, nm, when something was dormant it was recorded the same as the prior month. and it's mostly the low diversity playa (zone P) sites
     notes from observers, from https://jornada.nmsu.edu/content/plant-phenology-transect-npp-sites
+
+
+
+From the Jornada data use policies at https://jornada.nmsu.edu/lter/data/policies
+Policies for re-use, distribution, or the production of derivatives:
+
+Data re-use, distribution and production of derivative products are governed by the LTER Network data policies (https://lternet.edu/data-access-policy/) in the spirit of having the potential to increase communication, collaboration and synthesis within and among disciplines. Appropriate citation, acknowledgement, notification and collaboration are outlined and recommended. No commercial redistribution of data and derived products are allowed.
