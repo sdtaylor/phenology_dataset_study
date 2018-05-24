@@ -24,6 +24,7 @@ phenophase,phenophase_type
 371,Budburst
 480,Budburst
 488,Budburst
+496,Budburst
 501,Flowers')
 
 predictions = predictions %>%
@@ -65,6 +66,9 @@ npn_model_estimates = predictions %>%
 
 observation_estimate_comparison = predictions %>%
   filter(parameter_source != 'npn') %>%
+  # Exclude the 3 common species between hubbard and harvard in this comparison
+  filter(!(observation_source == 'hubbard' & parameter_source == 'harvard')) %>%
+  filter(!(observation_source == 'harvard' & parameter_source == 'hubbard')) %>%
   rename(doy_estimated_non_npn_model = doy_estimated, non_npn_parameter_source = parameter_source) %>%
   left_join(npn_model_estimates, by=c('model_name','observation_source','species','observation_id','phenophase')) %>%
   filter(complete.cases(.)) %>%
