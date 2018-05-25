@@ -98,7 +98,6 @@ scenarios_error_data = model_errors %>%
     is_npn_model & is_npn_obs ~ 'D'
   ))
 
-# Remove spatial models 
 
 # For the scenario comparison, mark hubbard species and the associated NPN species uniquely so they don't
 # get mixed up with harvard in the scenario comparisons
