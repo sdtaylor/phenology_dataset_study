@@ -53,7 +53,7 @@ single_model_plot = function(model_name, plot_title){
     summarise(mean_value = mean(value), median_value=median(value)) %>%
     ungroup() %>%
     gather(summary_metric, summary_value, mean_value, median_value)
-  p=ggplot(plot_data, aes(value, fill=dataset)) +
+  p=ggplot(plot_data, aes(x=value, fill=dataset)) +
     geom_density(position = position_identity(), alpha=0.7) +
     geom_vline(data=summary_lines, aes(xintercept=summary_value, color=dataset, linetype=summary_metric), size=1) +
     scale_fill_manual(values=color_pallete) +
@@ -81,13 +81,17 @@ plot(linear)
 
 no_legend = theme(legend.position = 'none')
 
-all_plots = 
+hubbard_hubbard_1 = 
   (naive + no_legend)+
   (gdd_fixed + no_legend) + 
-  (linear + no_legend) + 
-  gdd + 
-  (alternating + no_legend) + 
-  (uniforc + no_legend) +
-  plot_layout(ncol=1, heights=c(1,1,2,3,4,4))
+  (linear) + 
+  (gdd + no_legend) + 
+  plot_layout(ncol=1, heights=c(1,1,2,3))
 
-ggsave('manuscript/supplement_hubbard_harvard_comparison.png', plot=all_plots, height=50, width=30, units = 'cm')
+hubbard_hubbard_2 = 
+  (alternating) + 
+  (uniforc + no_legend) +
+  plot_layout(ncol=1, heights=c(1,1))
+
+ggsave('manuscript/supplement_hubbard_harvard_comparison1.png', plot=hubbard_hubbard_1, height=40, width=30, units = 'cm')
+ggsave('manuscript/supplement_hubbard_harvard_comparison2.png', plot=hubbard_hubbard_2, height=40, width=30, units = 'cm')
