@@ -10,30 +10,33 @@
 
 
 \begin{document}
-\centering{\Large Paper title goes here \par}
+{\Large Comparison of large-scale citizen science data and long-term study data for phenology modeling \par}
 
 \textit{Shawn D. Taylor, Joan M. Meiners, Kristina Riemer, Michael C. Orr, Ethan P. White}
 
-\textbf{\centering{\large Supplementary materials \par}} \newline
-Supplementary images S1 - S4
+\textbf{\large Supplementary materials \par} \newline
+Supplementary images S1 - S7 and Table S1
 
 %%%%%%%%%%%%%%%%%
 %% Figure S1
 %%%%%%%%%%%%%%%%%
-\textbf{Figure S1}: RMSE for specific species and phenophases of the NPN dataset. X marks the best performing models for the respective data type.
+\newpage
+
+\textbf{Figure S1}: RMSE for specific species and phenophases of the NPN dataset. X marks the best performing models for each respective data type.
 
 \newpage
 
 \begin{center}
 	\centering
 		\includegraphics[width=1\textwidth]{supplement_best_npn_models.png}
+	\caption{Figure S1}
 \end{center}
 
 \newpage
 %%%%%%%%%%%%%%%%%
 %% Figure S2
 %%%%%%%%%%%%%%%%%
-\textbf{Figure S2}: RMSE for specific species and phenophases of the LTER datasets. X marks the best performing models for the respective data type.
+\textbf{Figure S2}: RMSE for specific species and phenophases of the LTER datasets. X marks the best performing models for each respective data type.
 
 \newpage
 
@@ -49,7 +52,7 @@ Supplementary images S1 - S4
 
 \newpage
 
-\textbf{Figure S3}: RMSE of all species and phenophases of the four scenarios described in the text. These values are calculated using held out test data.
+\textbf{Figure S3}: RMSE of all species and phenophases of the four scenarios described in the text. These values were calculated using held out test data.
 
 \newpage
 
@@ -64,16 +67,144 @@ Supplementary images S1 - S4
 %%%%%%%%%%%%%%%%%
 \newpage
 
-\textbf{Figure S4}: Distribution of model parameters for the three species common to the Hubbard Brook, Harvard, and NPN datasets. The phenophase is budburst for all three species. Vertical lines indicate either the mean (solid) or median (dashed) of the respective distribution.
+\textbf{Figure S4}: Distribution of parameters of the Naive, GDD, Fixed GDD, and Linear models for the three species common to the Hubbard Brook, Harvard, and NPN datasets. The phenophase is budburst for all three species. Vertical lines indicate either the mean (solid) or median (dashed) of the respective distribution. Note the heading for each sub figure. 
 
 \newpage
 
 \begin{center}
 	\centering
-		\includegraphics[width=1\textwidth]{supplement_hubbard_harvard_comparison.png}
+		\includegraphics[scale=0.5]{supplement_hubbard_harvard_comparison1.png}
 	\caption{Figure S4}
 \end{center}
 
+%%%%%%%%%%%%%%%%%
+%% Figure S5
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Figure S5}: As in Figure S4, but for the Alternating and Uniforc models. 
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[scale=0.5]{supplement_hubbard_harvard_comparison2.png}
+	\caption{Figure S5}
+\end{center}
+
+%%%%%%%%%%%%%%%%%
+%% Figure S6
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Figure S6}: As in Figure S4, but for 4 selected species to show the difference in parameter distributions between LTER and NPN derived models. The phenophase for the four species is budburst. These 4 species are representative of the analysis, and for the remaining comparisons the reader is pointed to the script 'analysis/plot\_select\_species\_parameters.R' in the code repository to generate additional figures.
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[scale=0.5]{supplement_select_species_param_comparison1.png}
+	\caption{Figure S6}
+\end{center}
+
+%%%%%%%%%%%%%%%%%
+%% Figure S7
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Figure S7}: As in Figure S6, but for the Alternating and Uniforc models. 
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[scale=0.5]{supplement_select_species_param_comparison2.png}
+	\caption{Figure S7}
+\end{center}
+%%%%%%%%%%%%%%%%%
+%% Table S1
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\begin{table}
+\footnotesize
+\begin{tabular}{l|r|l|l|l|l|l}
+\hline
+Species & PhenophaseID & Desc. & Harvard & H.J. Andrews & Hubbard & Jornada\\
+\hline
+acer circinatum & 371 & Budburst &  & x &  & \\
+\hline
+acer circinatum & 501 & Flowers &  & x &  & \\
+\hline
+acer pensylvanicum & 371 & Budburst & x &  &  & \\
+\hline
+acer rubrum & 371 & Budburst & x &  &  & \\
+\hline
+acer rubrum & 501 & Flowers & x &  &  & \\
+\hline
+acer saccharum & 371 & Budburst & x &  & x & \\
+\hline
+betula alleghaniensis & 371 & Budburst & x &  & x & \\
+\hline
+betula alleghaniensis & 501 & Flowers & x &  &  & \\
+\hline
+betula lenta & 371 & Budburst & x &  &  & \\
+\hline
+betula papyrifera & 371 & Budburst & x &  &  & \\
+\hline
+betula papyrifera & 501 & Flowers & x &  &  & \\
+\hline
+fagus grandifolia & 371 & Budburst & x &  & x & \\
+\hline
+fraxinus americana & 371 & Budburst & x &  &  & \\
+\hline
+fraxinus americana & 501 & Flowers & x &  &  & \\
+\hline
+ilex verticillata & 371 & Budburst & x &  &  & \\
+\hline
+larrea tridentata & 501 & Flowers &  &  &  & x\\
+\hline
+nyssa sylvatica & 371 & Budburst & x &  &  & \\
+\hline
+pinus strobus & 496 & Budburst & x &  &  & \\
+\hline
+populus tremuloides & 371 & Budburst & x &  &  & \\
+\hline
+populus tremuloides & 501 & Flowers & x &  &  & \\
+\hline
+prosopis glandulosa & 501 & Flowers &  &  &  & x\\
+\hline
+prunus serotina & 371 & Budburst & x &  &  & \\
+\hline
+pseudotsuga menziesii & 480 & Budburst &  & x &  & \\
+\hline
+quercus alba & 371 & Budburst & x &  &  & \\
+\hline
+quercus rubra & 371 & Budburst & x &  &  & \\
+\hline
+quercus rubra & 501 & Flowers & x &  &  & \\
+\hline
+quercus velutina & 371 & Budburst & x &  &  & \\
+\hline
+rhododendron macrophyllum & 371 & Budburst &  & x &  & \\
+\hline
+rhododendron macrophyllum & 501 & Flowers &  & x &  & \\
+\hline
+trillium ovatum & 488 & Budburst &  & x &  & \\
+\hline
+trillium ovatum & 501 & Flowers &  & x &  & \\
+\hline
+vaccinium corymbosum & 371 & Budburst & x &  &  & \\
+\hline
+vaccinium corymbosum & 501 & Flowers & x &  &  & \\
+\hline
+vaccinium parvifolium & 371 & Budburst &  & x &  & \\
+\hline
+vaccinium parvifolium & 501 & Flowers &  & x &  & \\
+\hline
+\end{tabular}
+\caption{Species used in the analysis.}
+\end{table}
 
 
 \end{document}}
