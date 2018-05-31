@@ -44,7 +44,7 @@ options(prism.path = "~/data/prism_daily")
 #get_prism_dailys(type = 'tmean', minDate = '1981-01-01', maxDate = '2005-12-31', keepZip = FALSE)
 
 #NPN Site coordinates
-site_info = read_csv('~/data/phenology/npn_core/ancillary_site_data.csv') %>%
+site_info = read_csv('raw_data/npn/ancillary_site_data.csv') %>%
   dplyr::select(Site_ID, Latitude, Longitude) %>%
   dplyr::distinct() %>%
   mutate(dataset='npn', start_year=2009, end_year=2016)
