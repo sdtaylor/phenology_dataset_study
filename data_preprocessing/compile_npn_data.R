@@ -27,7 +27,7 @@ non_npn_species = read_csv('./cleaned_data/non_npn_species_list.csv') %>%
 
 
 #The raw npn data
-all_observations = read_csv(paste0(data_dir,'status_intensity_observation_data.csv')) %>%
+all_observations = read_csv(paste0(data_dir,'status_intensity_observation_data.csv.gz')) %>%
   select(Site_ID, individual_id = Individual_ID, Phenophase_ID, Observation_Date, status = Phenophase_Status,
          intensity_id = Intensity_Category_ID, intensity = Intensity_Value, Genus, Species) %>%
   mutate(species= tolower(paste(Genus,Species,sep=' ')), 
