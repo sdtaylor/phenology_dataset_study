@@ -17,7 +17,7 @@ subset_npn_data = function(this_species, this_phenophase){
 }
 
 ##################################################################################
-data_dir = '~/data/phenology/npn_core/'
+data_dir = 'raw_data/npn/'
 
 
 #Some species are in > dataset, so only get distinct species/phenophases
