@@ -2,6 +2,8 @@ This is the repository for the study "Comparison of large-scale citizen science 
 
 Shawn D. Taylor, Joan M. Meiners, Kristina Riemer, Michael C. Orr, Ethan P. White
 
+Manuscript preprint: https://doi.org/10.1101/335802
+
 ### Contents
 
 analysis/ - The scripts to run the analysis and make all the figures in the paper
