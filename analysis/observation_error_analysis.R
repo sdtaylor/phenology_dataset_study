@@ -125,8 +125,8 @@ scenarios_error_data$species_phenophase = with(scenarios_error_data, paste(abbre
 rmse_metrics = scenarios_error_data %>%
   select(model_name, species, phenophase, error_value, scenario) %>%
   spread(scenario, error_value) %>%
-  mutate("Metric 1 (A - B)" = A-B, "Metric 2 (C - D)" = C-D) %>%
-  gather(metric, metric_value, "Metric 1 (A - B)", "Metric 2 (C - D)")
+  mutate("With LTER Data" = A-B, "With USA-NPN Data" = C-D) %>%
+  gather(metric, metric_value, "With LTER Data", "With USA-NPN Data")
 
 # The annotated lines
 y_pos_line=0.15
