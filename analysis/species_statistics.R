@@ -32,22 +32,41 @@ lts_sample_sizes = all_species %>%
 print(paste0('total unique species: ',length(unique(all_species$species))))
 print(paste0('total species/phenophase comparisons: ',sum(lts_sample_sizes$n_species)))
 
-# Suppliment table of species names
+########################################
+# Suppliment table of species names and sample sizes
 library(kableExtra)
 library(knitr)
 
-phenophase_types = read.table(header=TRUE, sep=',', stringsAsFactors = FALSE, text='
-phenophase,phenophase_type
-371,Budburst
-480,Budburst
-488,Budburst
-496,Budburst
-501,Flowers')
+# get sample sizes from the predictions file
+predictions = read_csv(config$predictions_file) %>%
+  select(data_type, observation_source, species, observation_id) %>%
+  distinct()
+#Keep only species that are present in NPN dataset
+npn_species = predictions %>%
+  filter(observation_source == 'npn') %>%
+  select(species) %>%
+  distinct()
+sample_sizes = predictions %>%
+  filter(species %in% npn_species$species) %>%
+  mutate(phenophase = as.numeric(stringr::word(species,2,2, ' - ')),
+         species = stringr::word(species,1,1,' - ')) %>%
+  group_by(data_type, observation_source, species, phenophase) %>%
+  tally()
 
-suppliment_species_table = all_species %>%
-  filter(dataset!='npn') %>%
+phenophase_types = tribble(
+  ~phenophase,~phenophase_type,
+  371,'Budburst',
+  480,'Budburst',
+  488,'Budburst',
+  496,'Budburst',
+  501,'Flowers'
+)
+
+suppliment_species_table = sample_sizes  %>%
+  spread(data_type, n) %>%
   left_join(phenophase_types) %>%
-  mutate(present='x') %>%
-  spread(dataset, present,fill='')
+  mutate(display_text= paste0(train,' (',test,')')) %>%
+  select(-train,-test) %>%
+  spread(observation_source, display_text,fill='-')
 
 kable(suppliment_species_table, 'latex')
