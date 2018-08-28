@@ -18,7 +18,7 @@ Fixed.
 
 **l. 115: why these dates?**
 
-These dates were used in accordance with Crimmins (2017), who used them prior, as budburst is unexpected to be first seen past DOY 172 and DOY 213 for flowers. 
+These dates were used in accordance with Crimmins (2017), who used them prior, as budburst is unexpected to be first seen past DOY 172 (June 21) and DOY 213 (Aug. 1) for flowers. 
 
 **l. 127: phenophase (singular)**
 
@@ -88,7 +88,7 @@ Theresa Crimmins, theresa@usanpn.org
 
 **Please refer to the Network as “USA National Phenology Network” and “USA-NPN” because there are lots of other phenology networks in other countries**
 
-We have added this clarification in several places within the text to avoid any confusion. 
+We have made this change throughout the text to avoid any confusion. 
 
 **In several places “data” is treated as singular… data are plural**
 
@@ -101,20 +101,20 @@ You're welcome. We're happy to credit all data providers, as this study would no
 
 **Please see the USA-NPN data attribution policy for recommendations for how to properly cite the dataset: https://www.usanpn.org/terms#DataAttribution**
 
-
+We have added the correct citation for the dataset (USA National Phenology Network, 2017)
 
 ### Abstract
 **be sure to indicate that the study is focused on the U.S.**
 
-This is now made clear by specifying that it's the USA NPN. 
+This is now made clear by specifying that it's the USA NPN.
 
 **L26-29: models performed best when applied to the same data with which they were built – you attribute this to scale…though other things could be at play here, such as local adaptation and species’ sensitivity to different forcing variables varying across the range.**
 
-
+Spatial scale is the primary difference between the two datasets used here, but Reviewer 1 is correct in that local adaptation or species sensitivity could be the mechanisms behind the differences seen at different scales. We have clarified this in the abstract as well as the 2nd paragraph of the discussion.
 
 **L33: you mention that the NPN dataset offers many species… though this is a good point, it is actually irrelevant to the arguments that you are making in this paragraph, that is, if your comparison is focused on only a handful of species.  Oh, now I see you make this point several times in the paper…but I’m still struggling to see how it’s relevant. Is it that you could have built models with many more species in this study based on what NPN offers, but you were limited by what the LTER datasets had to offer?**
 
-Reviewer 2 is correct in that our analysis was limited by species common to the NPN and four LTER datasets. Large scale phenology studies typically employ as many species as are available in a given dataset. Thus we point out the large species pool of the NPN dataset throughout as it is something other researchers should consider when designing their own analysis.
+Reviewer 1 is correct in that our analysis was limited by species common to the NPN and four LTER datasets. Large scale phenology studies typically employ as many species as are available in a given dataset. Thus we point out the large species pool of the USA-NPN dataset throughout as it is something other researchers should consider when designing their own analysis.
 
 **L34-36: this concluding sentence could be made stronger if you kept the focus on the findings of the present paper – the strengths and limitations of the two datasets and their suitable applications.**
 
@@ -129,7 +129,7 @@ Fixed.
 
 **L80: may also want to check out Feldman et al. (2018) – https://doi.org/10.1007/s00484-018-1540-4 for further support on cit sci observer skill**
 
-
+Thank you. We have added this reference as there are very few studies looking at observer skill at this level of detail.
 
 ### Methods
 
@@ -163,7 +163,7 @@ This is the number of chill days (mean daily temperature < 0 degrees C) since Ja
 
 **L145: please provide some references to back up your statement that these formulations are the most common**
 
-
+While we feel anecdotally that this statement is true, to our knowledge no formal analysis on model usage has been done. Thus we have removed this line. 
 
 **L156: I’m sure you extracted the daily temp at the lat/long of each observation location – maybe just make that a bit clearer**
 
@@ -181,6 +181,7 @@ This referred to the RMSE values derived from LTER Model predictions for held ou
 
 **L231-237: is it possible to quantify these comparisons in any way?**
 
+We have adde
 Suggestion from Ethan:
 do a paired t-test here to show distribution is different from 0. Make sure text still matches if a bunch are or are not significantly different than 0.
 
@@ -196,7 +197,7 @@ The frequency of sampling, in a given season and also between seasons, is the pr
 
 **L266-268: it would be helpful to add some references for local adaptation and differing sensitivity to phenological drivers across gradients**
 
-We added two references here to highlight the potential variation in phenological requirements across different gradients. 
+We added two references as well as some potential drivers here to highlight the potential variation in phenological requirements across different gradients. 
 
 **L270-272: another option could be to develop local or regional models, especially if a national-scale prediction is not needed**
 
@@ -208,20 +209,15 @@ We have made this clearer by switching to a colon instead of a period between th
 
 **L276: what do you mean by “these analyses”?**
 
-Maybe change to "our analyses" ? 
+We have clarified this by changing it to "..using the analyses in the current study". 
 
 **L293: not sure what you’re referring to when you say “this previous research”**
 
-We were referencing the two studies cited in this paragraph (Chuine et al. 2016 and Basler 2016). We have changed this to "In combination with the aforementioned studies,..."
+We were referencing the two studies cited in the same paragraph (Chuine et al. 2016 and Basler 2016). We have changed this to "In combination with the aforementioned studies,..."
 
 **L337: there are many recent studies that have brought together these various datsets; would be worth adding a couple of references**
 
-
-Shawn's notes on some refs to add:
-comparing phenocam + modis: https://doi.org/10.1038/s41598-018-23804-6
-comparing modis phenology w/ NPN & Flux towers: 10.1016/j.ecolind.2017.02.024
-
-
+We have added two additional citations which perform analysis using different phenological datasets.
 
 ## Reviewer: 2
 
