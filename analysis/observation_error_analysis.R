@@ -128,6 +128,15 @@ rmse_metrics = scenarios_error_data %>%
   mutate("With LTER Data" = A-B, "With USA-NPN Data" = C-D) %>%
   gather(metric, metric_value, "With LTER Data", "With USA-NPN Data")
 
+# All p-values for this figure are < 0.001, so these are not actually in the figure
+# but only mentioned in the text and caption
+test_statistics = rmse_metrics %>%
+  group_by(metric, model_name) %>%
+  summarise(t_stat = t.test(metric_value)$statistic,
+            p_value = t.test(metric_value)$p.value) %>%
+  ungroup() %>%
+  mutate(t_stat_text = paste0('italic(t) == ',round(t_stat,2)))
+
 # The annotated lines
 y_pos_line=0.15
 indicator_lines=data.frame(x=c(-12, 12), xend=c(-27, 27),
@@ -147,6 +156,7 @@ rmse_metrics_figure=ggplot(rmse_metrics, aes(metric_value)) +
   geom_segment(data=indicator_lines, aes(x=x, xend=xend, y=y, yend=yend), size=0.8, arrow = arrow(length=unit(0.25,'cm')),
                inherit.aes = FALSE) +
   geom_text(data=indicator_text, aes(x=x,y=y, label=t),size=4.5, inherit.aes = F) +
+  geom_text(data=test_statistics, aes(x=-24, y=0.07, label=t_stat_text), size=5, parse = TRUE) + 
   labs(y='',x='Difference between scenarios') +
   theme_bw() +
   theme(strip.text.x = element_text(size=20),
@@ -283,6 +293,7 @@ supplement_fig2 = ggplot(supplement_fig2_data, aes(x=model_name, y=error_value, 
 
 ggsave(supplement_fig2, filename = 'manuscript/supplement_best_lter_models.png',
        width = 40, height = 50, units = 'cm')
+
 ############################################
 ############################################
 library(kableExtra)
