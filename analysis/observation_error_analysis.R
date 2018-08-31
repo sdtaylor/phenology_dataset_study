@@ -1,4 +1,6 @@
 library(tidyverse)
+library(kableExtra)
+library(knitr)
 
 config = yaml::yaml.load_file('config.yaml')
 
@@ -58,9 +60,11 @@ rm(lts_models)
 
 model_errors = predictions %>%
   group_by(data_type, model_name, observation_source, parameter_source, species, phenophase) %>%
-  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)), sample_size=n()) %>%
+  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)), 
+            pearson = cor(doy_estimated, doy_observed, method='pearson'),
+            sample_size=n()) %>%
   ungroup() %>%
-  gather(error_type, error_value, rmse) %>%
+  gather(error_type, error_value, rmse, pearson) %>%
   mutate(error_value = round(error_value,4)) %>%
   mutate(is_lts_model = parameter_source!='npn', is_lts_obs = observation_source != 'npn',
          is_npn_model = !is_lts_model, is_npn_obs = !is_lts_obs)
@@ -123,6 +127,7 @@ scenarios_error_data$species_phenophase = with(scenarios_error_data, paste(abbre
 # Main figure of the two metrics (scenario A - B and C -D)
 
 rmse_metrics = scenarios_error_data %>%
+  filter(error_type=='rmse') %>%
   select(model_name, species, phenophase, error_value, scenario) %>%
   spread(scenario, error_value) %>%
   mutate("With LTER Data" = A-B, "With USA-NPN Data" = C-D) %>%
@@ -212,6 +217,32 @@ ggsave(scenario_error, filename = 'manuscript/supplement_scenario_absolute_rmse.
 ###########################################################
 # Supplement figures
 ##########################################################
+# Table with errors of each scenario (LTER->LTER, LTER-> NPN, NPN->LTER, NPN->NPN)
+# and each model using all observations aggregated together.
+
+best_scenario_model = predictions %>%
+  filter(data_type=='test') %>%
+  mutate(parameter_source = case_when(
+            parameter_source!='npn' ~ 'LTER',
+            parameter_source=='npn' ~ 'USA-NPN'),
+         observation_source = case_when(
+            observation_source != 'npn' ~ 'LTER',
+            observation_source == 'npn' ~ 'USA-NPN')) %>%
+  group_by(model_name, parameter_source, observation_source) %>%
+  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)), 
+            pearson = cor(doy_estimated, doy_observed, method='pearson'),
+            n=n()) %>%
+  ungroup() %>%
+  gather(error_type, error_value, rmse, pearson) %>%
+  mutate(error_value = round(error_value,2)) %>%
+  mutate(model_name = factor(model_name, levels = model_names, labels = pretty_model_names, ordered = TRUE)) %>%
+  mutate(model_error_type = paste(model_name, error_type, sep='-')) %>%
+  select(-model_name, -error_type) %>%
+  spread(model_error_type, error_value)
+
+# This outputs a basic latex table. I styled it up and adjusted
+# all the text at https://www.tablesgenerator.com/
+kable(best_scenario_model, 'latex')
 
 ############################################
 ############################################
@@ -296,8 +327,6 @@ ggsave(supplement_fig2, filename = 'manuscript/supplement_best_lter_models.png',
 
 ############################################
 ############################################
-library(kableExtra)
-library(knitr)
 ###
 # Stats for manuscript
 
