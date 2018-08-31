@@ -21,6 +21,9 @@ all_parameters = all_parameters %>%
 
 all_parameters$phenophase = as.numeric(all_parameters$phenophase)
 
+#Make the threshold temperature name a bit more descriptive
+all_parameters$parameter_name[all_parameters$parameter_name=='T'] = 'T_base'
+
 select_species_params = all_parameters %>%
   filter(species %in% select_species, 
          phenophase %in% select_phenophase)

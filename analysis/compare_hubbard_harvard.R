@@ -28,6 +28,9 @@ all_parameters = all_parameters %>%
 
 all_parameters$phenophase = as.numeric(all_parameters$phenophase)
 
+#Make the threshold temperature name a bit more descriptive
+all_parameters$parameter_name[all_parameters$parameter_name=='T'] = 'T_base'
+
 ########################################################################
 datasets = c('harvard','hubbard','npn')
 pretty_dataset_names = c('Harvard Forest','Hubbard Brook','NPN')
