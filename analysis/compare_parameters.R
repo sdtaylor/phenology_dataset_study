@@ -234,6 +234,6 @@ whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc,
 
 
 
-ggsave('manuscript/figure_param_comparison.png', plot=whole_plot, height=33, width=20, units = 'cm')
+ggsave(paste0(config$image_save_directory,'figure_param_comparison.png'), plot=whole_plot, height=33, width=20, units = 'cm')
 
 

@@ -161,7 +161,7 @@ rmse_metrics_figure=ggplot(rmse_metrics, aes(metric_value)) +
   geom_segment(data=indicator_lines, aes(x=x, xend=xend, y=y, yend=yend), size=0.8, arrow = arrow(length=unit(0.25,'cm')),
                inherit.aes = FALSE) +
   geom_text(data=indicator_text, aes(x=x,y=y, label=t),size=4.5, inherit.aes = F) +
-  geom_text(data=test_statistics, aes(x=-24, y=0.07, label=t_stat_text), size=5, parse = TRUE) + 
+  geom_text(data=test_statistics, aes(x=18, y=0.07, label=t_stat_text), size=5, parse = TRUE) + 
   labs(y='',x='Difference between scenarios') +
   theme_bw() +
   theme(strip.text.x = element_text(size=20),
@@ -170,7 +170,7 @@ rmse_metrics_figure=ggplot(rmse_metrics, aes(metric_value)) +
         axis.title.x = element_text(size=20),
         strip.background = element_rect(fill='grey95'))
 
-ggsave(rmse_metrics_figure, filename = 'manuscript/figure_rmse_metrics_density_plot.png', width = 60, height = 15, units = 'cm')
+ggsave(rmse_metrics_figure, filename = paste0(config$image_save_directory,'figure_rmse_metrics_density_plot.png'), width = 60, height = 15, units = 'cm')
 
 ######################################################
 ######################################################
@@ -191,7 +191,7 @@ scenario_error = ggplot(scenarios_error_data, aes(x=species_phenophase, y=error_
         legend.direction = "horizontal") +
   labs(y='RMSE',x='Species & Phenophase', color='Scenario') 
 
-ggsave(scenario_error, filename = 'manuscript/supplement_scenario_absolute_rmse.png', width = 30, height = 20, units = 'cm')
+ggsave(scenario_error, filename = paste0(config$image_save_directory,'supplement_scenario_absolute_rmse.png'), width = 30, height = 20, units = 'cm')
 
 
 #########################################################
@@ -272,7 +272,7 @@ supplement_fig1 = ggplot(supplement_fig1_data, aes(x=model_name, y=error_value, 
   labs(y='Root Mean Square Error', x='Model', color='Observation Source') +
   supplement_fig_12_theme
 
-ggsave(supplement_fig1, filename = 'manuscript/supplement_all_model_rmse.png',
+ggsave(supplement_fig1, filename = paste0(config$image_save_directory,'supplement_all_model_rmse.png'),
        width = 40, height = 50, units = 'cm')
 
 ############################################
@@ -297,7 +297,7 @@ supplement_fig2 = ggplot(supplement_fig2_data, aes(x=model_name, y=error_value, 
   labs(y='Pearson Correlation', x='Model', color='Observation Source') +
   supplement_fig_12_theme
 
-ggsave(supplement_fig2, filename = 'manuscript/supplement_all_model_pearson.png',
+ggsave(supplement_fig2, filename = paste0(config$image_save_directory,'supplement_all_model_pearson.png'),
        width = 40, height = 50, units = 'cm')
 
 ############################################

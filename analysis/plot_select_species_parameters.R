@@ -94,5 +94,5 @@ select_species_2 =
   (uniforc + no_legend) +
   plot_layout(ncol=1, heights=c(1,1))
 
-ggsave('manuscript/supplement_select_species_param_comparison1.png', plot=select_species_1, height=40, width=30, units = 'cm')
-ggsave('manuscript/supplement_select_species_param_comparison2.png', plot=select_species_2, height=40, width=30, units = 'cm')
+ggsave(paste0(config$image_save_directory,'supplement_select_species_param_comparison1.png'), plot=select_species_1, height=40, width=30, units = 'cm')
+ggsave(paste0(config$image_save_directory,'supplement_select_species_param_comparison2.png'), plot=select_species_2, height=40, width=30, units = 'cm')
