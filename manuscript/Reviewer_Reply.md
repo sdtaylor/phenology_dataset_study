@@ -26,7 +26,7 @@ Fixed.
 
 **ll. 210-211. I don't understand this. Why do some seemingly strong relationships (e.g., "naive" panel of Fig. 2; also some panels of Fig. 3) yield negative R-squared values? This probably just reflects my ignorance... but it's likely that if I'm mystified, other readers will be, too! Please explain more clearly how the <0 R-squareds arise.**
 
-
+Maybe change the Fig 2. caption to "..can be negative if the relationship between the two parameter sets is substantialy worse than a 1:1 relationship"
 
 **I found the discussion quite insightful, although there are some additional points that should be addressed and a few areas where clarity could be improved (see Reviewer 1's comments)**. 
 
@@ -63,7 +63,11 @@ After some discussion, we decided not to add subheadings.
 
 **The most critical thing that I see that’s lacking is that there is no consideration of how decisions made regarding which NPN data to include in the analysis might be impacting model performance. The authors allowed observations with up to 30d between the last reported “no” and the first reported “yes” and chose the midpoint. This could still lead to up to 15d error in the assumed date of “yes” and the true date of “yes”; this variance may in many cases be larger than the signal in the model. Though actually addressing this sensitivity is probably beyond the scope of the analysis, the potential and implications for this error should be discussed explicitly in the paper.**
 
-Gerst et al. 2016 looked at this issue and found that differences in site level means among more restrictive datasets was normally distributed. Thus having a shorter cutoff period here would result equally in less overestimates *and* underestimates. Since the models here are optimzed for RMSE we feel the results would not be affected overall by having a cutoff shorter than 30 days.
+We tested the sensitivity of this cutoff time by repeating the analysis with a 15 day cutoff. We found no significant differences throughout the analysis. Three species (flowers and budburst for Vaccinium parvifolium and  budburst for Acer circinatum) were dropped from the 15 day analysis due to inadequate sample size. The overall sample size for the 15 day analysis was decreased by 10% (619 observations) and by 1-35% for individual species. We have included notes on this sensitivity test in the methods and results as well as additional supplementary material.
+
+Potential discussion on the technical points:
+
+Gerst et al. 2016 looked at the sensitivity of different thresholds in the USA-NPN dataset and found that differences in site level means among more restrictive datasets was normally distributed. We feel having a shorter cutoff period here would result equally in less overestimates as well underestimates, keeping the optimization surface of the model essentially the same. This is supported by the parameter estimates being nearly identical for the majority of cases (see new images S1-S3).
 
 Shawn's note:
 After talking with Ethan I'll redo most of the analysis with a shorter cutoff date and see how things compare.
@@ -71,14 +75,11 @@ also report the distribution of "days between" to see if they're very far off be
 
 **The authors lay out two goals for this effort – to determine “inferences about biological processes driving phenology” and to develop predictive phenology models. It may be just me…using the term “inference” in this way confused me.**
 
-
+ 
 
 **Regarding the predictions that can result from these different models…this is of strong interest to many stakeholder realms. It would be fantastic to see a bit more attention given in the discussion to recommendations for implementation. The authors talk about the tradeoffs between more complex formulations and simpler models and – generally – reasons these differences may come about. It would be great to also see a bit of more practical discussion along the lines of, “if you can tolerate error of 7-14d, then model X may meet your needs, and it’s fine to build the models with either NPN or LTER data. However, if your needs are Y, then you’d be better off doing blah, blah…”… would this be possible?**
 
-note:
-This can essentially be done by looking at some of the supplement figures. Will point this out in the discussion.
-shoot for 2-3 sentences describing some rules of thumb. with specific of error rates someone can be ok with.
-
+We have added an additional note describing the best models overall from our analysis and pointed readers to the supplemental images for specific details of model performance. We have also updated supplemental images S1 and S2 to better show model performance in the cross-dataset comparison, and also added an additional table (Table S2) which gives the overall model performance across all species and phenophases. 
 
 **Thank you for your serious efforts to understand the USA-NPN data and to contribute to the collective understanding of this dataset’s potential as well as shortcomings. I’m so excited to see this sort of work happen! I’m happy to talk with you more regarding this manuscript as well as your other efforts, especially if any of these comments require clarification.**
 Sincerely,
@@ -139,6 +140,10 @@ We have added details of the sample sizes to the supplement table S1.
 
 **What is the sampling frequency for the LTER sites? This is quite relevant because you chose to use 30d as your cut-off for NPN data - you’ll allow for up to 30d between the last reported “no” and the first reported “yes”. How does this compare to what’s possible in the LTER datasets? It could definitely have an impact on the sensitivity of your results.**
 
+Three of the four LTER sites (Harard, Hubbard Brook, & H.J. Andrews) have very short sampling intervals (3-7 days). The Jornada LTER has a sample interval of 30 days. We have added these details to the supplementary methods.
+With the exception of the Jornada we feel the sampling interval of the LTER sites is very precise, and is one of the strengths of long term data that we point out throughout the manuscript. Given that, the issue of potentially 30 (or 15) days between sampling versus 7 is one of several points relating to volunteer based sampling we discuss in the manuscript.
+
+We note that only 2 of the 38 comparisons are from the Jornada datasets, so it's larger sampling frequency does not affect the overall analysis done in this paper.
 
 Shawns notes:
 put the numbers below in the table or ref. and re-reference them when i talk about reviewer 1's other issue with NPN sampling frequency
@@ -181,9 +186,7 @@ This referred to the RMSE values derived from LTER Model predictions for held ou
 
 **L231-237: is it possible to quantify these comparisons in any way?**
 
-We have adde
-Suggestion from Ethan:
-do a paired t-test here to show distribution is different from 0. Make sure text still matches if a bunch are or are not significantly different than 0.
+We have added a t-test to show the difference from 0 in these distributions. 
 
 ### Discussion
 
@@ -193,7 +196,7 @@ We are referring to both of these as LTER sites typically have a long history of
 
 **263: “limitations in the sampling of the NPN dataset” – what sort of limitations? Small sample size, frequency of sampling, or something else?**
 
-The frequency of sampling, in a given season and also between seasons, is the primary limit we consider here and we've made this clearer by stating as much. 
+The frequency of sampling, in a given season and also between seasons, is the primary limit we consider here and we've added this clarification in the text. 
 
 **L266-268: it would be helpful to add some references for local adaptation and differing sensitivity to phenological drivers across gradients**
 
@@ -230,16 +233,17 @@ Major Comments and Suggestions:
 
 **First, for NPN species with larger pools/spatial extents of observations, I wonder if would be useful to calibrate the models using subsets somehow stratified by climate and/or latitude. For example, train the models using only warm region (or southern) red maple and test on cold region maples (or vice versa). Perhaps this could further address the issue of model identifiability (as discussed in Lines  259-277). While the oft-mentioned Basler (2016) study certainly had nice spatiotemporal coverage, it did not have nearly the latitudinal/climate variability that NPN affords.**
 
-We discussed this and ultimately decided that it is beyond the scope of the current paper. Although we agree that this approach has the potential to improve the paper, we are unsure of the extent to which this would address the issue of identifiability, which is itself noted as a potential issue rather than a definite one. We also feel that it would require too much space to adequately investigate and discuss, and that the current set of analyses sufficiently accomplish the goals we set out in the introduction. However, we do hope to pursue these confounding factors further in future efforts. 
+We discussed this and ultimately decided that it is beyond the scope of the current paper. Although we agree that this approach has the potential to improve the paper, we are doubtful if it would address the issue of identifiability. The Harvard and Hubbard Brook LTER share 3 species in common and are relatively close (~150km), yet their parameter estimates varied widely for most models (see images S4-S5 in the original and revised text). 
+We also feel that it would require too much space to adequately investigate and discuss, and that the current set of analyses sufficiently accomplish the goals we set out in the introduction.  
 
 **Second, given the length of time series of the LTER datasets, I think it would be useful to further examine the performance of models based on other criteria such as the amount of interannual variability explained (correlation or R-square) or bias during anomalously warm or cold years. Perhaps the latter might be outside of the overall realm of the paper, but I think it would be informative to know which models capture this type of information which matters in a global change context.**
 
-Shawn's note:
-make a R^2 figure for all species/phenophase for the supplement
-on the stratified sampling. We thought of this, there's not enough data even for Acer rubrum. Write a sentence or 2 about this in the discussion and how it could be done someday when enought data is collected.
+See the note to Reviewer 1 about general model recommendations. We have updated the Supplemental images S1 and S2 to included Pearson's correlation in addition to the RMSE for all dataset inter comparisons. 
+
 
 ### Minor Comments and Suggestions:
 
 **Line 281: Please verify what is T* (I assume base temperature)**
 
+This is correct. We have changed T* to T_base throughout as it is more descriptive. 
 

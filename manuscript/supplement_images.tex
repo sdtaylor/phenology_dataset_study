@@ -3,42 +3,307 @@
 
 \usepackage{graphicx}
 \usepackage{a4wide}
+\usepackage{adjustbox}
+\usepackage{float}
 \usepackage{lineno}
-    \linenumbers
-%\usepackage{setspace}
-%  \doublespacing
+\usepackage{setspace}
+  \doublespacing
 \usepackage[document]{ragged2e}
 
+
 \begin{document}
+{\Comparison of large-scale citizen science data and long-term study data for phenology modeling \par}
 
-{\Large Comparison of large-scale citizen science data and long-term study data for phenology modeling \par} \newline
+\textit{Shawn D. Taylor, Joan M. Meiners, Kristina Riemer, Michael C. Orr, Ethan P. White}
 
-\textit{Shawn D. Taylor, Joan M. Meiners, Kristina Riemer, Michael C. Orr, Ethan P. White} \newline
+\textbf{\large Supplementary materials}
 
-{\Large \textbf{Supplementary materials}} \newline
-Methods describing processing of the 4 LTER datasets
+Supplementary images S1 - S11 and Table S1
 
-The four LTER datasets each had different protocols for recording phenology observations. Below are details for converting the data from each to a status based yes/no as used in the National Phenology Network. As in the USA-NPN datasets, the julian day of year (DOY) used in modeling was the midpoint between each "yes" observation and the most recent "no" observation. The years used for each datasets were all years available at the time of analysis. 
 
-\textbf{Harvard Forest} \newline
-We used observations from 1990-2014. Observations here were recorded as relative percentage of flowering or budburst for individual plants. We set "Yes" observations budburst and flower to the DOY when the percentage of each tree had was greater than or equal to 10\%
+%%%%%%%%%%%%%%%%%
+%% Figure S1
+%%%%%%%%%%%%%%%%%
+\newpage
 
-\textbf{H.J. Andrews Experimental Forest} \newline
-We used observations from 2009-2015. We set "yes" observations for budburst to the first DOY when an individual was marked as "bud break" and "yes" observations for flowering were when an indiviudal was first marked as "Flowers open". Note that each species has slightly different ordinal codes to mark each of these events. 
+\textbf{Figure S1}: Sensitivity test results from using a 15 versus 30 day cutoff between the 'yes' and most recent 'no' in the USA-NPN dataset. Each point represents the value of a single parameter for one of eight models for 33 species and phenophases in the USA-NPN dataset. Note only 33 comparisons were possible here as the stricter 15 day cutoff resulted in three of the species not having sufficient observations. 
 
-\textbf{Jornada Experimental Range} \newline
-We used observations from 1992-2009. Observations for this dataset represent, for each zone, the percent of plants for a particular species which is observed within each phenophase. We set "Yes" observations for flowers to the first DOY where the flower phenophase was 10\% or greater.
+\newpage
 
-\textbf{Hubbard Brook} \newline
-We used observations from 1989-2015. Observations for this dataset represent for each species the average, among 3 individuals, of an ordinal description of phenophase. \newline
+\begin{center}
+	\centering
+		\includegraphics[width=1\textwidth]{parameter_estimates_from_cutoff_sensitivity.png}
+	Figure S1
+\end{center}
 
-0: winter conditions \newline
-1: bud swelling \newline
-2: small leaves or flowers \newline
-3: leafs 1/2 of final length, leafs obscure half the sky as seen thru crown \newline
-3.5: leaves 3/4 expanded, sky mostly obscured, crown not yet in summer condition \newline
-4: fully expanded, canopy in summer conditions \newline
+\newpage
 
-We set "Yes" observations for budburst to the DOY when the average value was greater than or equal to 1.6. This is the value where the 3 individuals most likely have ordinal observations of [1,2,2].
+%%%%%%%%%%%%%%%%%
+%% Figure S2
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Figure S2}: Comparisons of parameter estimates between NPN and LTER derived models. As in Figure 2 in the main text, but using a threshold of 15 instead of 30 days between the first 'yes' and most recent 'no' in the USA-NPN dataset. See methods for details. 
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[width=1\textwidth]{figure_param_comparison_15day_cutoff.png}
+	Figure S2
+\end{center}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%
+%% Figure S3
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Figure S3}: Comparison of predicted day of year (DOY) of all phenological events between NPN
+and LTER-derived models. As in Figure 3 in the main text, but using a threshold of 15 instead of 30 days between the first 'yes' and most recent 'no' in the USA-NPN dataset. See methods for details. 
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[width=1\textwidth]{figure_estimate_compare_15day_cutoff.png}
+	Figure S3
+\end{center}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%
+%% Figure S4
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Figure S4}: Differences in prediction error between NPN and LTER-derived models. As in Figure 4 in the main text, but using a threshold of 15 instead of 30 days between the first 'yes' and most recent 'no' in the USA-NPN dataset. See methods for details. 
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[width=1\textwidth]{figure_rmse_metrics_density_plot_15day_cutoff.png}
+	Figure S4
+\end{center}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%
+%% Figure S5
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Figure S5}: RMSE for specific species and phenophases using all combinations of models and data sources. Red X's mark the best performing models for each respective dataset. 
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[width=1\textwidth]{supplement_all_model_rmse.png}
+	Figure S5
+\end{center}
+
+\newpage
+%%%%%%%%%%%%%%%%%
+%% Figure S6
+%%%%%%%%%%%%%%%%%
+\textbf{Figure S6}: Pearson correlation coefficients for specific species and phenophases using all combinations of models and data sources. Note that since all predictions from each Naive model are the same pearson's correlation cannot be calculated here. Red X's mark the best performing models for each respective dataset.
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[width=1\textwidth]{supplement_all_model_pearson.png}
+	Figure S6
+\end{center}
+
+%%%%%%%%%%%%%%%%%
+%% Figure S7
+%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\textbf{Figure S7}: RMSE of all species and phenophases of the four scenarios described in the text. These values were calculated using held out test data.
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[width=1\textwidth]{supplement_scenario_absolute_rmse.png}
+	Figure S7
+\end{center}
+
+%%%%%%%%%%%%%%%%%
+%% Figure S8
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Figure S8}: Distribution of parameters of the Naive, GDD, Fixed GDD, and Linear models for the three species common to the Hubbard Brook, Harvard, and USA-NPN datasets. The phenophase is budburst for all three species. Vertical lines indicate either the mean (solid) or median (dashed) of the respective distribution. Note the heading for each sub figure. 
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[scale=0.5]{supplement_hubbard_harvard_comparison1.png}
+	Figure S8
+\end{center}
+
+%%%%%%%%%%%%%%%%%
+%% Figure S9
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Figure S9}: As in Figure S4, but for the Alternating and Uniforc models. 
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[scale=0.5]{supplement_hubbard_harvard_comparison2.png}
+	Figure S9
+\end{center}
+
+%%%%%%%%%%%%%%%%%
+%% Figure S10
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Figure S10}: As in Figure S4, but for 4 selected species to show the difference in parameter distributions between LTER and USA-NPN derived models. The phenophase for the four species is budburst. These 4 species are representative of the analysis, and for the remaining comparisons the reader is pointed to the script 'analysis/plot\_select\_species\_parameters.R' in the code repository to generate additional figures.
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[scale=0.5]{supplement_select_species_param_comparison1.png}
+	Figure S10
+\end{center}
+
+%%%%%%%%%%%%%%%%%
+%% Figure S11
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Figure S11}: As in Figure S6, but for the Alternating and Uniforc models. 
+
+\newpage
+
+\begin{center}
+	\centering
+		\includegraphics[scale=0.5]{supplement_select_species_param_comparison2.png}
+	Figure S11
+\end{center}
+%%%%%%%%%%%%%%%%%
+%% Table S1
+%%%%%%%%%%%%%%%%%
+\newpage
+
+\textbf{Table S1}: Species used in the analysis along with the sample size from each dataset. The numbers indicate the sample size of the training data and the size of the testing data in parenthesis. 
+
+\newpage
+
+\tiny
+\begin{tabular}{l|r|l|l|l|l|l|l}
+\hline
+species & phenophase & phenophase\_type & harvard & hjandrews & hubbard & jornada & npn\\
+\hline
+acer circinatum & 371 & Budburst & - & 266 (66) & - & - & 39 (10)\\
+\hline
+acer circinatum & 501 & Flowers & - & 116 (29) & - & - & 33 (8)\\
+\hline
+acer pensylvanicum & 371 & Budburst & 80 (20) & - & - & - & 34 (9)\\
+\hline
+acer rubrum & 371 & Budburst & 100 (25) & - & - & - & 957 (239)\\
+\hline
+acer rubrum & 501 & Flowers & 96 (24) & - & - & - & 668 (167)\\
+\hline
+acer saccharum & 371 & Budburst & 60 (15) & - & 164 (41) & - & 365 (91)\\
+\hline
+betula alleghaniensis & 371 & Budburst & 60 (15) & - & 178 (44) & - & 133 (33)\\
+\hline
+betula alleghaniensis & 501 & Flowers & 26 (7) & - & - & - & 64 (16)\\
+\hline
+betula lenta & 371 & Budburst & 58 (14) & - & - & - & 96 (24)\\
+\hline
+betula papyrifera & 371 & Budburst & 76 (19) & - & - & - & 96 (26)\\
+\hline
+betula papyrifera & 501 & Flowers & 18 (5) & - & - & - & 36 (9)\\
+\hline
+fagus grandifolia & 371 & Budburst & 76 (19) & - & 177 (44) & - & 259 (65)\\
+\hline
+fraxinus americana & 371 & Budburst & 84 (21) & - & - & - & 90 (23)\\
+\hline
+fraxinus americana & 501 & Flowers & 22 (6) & - & - & - & 52 (13)\\
+\hline
+ilex verticillata & 371 & Budburst & 35 (9) & - & - & - & 26 (6)\\
+\hline
+larrea tridentata & 501 & Flowers & - & - & - & 27 (7) & 118 (30)\\
+\hline
+nyssa sylvatica & 371 & Budburst & 27 (7) & - & - & - & 63 (16)\\
+\hline
+pinus strobus & 496 & Budburst & 38 (10) & - & - & - & 77 (19)\\
+\hline
+populus tremuloides & 371 & Budburst & 38 (10) & - & - & - & 208 (51)\\
+\hline
+populus tremuloides & 501 & Flowers & 17 (4) & - & - & - & 79 (22)\\
+\hline
+prosopis glandulosa & 501 & Flowers & - & - & - & 49 (12) & 78 (20)\\
+\hline
+prunus serotina & 371 & Budburst & 58 (14) & - & - & - & 228 (57)\\
+\hline
+pseudotsuga menziesii & 480 & Budburst & - & 182 (46) & - & - & 38 (10)\\
+\hline
+quercus alba & 371 & Budburst & 62 (15) & - & - & - & 174 (43)\\
+\hline
+quercus rubra & 371 & Budburst & 80 (20) & - & - & - & 242 (60)\\
+\hline
+quercus rubra & 501 & Flowers & 56 (14) & - & - & - & 127 (32)\\
+\hline
+quercus velutina & 371 & Budburst & 77 (19) & - & - & - & 72 (18)\\
+\hline
+rhododendron macrophyllum & 371 & Budburst & - & 84 (21) & - & - & 48 (12)\\
+\hline
+rhododendron macrophyllum & 501 & Flowers & - & 27 (7) & - & - & 50 (12)\\
+\hline
+trillium ovatum & 488 & Budburst & - & 222 (55) & - & - & 68 (17)\\
+\hline
+trillium ovatum & 501 & Flowers & - & 169 (42) & - & - & 60 (15)\\
+\hline
+vaccinium corymbosum & 371 & Budburst & 38 (10) & - & - & - & 60 (15)\\
+\hline
+vaccinium corymbosum & 501 & Flowers & 38 (10) & - & - & - & 65 (16)\\
+\hline
+vaccinium parvifolium & 371 & Budburst & - & 149 (37) & - & - & 25 (6)\\
+\hline
+vaccinium parvifolium & 501 & Flowers & - & 162 (41) & - & - & 25 (6)\\
+\hline
+\end{tabular}
+\newline
+Table S1 \newline
+
+%%%%%%%%%%%%%%%%%
+%% Table S2
+%%%%%%%%%%%%%%%%%
+\newpage
+\normalsize
+\textbf{Table S2}: Overall best models when doing cross dataset comparisons. Observations for all species and phenophases were aggregated together to calculate RMSE and Pearsons coefficient for each combination of Parameter source (either USA-NPN or LTER), observation source (either USA-NPN or LTER), and model (6 possible phenology models). Bold indicates the best performing model for a specific parameter and observation combination, with some combinations having ties among multiple models.  
+
+\newpage
+
+\tiny
+\begin{adjustbox}{angle=90}
+\begin{tabular}{|c|c|cc|cc|cc|cc|cc|cc|cc|cc|}
+\hline
+\begin{tabular}[c]{@{}c@{}}Parameter\\ Source\end{tabular} & \begin{tabular}[c]{@{}c@{}}Held Out\\ Observation Source\end{tabular} & \multicolumn{2}{c|}{Alternating} & \multicolumn{2}{c|}{Fixed GDD} & \multicolumn{2}{c|}{GDD} & \multicolumn{2}{c|}{Linear} & \multicolumn{2}{c|}{M1} & \multicolumn{2}{c|}{MSB} & \multicolumn{2}{c|}{Naive} & \multicolumn{2}{c|}{Uniforc} \\
+ &  & p & RMSE & p & RMSE & p & RMSE & p & RMSE & p & RMSE & p & RMSE & p & RMSE & p & RMSE \\ \hline
+LTER & LTER & 0.87 & 8.73 & 0.84 & 10.14 & \textbf{0.90} & 7.89 & 0.81 & 10.27 & \textbf{0.90} & 7.89 & 0.87 & 8.73 & 0.72 & 12.35 & \textbf{0.90} & \textbf{7.86} \\ \hline
+LTER & USA-NPN & 0.44 & 26.07 & \textbf{0.72} & 22.70 & 0.68 & 20.52 & 0.65 & 22.94 & 0.68 & 20.52 & 0.44 & 26.07 & 0.34 & 31.25 & 0.70 & \textbf{19.69} \\ \hline
+USA-NPN & LTER & 0.63 & 16.17 & 0.69 & 16.15 & 0.70 & 13.73 & 0.68 & 16.59 & 0.71 & 13.79 & 0.66 & 15.79 & 0.61 & 27.08 & \textbf{0.72} & \textbf{13.48} \\ \hline
+USA-NPN & USA-NPN & 0.80 & 15.27 & 0.76 & 20.18 & \textbf{0.82} & 14.67 & 0.77 & 16.19 & \textbf{0.82} & 14.71 & 0.80 & 15.20 & 0.53 & 21.57 & \textbf{0.82} & \textbf{14.37} \\ \hline
+\end{tabular}
+\end{adjustbox}
+\newline
+Table S2
 
 \end{document}}
