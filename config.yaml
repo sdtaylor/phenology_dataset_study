@@ -40,19 +40,19 @@ num_bootstrap: 250
 percent_test_data: 0.2
 
 #############################
-# For the first a reviewer asked about the sensitivity of the 30day
+# For the first revision a reviewer asked about the sensitivity of the 30day
 # cutoff between the first 'yes' and  most recent 'no' for observations.
 # I tested that by running everything again with a 15 day cutoff.
 # uncomment the appropriate set of lines here to see results from that.
 
-#model_parameter_file: ./results/cutoff_30days/model_parameters.csv.gz
-#predictions_file: ./results/cutoff_30days/predictions.csv.gz
+model_parameter_file: ./results/cutoff_30days/model_parameters.csv.gz
+predictions_file: ./results/cutoff_30days/predictions.csv.gz
 ## The predictions file with all 250 bootstrapped estimates
-#predictions_file_large: ./results/cutoff_30days/predictions_large.csv.gz
-#image_save_directory: ./manuscript/cutoff_30days/
+predictions_file_large: ./results/cutoff_30days/predictions_large.csv.gz
+image_save_directory: ./manuscript/cutoff_30days/
 
-model_parameter_file: ./results/cutoff_15days/model_parameters.csv.gz
-predictions_file: ./results/cutoff_15days/predictions.csv.gz
+#model_parameter_file: ./results/cutoff_15days/model_parameters.csv.gz
+#predictions_file: ./results/cutoff_15days/predictions.csv.gz
 # The predictions file with all 250 bootstrapped estimates
-predictions_file_large: ./results/cutoff_15days/predictions_large.csv.gz
-image_save_directory: ./manuscript/cutoff_15days/
+#predictions_file_large: ./results/cutoff_15days/predictions_large.csv.gz
+#image_save_directory: ./manuscript/cutoff_15days/
