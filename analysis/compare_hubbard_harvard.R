@@ -28,6 +28,9 @@ all_parameters = all_parameters %>%
 
 all_parameters$phenophase = as.numeric(all_parameters$phenophase)
 
+#Make the threshold temperature name a bit more descriptive
+all_parameters$parameter_name[all_parameters$parameter_name=='T'] = 'T_base'
+
 ########################################################################
 datasets = c('harvard','hubbard','npn')
 pretty_dataset_names = c('Harvard Forest','Hubbard Brook','NPN')
@@ -93,5 +96,5 @@ hubbard_hubbard_2 =
   (uniforc + no_legend) +
   plot_layout(ncol=1, heights=c(1,1))
 
-ggsave('manuscript/supplement_hubbard_harvard_comparison1.png', plot=hubbard_hubbard_1, height=40, width=30, units = 'cm')
-ggsave('manuscript/supplement_hubbard_harvard_comparison2.png', plot=hubbard_hubbard_2, height=40, width=30, units = 'cm')
+ggsave(paste0(config$image_save_directory,'supplement_hubbard_harvard_comparison1.png'), plot=hubbard_hubbard_1, height=40, width=30, units = 'cm')
+ggsave(paste0(config$image_save_directory,'supplement_hubbard_harvard_comparison2.png'), plot=hubbard_hubbard_2, height=40, width=30, units = 'cm')

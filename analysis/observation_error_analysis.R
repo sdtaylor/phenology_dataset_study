@@ -1,4 +1,6 @@
 library(tidyverse)
+library(kableExtra)
+library(knitr)
 
 config = yaml::yaml.load_file('config.yaml')
 
@@ -58,9 +60,11 @@ rm(lts_models)
 
 model_errors = predictions %>%
   group_by(data_type, model_name, observation_source, parameter_source, species, phenophase) %>%
-  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)), sample_size=n()) %>%
+  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)), 
+            pearson = cor(doy_estimated, doy_observed, method='pearson'),
+            sample_size=n()) %>%
   ungroup() %>%
-  gather(error_type, error_value, rmse) %>%
+  gather(error_type, error_value, rmse, pearson) %>%
   mutate(error_value = round(error_value,4)) %>%
   mutate(is_lts_model = parameter_source!='npn', is_lts_obs = observation_source != 'npn',
          is_npn_model = !is_lts_model, is_npn_obs = !is_lts_obs)
@@ -90,7 +94,7 @@ abbreviate_species_names = function(s){
 ###########################################################
 
 scenarios_error_data = model_errors %>%
-  filter(data_type=='test') %>%
+  filter(data_type=='test', error_type=='rmse') %>%
   mutate(scenario = case_when(
     is_lts_model & is_lts_obs ~ 'A',
     is_npn_model & is_lts_obs ~'B',
@@ -123,10 +127,20 @@ scenarios_error_data$species_phenophase = with(scenarios_error_data, paste(abbre
 # Main figure of the two metrics (scenario A - B and C -D)
 
 rmse_metrics = scenarios_error_data %>%
+  filter(error_type=='rmse') %>%
   select(model_name, species, phenophase, error_value, scenario) %>%
   spread(scenario, error_value) %>%
   mutate("With LTER Data" = A-B, "With USA-NPN Data" = C-D) %>%
   gather(metric, metric_value, "With LTER Data", "With USA-NPN Data")
+
+# All p-values for this figure are < 0.001, so these are not actually in the figure
+# but only mentioned in the text and caption
+test_statistics = rmse_metrics %>%
+  group_by(metric, model_name) %>%
+  summarise(t_stat = t.test(metric_value)$statistic,
+            p_value = t.test(metric_value)$p.value) %>%
+  ungroup() %>%
+  mutate(t_stat_text = paste0('italic(t) == ',round(t_stat,2)))
 
 # The annotated lines
 y_pos_line=0.15
@@ -147,6 +161,7 @@ rmse_metrics_figure=ggplot(rmse_metrics, aes(metric_value)) +
   geom_segment(data=indicator_lines, aes(x=x, xend=xend, y=y, yend=yend), size=0.8, arrow = arrow(length=unit(0.25,'cm')),
                inherit.aes = FALSE) +
   geom_text(data=indicator_text, aes(x=x,y=y, label=t),size=4.5, inherit.aes = F) +
+  geom_text(data=test_statistics, aes(x=18, y=0.07, label=t_stat_text), size=5, parse = TRUE) + 
   labs(y='',x='Difference between scenarios') +
   theme_bw() +
   theme(strip.text.x = element_text(size=20),
@@ -155,7 +170,7 @@ rmse_metrics_figure=ggplot(rmse_metrics, aes(metric_value)) +
         axis.title.x = element_text(size=20),
         strip.background = element_rect(fill='grey95'))
 
-ggsave(rmse_metrics_figure, filename = 'manuscript/figure_rmse_metrics_density_plot.png', width = 60, height = 15, units = 'cm')
+ggsave(rmse_metrics_figure, filename = paste0(config$image_save_directory,'figure_rmse_metrics_density_plot.png'), width = 60, height = 15, units = 'cm')
 
 ######################################################
 ######################################################
@@ -176,138 +191,92 @@ scenario_error = ggplot(scenarios_error_data, aes(x=species_phenophase, y=error_
         legend.direction = "horizontal") +
   labs(y='RMSE',x='Species & Phenophase', color='Scenario') 
 
-ggsave(scenario_error, filename = 'manuscript/supplement_scenario_absolute_rmse.png', width = 30, height = 20, units = 'cm')
-
-
-#########################################################
-# relative rankings of the different scenarios
-# scenario_rankings = scenarios_error_data %>%
-#   select(model_name, species_phenophase, scenario, error_value) %>%
-#   group_by(model_name, species_phenophase) %>%
-#   arrange(error_value) %>%
-#   mutate(ranking = 1:4) %>%
-#   ungroup() %>%
-#   group_by(model_name, scenario) %>%
-#   summarise(ranking_1 = sum(ranking==1)/n(),
-#             ranking_2 = sum(ranking==2)/n(),
-#             ranking_3 = sum(ranking==3)/n(),
-#             ranking_4 = sum(ranking==4)/n()) %>%
-#   ungroup() %>%
-#   gather(ranking, rank_percent, ranking_1, ranking_2, ranking_3, ranking_4) %>%
-#   group_by(scenario, ranking) %>%
-#   summarize(rank_percent = round(mean(rank_percent),2)) %>%
-#   spread(scenario, rank_percent)
+ggsave(scenario_error, filename = paste0(config$image_save_directory,'supplement_scenario_absolute_rmse.png'), width = 30, height = 20, units = 'cm')
 
 
 ###########################################################
 # Supplement figures
 ##########################################################
+# Table with errors of each scenario (LTER->LTER, LTER-> NPN, NPN->LTER, NPN->NPN)
+# and each model using all observations aggregated together.
+
+best_scenario_model = predictions %>%
+  filter(data_type=='test') %>%
+  mutate(parameter_source = case_when(
+            parameter_source!='npn' ~ 'LTER',
+            parameter_source=='npn' ~ 'USA-NPN'),
+         observation_source = case_when(
+            observation_source != 'npn' ~ 'LTER',
+            observation_source == 'npn' ~ 'USA-NPN')) %>%
+  group_by(model_name, parameter_source, observation_source) %>%
+  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)), 
+            pearson = cor(doy_estimated, doy_observed, method='pearson'),
+            n=n()) %>%
+  ungroup() %>%
+  gather(error_type, error_value, rmse, pearson) %>%
+  mutate(error_value = round(error_value,2)) %>%
+  mutate(model_name = factor(model_name, levels = model_names, labels = pretty_model_names, ordered = TRUE)) %>%
+  mutate(model_error_type = paste(model_name, error_type, sep='-')) %>%
+  select(-model_name, -error_type) %>%
+  spread(model_error_type, error_value)
+
+# This outputs a basic latex table. I styled it up and adjusted
+# all the text at https://www.tablesgenerator.com/
+kable(best_scenario_model, 'latex')
 
 ############################################
 ############################################
-# Supplement figure 1. Only NPN errors. 
+# Supplement figure 1. Species level out of sample RMSE
 # or, if using  NPN data which model is best for each species/phenophase?
 
-supplement_fig_12_theme =  theme(axis.text.x = element_text(size=10,angle=90, debug = FALSE),
+supplement_fig_12_theme =  theme(axis.text.x = element_text(size=10,angle=90,hjust = 0.2,vjust = 0.8, debug = FALSE),
                                  axis.title = element_text(size=15),
                                  strip.text = element_text(size=6.5)) 
   
 supplement_fig1_data = model_errors %>%
-  filter(is_npn_model, is_npn_obs) %>%
-  select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source, sample_size)
+  filter(data_type == 'test', error_type=='rmse') %>%
+  select(species, phenophase, model_name, error_type, error_value, observation_source, parameter_source, sample_size)
 supplement_fig1_data$species = abbreviate_species_names(supplement_fig1_data$species)
 
-winning_models_npn = supplement_fig1_data %>% 
-  group_by(species, phenophase, observation_source, parameter_source, data_type) %>% 
+winning_models_rmse = supplement_fig1_data %>%
+  group_by(species, phenophase, observation_source, parameter_source) %>%
   top_n(1, -error_value) %>%
   ungroup()
 
-npn_sample_size_text = supplement_fig1_data %>%
-  group_by(species, observation_source, parameter_source) %>%
-  mutate(y_placement = max(error_value) + 1) %>%
-  ungroup() %>%
-  group_by(species, phenophase, data_type, observation_source, parameter_source) %>%
-  summarize(y_placement = mean(y_placement), sample_size = mean(sample_size)) %>%
-  ungroup() %>%
-  mutate(x_placement = ifelse(data_type=='test', 2,7))
-
-supplement_fig1 = ggplot(supplement_fig1_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
+supplement_fig1 = ggplot(supplement_fig1_data, aes(x=model_name, y=error_value, color=observation_source, group=observation_source)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
-  geom_point(data = winning_models_npn, color='black', shape=4, size=2) +
-  geom_text(data=npn_sample_size_text, aes(label = paste0('n: ',sample_size), y=y_placement, x=x_placement)) +
-  scale_color_manual(values = c("#CC6666", "#66CC99")) +
-  facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
-  labs(y='Root Mean Square Error', x='Model', color='Data Type') +
+  geom_point(data = winning_models_rmse, color="#D55E00", shape=4, size=3) +
+  scale_color_manual(values = c("#000000", "#E69F00", "#56B4E9", "#009E73", "#CC79A7")) +
+  facet_wrap(species~phenophase~parameter_source, labeller = 'label_both', scales='fixed') +
+  labs(y='Root Mean Square Error', x='Model', color='Observation Source') +
   supplement_fig_12_theme
 
-ggsave(supplement_fig1, filename = 'manuscript/supplement_best_npn_models.png',
+ggsave(supplement_fig1, filename = paste0(config$image_save_directory,'supplement_all_model_rmse.png'),
        width = 40, height = 50, units = 'cm')
 
 ############################################
-# supplement figure 2. Only LTS errors. 
-# or, if using  LTS data which model is best for each species/phenophase?
-# No point in using the spatial models, M1 and MSB, here
+# supplement figure 2. Species level out of sample pearson correlation
 
 supplement_fig2_data = model_errors %>%
-  filter(is_lts_model, is_lts_obs) %>%
-  filter(!model_name %in% c('M1','MSB')) %>%
-  filter(parameter_source==observation_source) %>%
-  select(species, phenophase, model_name, error_value, data_type, observation_source, parameter_source, sample_size)
+  filter(data_type == 'test', error_type=='pearson') %>%
+  select(species, phenophase, model_name, error_type, error_value, observation_source, parameter_source, sample_size)
 supplement_fig2_data$species = abbreviate_species_names(supplement_fig2_data$species)
 
-winning_models_lts = supplement_fig2_data %>% 
-  group_by(species, phenophase, observation_source, parameter_source, data_type) %>% 
-  top_n(1, -error_value) %>%
+winning_models_pearson = supplement_fig2_data %>%
+  group_by(species, phenophase, observation_source, parameter_source) %>%
+  top_n(1, error_value) %>%
   ungroup()
 
-lts_sample_size_text = supplement_fig2_data %>%
-  group_by(species, observation_source, parameter_source) %>%
-  mutate(y_placement = max(error_value) + 1) %>%
-  ungroup() %>%
-  group_by(species, phenophase, data_type, observation_source, parameter_source) %>%
-  summarize(y_placement = mean(y_placement), sample_size = mean(sample_size)) %>%
-  ungroup() %>%
-  mutate(x_placement = ifelse(data_type=='test', 2,5))
-
-supplement_fig2 = ggplot(supplement_fig2_data, aes(x=model_name, y=error_value, color=data_type, group=data_type)) + 
+supplement_fig2 = ggplot(supplement_fig2_data, aes(x=model_name, y=error_value, color=observation_source, group=observation_source)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
-  geom_point(data = winning_models_lts, color='black', shape=4, size=2) +
-  geom_text(data=lts_sample_size_text, aes(label = paste0('n: ',sample_size), y=y_placement, x=x_placement)) +
-  scale_color_manual(values = c("#CC6666", "#66CC99")) +
-  facet_wrap(species~phenophase~parameter_source~observation_source, labeller = 'label_both', scales='free') +
-  labs(y='Root Mean Square Error', x='Model', color='Data Type') +
+  geom_point(data = winning_models_pearson, color="#D55E00", shape=4, size=3) +
+  scale_color_manual(values = c("#000000", "#E69F00", "#56B4E9", "#009E73", "#CC79A7")) +
+  facet_wrap(species~phenophase~parameter_source, labeller = 'label_both', scales='fixed') +
+  labs(y='Pearson Correlation', x='Model', color='Observation Source') +
   supplement_fig_12_theme
 
-
-ggsave(supplement_fig2, filename = 'manuscript/supplement_best_lter_models.png',
+ggsave(supplement_fig2, filename = paste0(config$image_save_directory,'supplement_all_model_pearson.png'),
        width = 40, height = 50, units = 'cm')
-############################################
-############################################
-library(kableExtra)
-library(knitr)
-###
-# Stats for manuscript
 
-# Winning model percentages for NPN observations
-npn_overal_best_models = winning_models_npn %>%
-  group_by(model_name, data_type) %>%
-  summarize(n=n()) %>%
-  ungroup() %>%
-  mutate(data_source='NPN')
-
-# Winning model percentages for LTS observations
-lts_overal_best_models = winning_models_lts %>%
-  group_by(model_name, data_type) %>%
-  summarize(n=n()) %>%
-  ungroup() %>%
-  mutate(data_source='LTER')
-
-overall_best_models = npn_overal_best_models %>%
-  bind_rows(lts_overal_best_models) %>%
-  spread(model_name, n, fill=0) %>%
-  select(data_source, data_type, Naive, Linear, 'Fixed GDD', GDD, M1, Uniforc, Alternating, MSB) %>%
-  arrange(data_source, data_type)
-
-#kable(overall_best_models, 'latex')

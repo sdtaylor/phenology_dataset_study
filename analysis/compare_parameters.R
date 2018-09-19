@@ -141,10 +141,10 @@ parameter_name_plotmath = tribble(
   'linear_temp','slope','beta[2]',
   'gdd','F','F',
   'gdd','t1','t[1]',
-  'gdd','T','T',
+  'gdd','T','T[base]',
   'm1','F','F',
   'm1','t1','t[1]',
-  'm1','T','T',
+  'm1','T','T[base]',
   'm1','k','k',
   'alternating','a','a',
   'alternating','b','b',
@@ -203,8 +203,8 @@ gdd=get_subplot(model_name = 'gdd', y_label = "GDD\n")
 gdd_fixed=get_subplot(model_name = 'gdd_fixed', y_label = "Fixed GDD\n")
 linear_temp=get_subplot('linear_temp', y_label = "Linear\n")
 naive=get_subplot('naive', y_label = "Naive\n") 
-m1=get_subplot('m1', y_label = "GDD\nCorrected")
-msb=get_subplot('msb', y_label = "Alternating\nCorrected")
+m1=get_subplot('m1', y_label = "M1")
+msb=get_subplot('msb', y_label = "MSB")
 
 legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn_derived_parameter, y=lts_derived_parameter, color=dataset, group=dataset))+
                                geom_point(size=4, aes(shape = phenophase)) +
@@ -234,6 +234,6 @@ whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc,
 
 
 
-ggsave('manuscript/figure_param_comparison.png', plot=whole_plot, height=33, width=20, units = 'cm')
+ggsave(paste0(config$image_save_directory,'figure_param_comparison.png'), plot=whole_plot, height=33, width=20, units = 'cm')
 
 
