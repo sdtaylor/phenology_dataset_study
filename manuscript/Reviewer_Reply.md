@@ -1,3 +1,5 @@
+We would like to thank the editor and two reviewers for the  productive feedback on our manuscript. We have addressed comments related to the sensitivity of the 30-day cutoff in using the USA-NPN data, and included general recommendations for which models performed best in different contexts. More detailed responses to individual comments are included below. 
+
 #  Comments from the SME:
 
 **General comment: I appreciate the authors' efforts to ensure transparency and repeatability of the analysis.**
@@ -6,7 +8,7 @@ Thank you.
 
 **l. 20: not all the models are process-based; revise?**
 
-We added changed this to "statistical and processed based models".
+We changed this to "statistical and processed based models".
 
 **l. 41: could you delete "uncertainty in", or replace with "estimates of"? (Isn't it the timing itself that's important, not the uncertainty in the timing?)**
 
@@ -26,7 +28,7 @@ Fixed.
 
 **ll. 210-211. I don't understand this. Why do some seemingly strong relationships (e.g., "naive" panel of Fig. 2; also some panels of Fig. 3) yield negative R-squared values? This probably just reflects my ignorance... but it's likely that if I'm mystified, other readers will be, too! Please explain more clearly how the <0 R-squareds arise.**
 
-Maybe change the Fig 2. caption to "..can be negative if the relationship between the two parameter sets is substantialy worse than a 1:1 relationship"
+These values are coefficients of determination which compare the predictions from the model to the observed values. If there is a strong bias in the predictions this can lead to negative values even if the observations and predictions are correlated. Specifically, in cases where choosing the mean value of the observations provides a better prediction than the model these numbers will be negative. While this is not possible in simple regression without held out data (because the model by definition does at least as well as the mean) it is possible for other kinds of models and in cases where the model is not fit to the data it is evaluated on. We have attempted to clarify this in the text.
 
 **I found the discussion quite insightful, although there are some additional points that should be addressed and a few areas where clarity could be improved (see Reviewer 1's comments)**. 
 
@@ -50,36 +52,26 @@ Fixed.
 
 We replaced the labels to reflect the data evaluated. We also adjusted the methods section slightly to hopefully make this more clear.
 
-# Reviewer(s)' Comments to Author:
-
-## Reviewer: 1
+# Reviewer 1 Comments to Author:
 
 ### Comments to the Author
 **Comparison of large-scale citizen science data and long-term study data for phenology modeling**
 
 **This is a very practical study and the evaluation of the approach is clear and pretty straightforward to follow. The authors might improve readability a bit by either adding subheads into the Methods & Results or repeatedly using the same terms to refer to the various steps (eg, cross-validation).**
 
-After some discussion, we decided not to add subheadings. 
+After some discussion, we decided not to add subheadings as both sections are relatively short, and each have a single paragraph dedicated to each analysis step. Instead we have made the Analysis introduction paragraph lay out the three primary steps, and also adjusted the wording to be more consistent. 
 
 **The most critical thing that I see that’s lacking is that there is no consideration of how decisions made regarding which NPN data to include in the analysis might be impacting model performance. The authors allowed observations with up to 30d between the last reported “no” and the first reported “yes” and chose the midpoint. This could still lead to up to 15d error in the assumed date of “yes” and the true date of “yes”; this variance may in many cases be larger than the signal in the model. Though actually addressing this sensitivity is probably beyond the scope of the analysis, the potential and implications for this error should be discussed explicitly in the paper.**
 
-We tested the sensitivity of this cutoff time by repeating the analysis with a 15 day cutoff. We found no significant differences throughout the analysis. Three species (flowers and budburst for Vaccinium parvifolium and  budburst for Acer circinatum) were dropped from the 15 day analysis due to inadequate sample size. The overall sample size for the 15 day analysis was decreased by 10% (619 observations) and by 1-35% for individual species. We have included notes on this sensitivity test in the methods and results as well as additional supplementary material.
-
-Potential discussion on the technical points:
-
-Gerst et al. 2016 looked at the sensitivity of different thresholds in the USA-NPN dataset and found that differences in site level means among more restrictive datasets was normally distributed. We feel having a shorter cutoff period here would result equally in less overestimates as well underestimates, keeping the optimization surface of the model essentially the same. This is supported by the parameter estimates being nearly identical for the majority of cases (see new images S1-S3).
-
-Shawn's note:
-After talking with Ethan I'll redo most of the analysis with a shorter cutoff date and see how things compare.
-also report the distribution of "days between" to see if they're very far off between 30day cutoff and a shorter cutoff. 
+We tested the sensitivity of this cutoff time by repeating the analysis with a 15 day cutoff. This change did not influence our results. Three species (flowers and budburst for Vaccinium parvifolium and  budburst for Acer circinatum) were dropped from the 15 day analysis due to inadequate sample size. The overall sample size for the 15 day analysis was decreased by 10% (619 observations) and by 1-35% for individual species. We have added notes on this sensitivity analysis to the methods and results as well as reporting the results in new supplementary material.
 
 **The authors lay out two goals for this effort – to determine “inferences about biological processes driving phenology” and to develop predictive phenology models. It may be just me…using the term “inference” in this way confused me.**
 
- 
+This is a common usuage in the data science community and we are unclear how to better communicate this distinction between making predictions and understanding processes. To avoid confusion we have added a specific example to describe our usage of inference in the last introduction paragraph. 
 
 **Regarding the predictions that can result from these different models…this is of strong interest to many stakeholder realms. It would be fantastic to see a bit more attention given in the discussion to recommendations for implementation. The authors talk about the tradeoffs between more complex formulations and simpler models and – generally – reasons these differences may come about. It would be great to also see a bit of more practical discussion along the lines of, “if you can tolerate error of 7-14d, then model X may meet your needs, and it’s fine to build the models with either NPN or LTER data. However, if your needs are Y, then you’d be better off doing blah, blah…”… would this be possible?**
 
-We have added an additional note describing the best models overall from our analysis and pointed readers to the supplemental images for specific details of model performance. We have also updated supplemental images S1 and S2 to better show model performance in the cross-dataset comparison, and also added an additional table (Table S2) which gives the overall model performance across all species and phenophases. 
+We have added additional text to the Discussion describing the best models from our analysis and pointed readers to the supplemental images for specific details of model performance. We have also updated supplemental images S1 and S2 (now S5 & S6) to better show model performance in the cross-dataset comparison, and also added an additional table (Table S2) which gives the overall model performance across all species and phenophases. 
 
 **Thank you for your serious efforts to understand the USA-NPN data and to contribute to the collective understanding of this dataset’s potential as well as shortcomings. I’m so excited to see this sort of work happen! I’m happy to talk with you more regarding this manuscript as well as your other efforts, especially if any of these comments require clarification.**
 Sincerely,
@@ -89,7 +81,7 @@ Theresa Crimmins, theresa@usanpn.org
 
 **Please refer to the Network as “USA National Phenology Network” and “USA-NPN” because there are lots of other phenology networks in other countries**
 
-We have made this change throughout the text to avoid any confusion. 
+We have made this change throughout the text. 
 
 **In several places “data” is treated as singular… data are plural**
 
@@ -98,7 +90,7 @@ Fixed.
 **L67: the citizen science program run by the USA-NPN that yields the data housed in the National Phenology Database is Nature’s Notebook**
 **Thank you for acknowledging the Nature’s Notebook contributors for the data!**
 
-You're welcome. We're happy to credit all data providers, as this study would not have been possible without them. 
+You're welcome. We're happy to credit all data providers, as this study would not have been possible without them. We have adjusted this line of text to reflect that Nature's Notebook is the citizen science program run by USA-NPN.
 
 **Please see the USA-NPN data attribution policy for recommendations for how to properly cite the dataset: https://www.usanpn.org/terms#DataAttribution**
 
@@ -107,7 +99,7 @@ We have added the correct citation for the dataset (USA National Phenology Netwo
 ### Abstract
 **be sure to indicate that the study is focused on the U.S.**
 
-This is now made clear by specifying that it's the USA NPN.
+This is now made clear by specifying that it's the USA National Phenology Network.
 
 **L26-29: models performed best when applied to the same data with which they were built – you attribute this to scale…though other things could be at play here, such as local adaptation and species’ sensitivity to different forcing variables varying across the range.**
 
@@ -140,19 +132,10 @@ We have added details of the sample sizes to the supplement table S1.
 
 **What is the sampling frequency for the LTER sites? This is quite relevant because you chose to use 30d as your cut-off for NPN data - you’ll allow for up to 30d between the last reported “no” and the first reported “yes”. How does this compare to what’s possible in the LTER datasets? It could definitely have an impact on the sensitivity of your results.**
 
-Three of the four LTER sites (Harard, Hubbard Brook, & H.J. Andrews) have very short sampling intervals (3-7 days). The Jornada LTER has a sample interval of 30 days. We have added these details to the supplementary methods.
+Three of the four LTER sites (Harard, Hubbard Brook, & H.J. Andrews) have very short sampling intervals (3-7 days). The Jornada LTER has a sample interval of 30 days. We have added these details to the manuscript.
 With the exception of the Jornada we feel the sampling interval of the LTER sites is very precise, and is one of the strengths of long term data that we point out throughout the manuscript. Given that, the issue of potentially 30 (or 15) days between sampling versus 7 is one of several points relating to volunteer based sampling we discuss in the manuscript.
 
 We note that only 2 of the 38 comparisons are from the Jornada datasets, so it's larger sampling frequency does not affect the overall analysis done in this paper.
-
-Shawns notes:
-put the numbers below in the table or ref. and re-reference them when i talk about reviewer 1's other issue with NPN sampling frequency
-
-sampling freq. from metadata / from data
-harvard  3-7 days / 5.6 days
-hubbard  7 days / 7.1 days
-hjandrews  7 days / 7.6 days
-jornada  monthly / 30.5 days
 
 **After reading about the phenology datasets, I expected to read about the temperature data used. I see now that it’s nested within the “Modeling” section… the organization just surprised/confused me.**
 
@@ -180,7 +163,7 @@ We removed these specific equations and replaced them with a better description 
 
 **L196: what does “scenario A” refer to here?**
 
-This referred to the RMSE values derived from LTER Model predictions for held out LTER data. We rewrote this paragraph slightly and changed the labels on Figure 4 to make this analysis more clear. 
+This referred to the RMSE values derived from LTER Model predictions for held out LTER data. We rewrote this paragraph and changed the labels on Figure 4 to make this analysis more clear. 
 
 ### Results
 
@@ -222,7 +205,7 @@ We were referencing the two studies cited in the same paragraph (Chuine et al. 2
 
 We have added two additional citations which perform analysis using different phenological datasets.
 
-## Reviewer: 2
+# Reviewer 2 Comments to Author:
 
 ### Comments to the Author
 Summary:
@@ -233,12 +216,11 @@ Major Comments and Suggestions:
 
 **First, for NPN species with larger pools/spatial extents of observations, I wonder if would be useful to calibrate the models using subsets somehow stratified by climate and/or latitude. For example, train the models using only warm region (or southern) red maple and test on cold region maples (or vice versa). Perhaps this could further address the issue of model identifiability (as discussed in Lines  259-277). While the oft-mentioned Basler (2016) study certainly had nice spatiotemporal coverage, it did not have nearly the latitudinal/climate variability that NPN affords.**
 
-We discussed this and ultimately decided that it is beyond the scope of the current paper. Although we agree that this approach has the potential to improve the paper, we are doubtful if it would address the issue of identifiability. The Harvard and Hubbard Brook LTER share 3 species in common and are relatively close (~150km), yet their parameter estimates varied widely for most models (see images S4-S5 in the original and revised text). 
-We also feel that it would require too much space to adequately investigate and discuss, and that the current set of analyses sufficiently accomplish the goals we set out in the introduction.  
+We agree that this approach is a valuable next step, but ultimately decided that doing this properly would require a follow up paper rather than an additional analysis in this one. That said, we are doubtful that it would address the issue of identifiability. The Harvard and Hubbard Brook LTER share 3 species in common and are relatively close (~150km), yet their parameter estimates varied widely for most models (see images S4-S5 in the original text, now S8-S9 in the revised text). 
 
 **Second, given the length of time series of the LTER datasets, I think it would be useful to further examine the performance of models based on other criteria such as the amount of interannual variability explained (correlation or R-square) or bias during anomalously warm or cold years. Perhaps the latter might be outside of the overall realm of the paper, but I think it would be informative to know which models capture this type of information which matters in a global change context.**
 
-See the note to Reviewer 1 about general model recommendations. We have updated the Supplemental images S1 and S2 to included Pearson's correlation in addition to the RMSE for all dataset inter comparisons. 
+See the note to Reviewer 1 about general model recommendations. We have updated the Supplemental images S1 and S2 to included Pearson's correlation in addition to the RMSE for all dataset inter comparisons. We decided that more expansive analyses were beyond the scope of this paper, but are hopeful that the open and reproducible nature of the code and data for this project will allow others (or our future selves) to conduct the important follow up analyses suggested by the reviewer.
 
 
 ### Minor Comments and Suggestions:
@@ -246,4 +228,3 @@ See the note to Reviewer 1 about general model recommendations. We have updated 
 **Line 281: Please verify what is T* (I assume base temperature)**
 
 This is correct. We have changed T* to T_base throughout as it is more descriptive. 
-
