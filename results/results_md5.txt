@@ -1,0 +1,6 @@
+700b9673b87e64d479d8254afcfd3024  ./cutoff_15days/predictions.csv.gz
+a4c48567215cf9410c382bf1ab9118d7  ./cutoff_15days/predictions_large.csv.gz
+63125a4f0f82c35684a35824dafcfd95  ./cutoff_15days/model_parameters.csv.gz
+cf3d98dc5cf3575251c44ea0500b7f08  ./cutoff_30days/predictions.csv.gz
+783b5cebf786ea0156fce967210e3c42  ./cutoff_30days/predictions_large.csv.gz
+5398d173bb0d357ee60b2232520044a1  ./cutoff_30days/model_parameters.csv.gz
