@@ -300,29 +300,3 @@ supplement_fig2 = ggplot(supplement_fig2_data, aes(x=model_name, y=error_value, 
 ggsave(supplement_fig2, filename = paste0(config$image_save_directory,'supplement_all_model_pearson.png'),
        width = 40, height = 50, units = 'cm')
 
-############################################
-############################################
-###
-# Stats for manuscript, not actually used anywhere. 
-
-# Winning model percentages for NPN observations
-npn_overal_best_models = winning_models_npn %>%
-  group_by(model_name, data_type) %>%
-  summarize(n=n()) %>%
-  ungroup() %>%
-  mutate(data_source='NPN')
-
-# Winning model percentages for LTS observations
-lts_overal_best_models = winning_models_lts %>%
-  group_by(model_name, data_type) %>%
-  summarize(n=n()) %>%
-  ungroup() %>%
-  mutate(data_source='LTER')
-
-overall_best_models = npn_overal_best_models %>%
-  bind_rows(lts_overal_best_models) %>%
-  spread(model_name, n, fill=0) %>%
-  select(data_source, data_type, Naive, Linear, 'Fixed GDD', GDD, M1, Uniforc, Alternating, MSB) %>%
-  arrange(data_source, data_type)
-
-#kable(overall_best_models, 'latex')
