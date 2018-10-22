@@ -104,6 +104,13 @@ ggplot(x, aes(x=value, group=dataset, fill=dataset)) +
 
 
 ###############################################################################
+###############################################################################
+# Everything below if for making the fairly complicated Figure 2. 
+
+# Once this image is rendered I do some slight editing in a photo editor to mask out all the 
+# dummy variables and adjust the text and legend positioning. 
+###############################################################################
+###############################################################################
 #scatter plots of npn vs long term datasets
 
 budburst_phenophases = c(371, 496, 488, 480)
@@ -169,71 +176,117 @@ r2_values = parameter_means %>%
 # labels of the plot
 parameter_means = parameter_means %>%
   left_join(r2_values, by=c('model','parameter_name')) %>%
-  left_join(parameter_name_plotmath, by = c('model','parameter_name')) %>%
-  mutate(parameter_name2 = paste0('list(',parameter_symbol,',', r2_text,')'))
+  left_join(parameter_name_plotmath, by = c('model','parameter_name')) 
 
 #################################################################################
+# These dummy lines help create padding on the right side of Figure 2.
+dummy_parameters = tribble(
+~parameter_name,~facet_strip_text, ~model, ~lts_derived_parameter, ~npn_derived_parameter, ~r2_text,
+'naive_dummy1','naive_dummy1', 'naive', 1,1,'naive_dummy1',
+'naive_dummy2','naive_dummy2', 'naive', 1,1,'naive_dummy2',
+'naive_dummy3','naive_dummy3', 'naive', 1,1,'naive_dummy3',
 
-common_plot_theme = theme(strip.text = element_text(size=9),
-                          strip.background = element_rect(fill='grey95'),
-                          axis.text = element_text(size=9),
-                          axis.title = element_text(size=12))
+'fixed_gdd_dummy1','fixed_gdd_dummy1', 'gdd_fixed', 1,1,'fixed_gdd_dummy1',
+'fixed_gdd_dummy2','fixed_gdd_dummy2', 'gdd_fixed', 1,1,'fixed_gdd_dummy2',
+'fixed_gdd_dummy3','fixed_gdd_dummy3', 'gdd_fixed', 1,1,'fixed_gdd_dummy3',
 
-point_size=3
-point_shapes = c(17,13)
-color_pallete=c("grey42", "#E69F00", "#56B4E9", "#CC79A7")
+'linear_dummy1','fixed_gdd_dummy1', 'linear_temp', 1,1,'linear_dummy1',
+'linear_dummy2','fixed_gdd_dummy2', 'linear_temp', 1,1,'linear_dummy2',
 
-get_subplot = function(model_name, y_label){
-  p=ggplot(filter(parameter_means, model==model_name), aes(x=npn_derived_parameter, y=lts_derived_parameter, color=dataset, group=dataset)) +
-    geom_point(size=point_size, aes(shape = phenophase)) +
-    scale_shape_manual(values=point_shapes) +
-    scale_color_manual(values=color_pallete) +
-    geom_abline(intercept=0, slope=1) +
-    facet_wrap(~parameter_name2, scales='free', nrow=1, labeller = label_parsed) + 
-    theme_bw() +
-    theme(legend.position = "none") +
-    labs(y = y_label, x='') +
-    common_plot_theme 
-  return(p)
-}
+'gdd_dummy1','gdd_dummy1', 'gdd', 1,1,'gdd_dummy1',
 
-alternating=get_subplot(model_name = 'alternating', y_label = "Alternating\n")
-uniforc=get_subplot(model_name = 'uniforc', y_label = "Uniforc\n")
-gdd=get_subplot(model_name = 'gdd', y_label = "GDD\n")
-gdd_fixed=get_subplot(model_name = 'gdd_fixed', y_label = "Fixed GDD\n")
-linear_temp=get_subplot('linear_temp', y_label = "Linear\n")
-naive=get_subplot('naive', y_label = "Naive\n") 
-m1=get_subplot('m1', y_label = "M1")
-msb=get_subplot('msb', y_label = "MSB")
+'m1_dummy1','m1_dummy1', 'm1', 1,1,'m1_dummy1',
 
-legend = cowplot::get_legend(ggplot(filter(parameter_means, model=='uniforc'), aes(x=npn_derived_parameter, y=lts_derived_parameter, color=dataset, group=dataset))+
-                               geom_point(size=4, aes(shape = phenophase)) +
-                               scale_shape_manual(values=point_shapes)  + 
-                               scale_color_manual(values=color_pallete) +
-                               theme(legend.text = element_text(size = 14), 
-                                     legend.title = element_text(size = 18),
-                                    
-                                     legend.key.size = unit(5, units = 'mm')) +
-                               labs(colour = "LTER Dataset", 
-                                    shape = "Phenophase"))
+'alternating_dummy1','alternating_dummy1', 'alternating', 1,1,'alternating_dummy1',
 
-empty_space = grid::textGrob('')
-complex_layout = rbind(c(2,1,7,7),
-                       c(8,1,7,7),
-                       c(3,3,1,1),
-                       c(4,4,4,1),
-                       c(9,9,9,1),
-                       c(6,6,6,1),
-                       c(10,10,10,1),
-                       c(5,5,5,5))
+'msb_dummy1','msb_dummy1', 'msb', 1,1,'msb_dummy1'
+)
 
-#                                      1       2(1)     3(2)       4(3)  5(4)      6(3)         7        8(1)    9(3) 10(3)
-whole_plot=gridExtra::grid.arrange(empty_space,naive, linear_temp, gdd, uniforc, alternating, legend, gdd_fixed, m1, msb, layout_matrix=complex_layout,
-                        left = 'LTER Derived Parameter Estimates',
-                        bottom = 'NPN Derived Parameter Estimates')
+# This ordering sets up the 32 subplots (20 model variables + 12 dummy variables for padding)
+# in the correct grid. 
+subplot_order = tribble(
+  ~model, ~parameter_name, ~plot_order_number,
+  'naive','mean_doy',1,
+  'naive','naive_dummy1',2,
+  'naive','naive_dummy2',3,
+  'naive','naive_dummy3',4,
+  
+  'gdd_fixed','F',5,
+  'gdd_fixed','fixed_gdd_dummy1',6,
+  'gdd_fixed','fixed_gdd_dummy2',7,
+  'gdd_fixed','fixed_gdd_dummy3',8,
+  
+  'linear_temp','intercept',9,
+  'linear_temp','slope',10,
+  'linear_temp','linear_dummy1',11,
+  'linear_temp','linear_dummy2',12,
+  
+  'gdd','F',13,
+  'gdd','t1',14,
+  'gdd','T',15,
+  'gdd','gdd_dummy1',16,
+  
+  'm1','F',17,
+  'm1','t1',18,
+  'm1','T',19,
+  'm1','m1_dummy1',20,
+  
+  'alternating','a',21,
+  'alternating','b',22,
+  'alternating','c',23,
+  'alternating','alternating_dummy1',24,
+  
+  'msb','a',25,
+  'msb','b',26,
+  'msb','c',27,
+  'msb','msb_dummy1',28,
+  
+  'uniforc','b',29,
+  'uniforc','c',30,
+  'uniforc','F',31,
+  'uniforc','t1',32
+)
 
+#################################################
+#################################################
+# Put it all together
 
+parameters_with_dummy_vars = parameter_means %>%
+  bind_rows(dummy_parameters) %>%
+  left_join(subplot_order, by=c('model','parameter_name'))
 
-ggsave(paste0(config$image_save_directory,'figure_param_comparison.png'), plot=whole_plot, height=33, width=20, units = 'cm')
+parameters_with_dummy_vars$model = factor(parameters_with_dummy_vars$model, levels =  c("naive","gdd_fixed","linear_temp","gdd","m1","alternating","msb","uniforc"),
+                          labels = c("naive","gdd_fixed","linear_temp","gdd","m1","alternating","msb","uniforc"),
+                          ordered = TRUE)
 
+parameters_with_dummy_vars$facet_strip_text = with(parameters_with_dummy_vars, paste0('list(',parameter_symbol,',', r2_text,')'))
+
+# in the main ggplot call below, facet_wrap will use facet_strip_text to organize the different subplots.
+# the order within the facet_strip_text factor (defined in this next line by the plot_order_number) will dictate how they are drawn
+# starting at the top-left and going left-right,top-bottom.
+parameters_with_dummy_vars$facet_strip_text = forcats::fct_reorder(parameters_with_dummy_vars$facet_strip_text, parameters_with_dummy_vars$plot_order_number)
+
+y_axis_text = c('LTER Derived Parameter Estimates\n
+                      Uniforc            MSB           Alternating              M1                  GDD               Linear            Fixed GDD           Naive')
+
+whole_plot = ggplot(parameters_with_dummy_vars, aes(x=npn_derived_parameter, y=lts_derived_parameter, color=dataset, group=dataset)) + 
+  geom_point(size=3, aes(shape = phenophase)) +
+  scale_shape_manual(values=c(17,13)) +
+  scale_color_manual(values=c("grey42", "#E69F00", "#56B4E9", "#CC79A7")) +
+  geom_abline(intercept=0, slope=1) +
+  facet_wrap(~facet_strip_text, scales='free', nrow=8, labeller = label_parsed) +
+  theme_bw() + 
+  labs(x='USA-NPN Derived Parameter Estimates',y=y_axis_text,
+       color = "LTER Dataset", shape = "Phenophase") + 
+  theme(strip.text = element_text(size=10),
+        strip.background = element_rect(fill='grey95'),
+        strip.switch.pad.wrap = unit(2, 'cm'),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=14),
+        legend.text = element_text(size=14),
+        legend.title = element_text(size=16)) 
+
+ggsave(paste0(config$image_save_directory,'figure_param_comparison.png'), plot=whole_plot, height=28, width=25, units = 'cm', dpi=1000)
+
+# Note, after rendering I deleted the dummy placeholder subplots inside a photo editing program and save as figure_param_comparison_final.png
 
