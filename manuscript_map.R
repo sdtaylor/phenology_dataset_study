@@ -36,15 +36,16 @@ site_map = ggplot() +
   geom_raster(data = elevation, aes(x=lat, y=lon, fill=elevation)) +
   scale_fill_gradient(low='white', high='grey50') + 
   geom_polygon(data = basemap, aes(x=long, y = lat, group = group), fill=NA, color='grey20', size=0.5) + 
-  geom_point(data=npn_sites, aes(x=Longitude, y=Latitude), color='black', size=2) + 
+  geom_point(data=npn_sites, aes(x=Longitude, y=Latitude), color='black', size=1.5) + 
   geom_point(data=lts_sites, aes(x=Longitude, y=Latitude), color='black', shape=16, size=5) +
   geom_point(data=lts_sites, aes(x=Longitude, y=Latitude), color='white', shape=16, size=3) +
   geom_label_repel(data=filter(lts_sites, dataset %in% c('Hubbard Brook','Harvard Forest')), aes(x=Longitude, y=Latitude, label=dataset), force=10, 
-                   label.size = 0.8, segment.size = 1, nudge_y = 2.8, nudge_x = -5) + 
+                   label.size = 0.6, segment.size = 1, nudge_y = 2.8, nudge_x = -7, size=4) + 
   geom_label_repel(data=filter(lts_sites, !dataset %in% c('Hubbard Brook','Harvard Forest')), aes(x=Longitude, y=Latitude, label=dataset), force=10, 
-                   label.size = 0.8, segment.size = 1, nudge_y = -1, nudge_x = 3) + 
+                   label.size = 0.6, segment.size = 1, nudge_y = -2, nudge_x = 4, size=4) + 
   coord_fixed(1.3) +
   theme_bw() + 
+  labs(x=NULL, y=NULL) +
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
         panel.grid = element_blank(),
@@ -52,8 +53,8 @@ site_map = ggplot() +
         panel.border = element_blank(),
         legend.position = 'none',
         plot.margin = unit(c(0,0,0,0),'mm'))
-print(site_map)
+#print(site_map)
 # Note, I saved this manually using the export tool to get ride of uneeded whitespace in the figure.
-ggsave('manuscript/figure_site_map.png', plot=site_map, height=20, width=50, units = 'cm')
+ggsave('manuscript/figure_site_map.png', width=20, height=16, units = 'cm',dpi=1000, plot=site_map)
 
 
