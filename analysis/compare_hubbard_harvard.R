@@ -3,7 +3,7 @@ library(cowplot)
 config = yaml::yaml.load_file('config.yaml')
 
 ###################################################
-# This produced the supplementary figure comparing parameters
+# This produced the supplementary figures S8 and S9, comparing parameters
 # of hubbard, harvard, and NPN
 #################################################
 
@@ -96,5 +96,5 @@ hubbard_hubbard_2 =
   (uniforc + no_legend) +
   plot_layout(ncol=1, heights=c(1,1))
 
-ggsave(paste0(config$image_save_directory,'supplement_hubbard_harvard_comparison1.png'), plot=hubbard_hubbard_1, height=40, width=30, units = 'cm')
-ggsave(paste0(config$image_save_directory,'supplement_hubbard_harvard_comparison2.png'), plot=hubbard_hubbard_2, height=40, width=30, units = 'cm')
+ggsave(paste0(config$image_save_directory,'figure_s8_hubbard_harvard_comparison1.png'), plot=hubbard_hubbard_1, height=40, width=30,dpi=1000, units = 'cm')
+ggsave(paste0(config$image_save_directory,'figure_s9_hubbard_harvard_comparison2.png'), plot=hubbard_hubbard_2, height=40, width=30,dpi=1000, units = 'cm')

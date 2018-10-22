@@ -3,7 +3,7 @@ library(cowplot)
 config = yaml::yaml.load_file('config.yaml')
 
 ###################################################
-# This produced the supplementary figure comparing parameters
+# This produced the supplementary figures S10 and S11, comparing parameters
 # of 4 species. Adjust the ones below to create different plots. 
 #################################################
 
@@ -94,5 +94,5 @@ select_species_2 =
   (uniforc + no_legend) +
   plot_layout(ncol=1, heights=c(1,1))
 
-ggsave(paste0(config$image_save_directory,'supplement_select_species_param_comparison1.png'), plot=select_species_1, height=40, width=30, units = 'cm')
-ggsave(paste0(config$image_save_directory,'supplement_select_species_param_comparison2.png'), plot=select_species_2, height=40, width=30, units = 'cm')
+ggsave(paste0(config$image_save_directory,'figure_s10_select_species_param_comparison1.png'), plot=select_species_1, height=40,dpi=1000, width=30, units = 'cm')
+ggsave(paste0(config$image_save_directory,'figure_s11_select_species_param_comparison2.png'), plot=select_species_2, height=40,dpi=1000, width=30, units = 'cm')

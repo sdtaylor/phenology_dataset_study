@@ -33,7 +33,7 @@ sensitivity_figure = ggplot(both, aes(x=cutoff_15, y=cutoff_30)) +
   labs(x='Parameter estimates using a 15 day cutoff',
        y='Parameter estimates using a 30 day cutoff')
 
-ggsave('manuscript/parameter_estimates_from_cutoff_sensitivity.png', plot=sensitivity_figure, height=20, width=30, units = 'cm')
+ggsave('manuscript/figure_s1_parameter_estimates_from_cutoff_sensitivity.png', plot=sensitivity_figure, height=20, width=30,dpi=1000, units = 'cm')
 
 #############################################
 ##########################

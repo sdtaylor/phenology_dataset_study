@@ -286,7 +286,7 @@ whole_plot = ggplot(parameters_with_dummy_vars, aes(x=npn_derived_parameter, y=l
         legend.text = element_text(size=14),
         legend.title = element_text(size=16)) 
 
-ggsave(paste0(config$image_save_directory,'figure_param_comparison.png'), plot=whole_plot, height=28, width=25, units = 'cm', dpi=1000)
+ggsave(paste0(config$image_save_directory,'figure_2_param_comparison.png'), plot=whole_plot, height=28, width=25, units = 'cm', dpi=1000)
 
 # Note, after rendering I deleted the dummy placeholder subplots inside a photo editing program and save as figure_param_comparison_final.png
 

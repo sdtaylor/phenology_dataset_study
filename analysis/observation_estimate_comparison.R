@@ -1,5 +1,6 @@
 library(tidyverse)
 #Compare out of sample verification between datasets
+# produces Figure 3, a comparison of model estimates. 
 config = yaml::yaml.load_file('config.yaml')
 
 predictions = read_csv(config$predictions_file)
@@ -102,4 +103,4 @@ fig2=ggplot(observation_estimate_comparison, aes(x=doy_estimated_npn_model, y=do
   labs(x='Estimates from NPN derived models',
        y='Estimates from LTER derived models')
 
-ggsave(fig2, filename = paste0(config$image_save_directory,'figure_estimate_compare.png'), height = 14, width = 40, units = 'cm')
+ggsave(fig2, filename = paste0(config$image_save_directory,'figure_3_estimate_compare.png'), height = 14, width = 40, dpi=1000, units = 'cm')

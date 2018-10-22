@@ -170,11 +170,10 @@ rmse_metrics_figure=ggplot(rmse_metrics, aes(metric_value)) +
         axis.title.x = element_text(size=20),
         strip.background = element_rect(fill='grey95'))
 
-ggsave(rmse_metrics_figure, filename = paste0(config$image_save_directory,'figure_rmse_metrics_density_plot.png'), width = 60, height = 15, units = 'cm')
-
+ggsave(rmse_metrics_figure, filename = paste0(config$image_save_directory,'figure_4_rmse_metrics_density_plot.png'), width = 60, height = 15,dpi=1000, units = 'cm')
 ######################################################
 ######################################################
-# supplement figure, absolute RMSE values of all scenarios
+# supplement figure 7, absolute RMSE values of all scenarios
 
 scenario_error = ggplot(scenarios_error_data, aes(x=species_phenophase, y=error_value, group=scenario, color=scenario)) +
   geom_point() +
@@ -191,7 +190,7 @@ scenario_error = ggplot(scenarios_error_data, aes(x=species_phenophase, y=error_
         legend.direction = "horizontal") +
   labs(y='RMSE',x='Species & Phenophase', color='Scenario') 
 
-ggsave(scenario_error, filename = paste0(config$image_save_directory,'supplement_scenario_absolute_rmse.png'), width = 30, height = 20, units = 'cm')
+ggsave(scenario_error, filename = paste0(config$image_save_directory,'figure_s7_scenario_absolute_rmse.png'), width = 30, height = 20, dpi=1000, units = 'cm')
 
 
 ###########################################################
@@ -226,57 +225,58 @@ kable(best_scenario_model, 'latex')
 
 ############################################
 ############################################
-# Supplement figure 1. Species level out of sample RMSE
+# Supplement figure 5. Species level out of sample RMSE
 # or, if using  NPN data which model is best for each species/phenophase?
 
-supplement_fig_12_theme =  theme(axis.text.x = element_text(size=10,angle=90,hjust = 0.2,vjust = 0.8, debug = FALSE),
+supplement_fig_5_6_theme =  theme(axis.text.x = element_text(size=10,angle=90,hjust = 0.2,vjust = 0.8, debug = FALSE),
                                  axis.title = element_text(size=15),
-                                 strip.text = element_text(size=6.5)) 
+                                 strip.text = element_text(size=6.5)) +
+  theme_grey()
   
-supplement_fig1_data = model_errors %>%
+supplement_fig5_data = model_errors %>%
   filter(data_type == 'test', error_type=='rmse') %>%
   select(species, phenophase, model_name, error_type, error_value, observation_source, parameter_source, sample_size)
-supplement_fig1_data$species = abbreviate_species_names(supplement_fig1_data$species)
+supplement_fig5_data$species = abbreviate_species_names(supplement_fig5_data$species)
 
-winning_models_rmse = supplement_fig1_data %>%
+winning_models_rmse = supplement_fig5_data %>%
   group_by(species, phenophase, observation_source, parameter_source) %>%
   top_n(1, -error_value) %>%
   ungroup()
 
-supplement_fig1 = ggplot(supplement_fig1_data, aes(x=model_name, y=error_value, color=observation_source, group=observation_source)) + 
+supplement_fig5 = ggplot(supplement_fig5_data, aes(x=model_name, y=error_value, color=observation_source, group=observation_source)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
   geom_point(data = winning_models_rmse, color="#D55E00", shape=4, size=3) +
   scale_color_manual(values = c("#000000", "#E69F00", "#56B4E9", "#009E73", "#CC79A7")) +
   facet_wrap(species~phenophase~parameter_source, labeller = 'label_both', scales='fixed') +
   labs(y='Root Mean Square Error', x='Model', color='Observation Source') +
-  supplement_fig_12_theme
+  supplement_fig_5_6_theme
 
-ggsave(supplement_fig1, filename = paste0(config$image_save_directory,'supplement_all_model_rmse.png'),
+ggsave(supplement_fig5, filename = paste0(config$image_save_directory,'figure_s5_all_model_rmse.png'),
        width = 40, height = 50, units = 'cm')
 
 ############################################
-# supplement figure 2. Species level out of sample pearson correlation
+# supplement figure 6. Species level out of sample pearson correlation
 
-supplement_fig2_data = model_errors %>%
+supplement_fig6_data = model_errors %>%
   filter(data_type == 'test', error_type=='pearson') %>%
   select(species, phenophase, model_name, error_type, error_value, observation_source, parameter_source, sample_size)
-supplement_fig2_data$species = abbreviate_species_names(supplement_fig2_data$species)
+supplement_fig6_data$species = abbreviate_species_names(supplement_fig6_data$species)
 
-winning_models_pearson = supplement_fig2_data %>%
+winning_models_pearson = supplement_fig6_data %>%
   group_by(species, phenophase, observation_source, parameter_source) %>%
   top_n(1, error_value) %>%
   ungroup()
 
-supplement_fig2 = ggplot(supplement_fig2_data, aes(x=model_name, y=error_value, color=observation_source, group=observation_source)) + 
+supplement_fig6 = ggplot(supplement_fig6_data, aes(x=model_name, y=error_value, color=observation_source, group=observation_source)) + 
   geom_point(size=1.5) +
   geom_line(size=1) +
   geom_point(data = winning_models_pearson, color="#D55E00", shape=4, size=3) +
   scale_color_manual(values = c("#000000", "#E69F00", "#56B4E9", "#009E73", "#CC79A7")) +
   facet_wrap(species~phenophase~parameter_source, labeller = 'label_both', scales='fixed') +
   labs(y='Pearson Correlation', x='Model', color='Observation Source') +
-  supplement_fig_12_theme
+  supplement_fig_5_6_theme
 
-ggsave(supplement_fig2, filename = paste0(config$image_save_directory,'supplement_all_model_pearson.png'),
+ggsave(supplement_fig6, filename = paste0(config$image_save_directory,'figure_s6_all_model_pearson.png'),
        width = 40, height = 50, units = 'cm')
 
