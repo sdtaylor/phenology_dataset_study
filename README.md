@@ -1,8 +1,6 @@
-This is the repository for the study "Comparison of large-scale citizen science data and long-term study data for phenology modeling".
+This is the repository for the study:
 
-Shawn D. Taylor, Joan M. Meiners, Kristina Riemer, Michael C. Orr, Ethan P. White
-
-Manuscript preprint: https://doi.org/10.1101/335802
+Taylor, S.D., J.M. Meiners, K. Riemer, M.C. Orr, E.P White. 2018. Comparison of large-scale citizen science data and long-term study data for phenology modeling. Ecology [https://doi.org/10.1002/ecy.2568](https://doi.org/10.1002/ecy.2568).
 
 ### Contents
 
