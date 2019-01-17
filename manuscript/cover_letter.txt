@@ -1,0 +1,13 @@
+Dear Editors,
+
+We are submitting our article titled “Comparison of large-scale citizen science data and long-term study data for phenology modeling” for consideration for publication as an Article in Ecology.
+
+In the past decade an influx of new data sources has given ecologists numerous options in their research. Remotely sensed imagery, citizen science, and large projects such as the National Ecological Observatory Network provide data at scales not possible before. In contrast, the Long Term Ecological Research Program (LTER) is a source of high quality data for studying long term trends at fixed locations and has been an instrumental data source for ecological research. Moving forward researchers will need to choose from, or combine, these different data streams to take full advantage of their individual strengths. Here we take a first step down this path for phenology by comparing a new data source, the National Phenology Network (NPN), with a traditional one, the LTER program. We compiled phenology data of budburst and flowering for 24 plant species common to both of these datasets. We built phenology models twice, once with NPN data and once with LTER data, and compared their resulting parameter estimates, estimates of phenological events, and out of sample errors. We found that parameter estimates were relatively similar for the simplest growing degree day model, but not for more complex models. Estimates for phenological events were similar regardless of models, and model performance was best when models were used on the scale of data they were fit with. Thus, the choice of data in analyses depends on the research questions. Our study highlights several ways to guide this choice in future phenology research, and stresses the development of models and analyses which integrate all types of data.
+
+We note that our manuscript, at 37 pages, is over the recommended 30 pages for a research Article. This resulted from an extensive discussion of the model comparisons and how they relate to prior research, as well as framing this study in the larger context of ecology. 
+
+Thank you for your consideration of our submission.
+
+Sincerely,
+
+Shawn D. Taylor, Joan M. Meiners, Kristina Riemer, Michael C. Orr, and Ethan P. White
