@@ -208,16 +208,12 @@ best_scenario_model = predictions %>%
             observation_source != 'npn' ~ 'LTER',
             observation_source == 'npn' ~ 'USA-NPN')) %>%
   group_by(model_name, parameter_source, observation_source) %>%
-  summarise(rmse = sqrt(mean((doy_estimated - doy_observed)^2)), 
-            pearson = cor(doy_estimated, doy_observed, method='pearson'),
+  summarise(rmse = round(sqrt(mean((doy_estimated - doy_observed)^2)),2), 
+            pearson = round(cor(doy_estimated, doy_observed, method='pearson'),2),
             n=n()) %>%
   ungroup() %>%
-  gather(error_type, error_value, rmse, pearson) %>%
-  mutate(error_value = round(error_value,2)) %>%
   mutate(model_name = factor(model_name, levels = model_names, labels = pretty_model_names, ordered = TRUE)) %>%
-  mutate(model_error_type = paste(model_name, error_type, sep='-')) %>%
-  select(-model_name, -error_type) %>%
-  spread(model_error_type, error_value)
+  arrange(parameter_source, observation_source)
 
 # This outputs a basic latex table. I styled it up and adjusted
 # all the text at https://www.tablesgenerator.com/
