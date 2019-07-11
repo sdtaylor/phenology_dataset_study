@@ -170,7 +170,7 @@ rmse_metrics_figure=ggplot(rmse_metrics, aes(metric_value)) +
         axis.title.x = element_text(size=20),
         strip.background = element_rect(fill='grey95'))
 
-ggsave(rmse_metrics_figure, filename = paste0(config$image_save_directory,'figure_4_rmse_metrics_density_plot.png'), width = 60, height = 15,dpi=1000, units = 'cm')
+ggsave(rmse_metrics_figure, filename = paste0(config$image_save_directory,'figure_4_rmse_metrics_density_plot.png'), width = 60, height = 15,dpi=200, units = 'cm')
 ######################################################
 ######################################################
 # supplement figure 7, absolute RMSE values of all scenarios
@@ -190,7 +190,7 @@ scenario_error = ggplot(scenarios_error_data, aes(x=species_phenophase, y=error_
         legend.direction = "horizontal") +
   labs(y='RMSE',x='Species & Phenophase', color='Scenario') 
 
-ggsave(scenario_error, filename = paste0(config$image_save_directory,'figure_s7_scenario_absolute_rmse.png'), width = 30, height = 20, dpi=1000, units = 'cm')
+ggsave(scenario_error, filename = paste0(config$image_save_directory,'figure_s7_scenario_absolute_rmse.png'), width = 30, height = 20, dpi=200, units = 'cm')
 
 
 ###########################################################
@@ -253,7 +253,7 @@ supplement_fig5 = ggplot(supplement_fig5_data, aes(x=model_name, y=error_value, 
   supplement_fig_5_6_theme
 
 ggsave(supplement_fig5, filename = paste0(config$image_save_directory,'figure_s5_all_model_rmse.png'),
-       width = 40, height = 50, units = 'cm')
+       width = 40, height = 50, units = 'cm', dpi=200)
 
 ############################################
 # supplement figure 6. Species level out of sample pearson correlation
@@ -278,5 +278,5 @@ supplement_fig6 = ggplot(supplement_fig6_data, aes(x=model_name, y=error_value, 
   supplement_fig_5_6_theme
 
 ggsave(supplement_fig6, filename = paste0(config$image_save_directory,'figure_s6_all_model_pearson.png'),
-       width = 40, height = 50, units = 'cm')
+       width = 40, height = 50, units = 'cm', dpi=200)
 

@@ -55,6 +55,6 @@ site_map = ggplot() +
         plot.margin = unit(c(0,0,0,0),'mm'))
 #print(site_map)
 # Note, I saved this manually using the export tool to get ride of uneeded whitespace in the figure.
-ggsave('manuscript/figure_1_site_map.png', width=20, height=16, units = 'cm',dpi=1000, plot=site_map)
+ggsave('manuscript/figure_1_site_map.png', width=20, height=16, units = 'cm',dpi=200, plot=site_map)
 
 

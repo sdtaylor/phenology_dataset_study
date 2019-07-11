@@ -103,4 +103,4 @@ fig2=ggplot(observation_estimate_comparison, aes(x=doy_estimated_npn_model, y=do
   labs(x='Estimates from NPN derived models',
        y='Estimates from LTER derived models')
 
-ggsave(fig2, filename = paste0(config$image_save_directory,'figure_3_estimate_compare.png'), height = 14, width = 40, dpi=1000, units = 'cm')
+ggsave(fig2, filename = paste0(config$image_save_directory,'figure_3_estimate_compare.png'), height = 14, width = 40, dpi=200, units = 'cm')
