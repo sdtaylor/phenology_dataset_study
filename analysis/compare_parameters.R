@@ -269,20 +269,26 @@ parameters_with_dummy_vars$facet_strip_text = forcats::fct_reorder(parameters_wi
 y_axis_text = c('LTER Derived Parameter Estimates\n
                       Uniforc            MSB           Alternating              M1                  GDD               Linear            Fixed GDD           Naive')
 
-whole_plot = ggplot(parameters_with_dummy_vars, aes(x=npn_derived_parameter, y=lts_derived_parameter, color=dataset, group=dataset)) + 
-  geom_point(size=3, aes(shape = phenophase)) +
+whole_plot = 5
+parameters_with_dummy_vars %>%
+filter(model == 'gdd') %>%
+  filter(parameter_name != 'gdd_dummy1') %>%
+  ggplot(aes(x=npn_derived_parameter, y=lts_derived_parameter, color=dataset, group=dataset)) + 
+  geom_point(size=8) +
   scale_shape_manual(values=c(17,13)) +
   scale_color_manual(values=c("grey42", "#E69F00", "#56B4E9", "#CC79A7")) +
   geom_abline(intercept=0, slope=1) +
-  facet_wrap(~facet_strip_text, scales='free', nrow=8, labeller = label_parsed) +
-  theme_bw() + 
-  labs(x='USA-NPN Derived Parameter Estimates',y=y_axis_text,
-       color = "LTER Dataset", shape = "Phenophase") + 
-  theme(strip.text = element_text(size=10),
+  theme_bw(30) +
+  facet_wrap(~parameter_name, scales='free') + 
+  labs(x='USA-NPN GDDs',y='LTER GDDs',
+       color = "LTER Dataset", shape = "Phenophase") 
+  
+  
+    theme(strip.text = element_text(size=10),
         strip.background = element_rect(fill='grey95'),
         strip.switch.pad.wrap = unit(2, 'cm'),
-        axis.text = element_text(size=8),
-        axis.title = element_text(size=14),
+        axis.text = element_text(size=12),
+        axis.title = element_text(size=16),
         legend.text = element_text(size=14),
         legend.title = element_text(size=16)) 
 
